@@ -13,10 +13,14 @@ questions = ["If you had a million dollars to give away today, which broad area 
     "What size of organization do you trust most with your donation?",
     "Finally, in one short sentence, tell me why you want to donate today. What specifically breaks your heart or gives you hope?"
     ]
+  
+
 
 categories = {'Animals & Environment': ['cats', 'dogs'],
 'Human Rights & Justice': [], 'Health & Medicine':[],
 'Arts & Culture': [], 'Education & Discovery': []}
+
+
 
 responses = []
 if __name__ == "__main__":
