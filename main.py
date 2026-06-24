@@ -1,15 +1,20 @@
+import os
+from dotenv import load_dotenv
 import requests
 import pandas as pd
 import sqlalchemy as db
 import json
 
-myPublicApiKey = 'pk_live_c5228e363c68a2c177763aea16b20d47'
+load_dotenv()
+myGeminiApiKey = os.getenv('GENAI_KEY')
+myEveryorgApiKey = os.getenv('EVERYORG_KEY')
+
 engine = db.create_engine('sqlite:///MatchMission.db')
 
 def fetch_cause(cause="animals", num_of_results=30):
 
   my_params = {
-    'apiKey': myPublicApiKey,
+    'apiKey': myEveryorgApiKey,
     'take': num_of_results,
     'page': 1
   }
