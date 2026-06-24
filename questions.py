@@ -1,5 +1,7 @@
 # questions.py
 
+import time
+
 # question set:
 quiz_data = [
     {
@@ -18,7 +20,7 @@ quiz_data = [
         "prompt": "Within that space, what are you most drawn to?",
         "options": {
             "Animals & Environment": [
-                "1. Household pets", 
+                "1usehold pets", 
                 "2. Protecting natural habitats", 
                 "3. Fighting the climate crisis", 
                 "4. Protecting oceans"
@@ -132,12 +134,18 @@ quiz_data = [
 def run_quiz():
   print('='*50 + "\n")
 
-  print("Welcome to MatchMission!")
-  name = input("What is your name? ")
-
-  print("Let's find causes you actually care about, ", name, ".\n" )
+  print("Welcome to MatchMission!\n")
 
   print('='*50 + "\n")
+  name = input("What is your name? ")
+
+  time.sleep(0.3)
+
+  print(f"Let's find causes you actually care about, {name}.\n" )
+
+  time.sleep(2.5)
+
+  
 
   user_responses = {}
 
@@ -165,7 +173,7 @@ def run_quiz():
     # ensure the user entered a valid number choice
     valid_choice = False
     while not valid_choice:
-      choice = input(f"Choose an option 1-{len(current_options)}")      
+      choice = input(f"Choose an option 1-{len(current_options)}: ")      
     
       # TODO: add try-except clause
       if (choice.isdigit()) and (1 <= int(choice)) and (int(choice) <= len(current_options)):
@@ -176,6 +184,7 @@ def run_quiz():
           
       
     user_responses[quiz_data[index]['prompt']] = current_options[int(choice) - 1]
+    print("\n")
 
   print("\n", "=" * 50)
   print("Quiz complete!")
