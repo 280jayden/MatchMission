@@ -21,4 +21,3 @@ engine = db.create_engine('sqlite:///MatchMission.db')
 # with engine.connect() as connection:
 #    query_result = connection.execute(db.text("SELECT * FROM NonProfits;")).fetchall()
 #    print(pd.DataFrame(query_result))
-
