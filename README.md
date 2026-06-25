@@ -15,17 +15,18 @@ Generic charity directories list hundreds of organizations without context, lead
 ## 🛠️ Tech Stack
 
 * **Language:** Python 3.x
-* **AI/LLM:** Google GenAI SDK (`gemini-2.5-flash`)
+* **AI/LLM:** Google GenAI SDK | Gemini API (`gemini-2.5-flash`)
 * **External API:** Every.org API
 * **Data Handling:** Pandas
 * **Environment Management:** `python-dotenv`
+* **Database:** SQLite3, SQLAlchemy
 
 ## 📦 Installation & Setup
 
 1. **Clone the repository**
-   ```bash
-   git clone [https://github.com/yourusername/MatchMission.git](https://github.com/yourusername/MatchMission.git)
-   cd MatchMission
+```bash
+git clone [https://github.com/yourusername/MatchMission.git](https://github.com/yourusername/MatchMission.git)
+cd MatchMission
 
 2. **Set up a virtual environment (Recommended)**
 ```bash
@@ -36,10 +37,23 @@ source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
 
 3. **Install dependencies**
-Ensure you have Pandas, python-dotenv, and the Google GenAI SDK installed:
+Before running the project, ensure you have the required Python packages installed.
+
+You can install them using the `requirements.txt` file:
 ```bash
-pip install pandas python-dotenv google-genai requests
+pip install -r requirements.txt
 ```
+
+Or install them manually:
+```bash
+pip install pandas python-dotenv google-genai requests sqlalchemy
+```
+The project requires:
+* pandas
+* python-dotenv
+* google-genai
+* requests
+* sqlalchemy
 
 
 
@@ -62,7 +76,7 @@ python main.py
 
 The application will:
 
-1. Greet you and launch the 10-question MatchMission survey.
+1. Greet you and launch the 10-question MatchMission quiz.
 2. Send your responses to Gemini to generate a weighted JSON profile.
 3. Query the Every.org API for nonprofits matching your top tags.
 4. Process the candidate results.
@@ -74,7 +88,6 @@ The application will:
 * `questions.py` - Contains the survey logic and question data structure.
 * `scoring.py` - Handles the prompt engineering and JSON generation via the Google GenAI SDK.
 * `fetch_orgs.py` - Manages API requests to Every.org and formats the results using Pandas.
-* `matching.py` - The proprietary algorithm that scores nonprofits against the AI-generated donor profile.
 
 ## 🗺️ Roadmap / Next Steps
 
