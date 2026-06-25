@@ -5,6 +5,7 @@ import sqlalchemy as db
 from dotenv import load_dotenv
 from questions import run_quiz
 from fetch_orgs import *
+from scoring import generate_user_profile
 
 
 if __name__ == '__main__':
@@ -28,20 +29,17 @@ if __name__ == '__main__':
   }
   
   # Welcome & 10 Question Quiz
-  fetch_orgs("animals", 10, engine)
+  name, responses = run_quiz()
+
+  user_profile = generate_user_profile(name, responses)
+
+  # fetch_orgs({"animals": 0.99, "adoption": 0.8, "dogs":0.45, "cats":0.1},"animals", 10, engine) # West Hills Halo Fund Inc.
+  to_fetch = 50
+  for cause in user_profile['tags_list_to_fetch']:
+    fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
+    to_fetch -= 5
+  
   nonprofits = select_orgs(engine)
   display_orgs(nonprofits)
-  # name, responses = run_quiz()
-
-  # user_profile = llm weight ranking(responses)
-    # tell llm to take the responses, give weights, output a 
-    # json in the format of user_profile above
-
-  # fetch_orgs("animals", 25, engine)
-  # fetch_orgs(tag) for t in tags_to_search
-    # get in batches of 30, 25, 20, 15, 10 (5 total fetches)
-    # will be sorted in db by a 'match score'
-    # fetch_orgs("animals", 25, engine)
-    # fetch_orgs("cancer", 10, engine)
   
-  # display_top_5_matches()
+  

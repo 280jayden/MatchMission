@@ -4,7 +4,7 @@ import pandas as pd
 import sqlalchemy as db
 import json
 
-def fetch_orgs(cause, num_of_results, engine):
+def fetch_orgs(user_causes, cause, num_of_results, engine):
     myEveryorgApiKey = os.getenv('EVERYORG_KEY')
 
     my_params = {
@@ -20,9 +20,13 @@ def fetch_orgs(cause, num_of_results, engine):
     # create a dataframe
     df = pd.DataFrame(result['nonprofits'], columns = ['name', 'description', 'profileUrl', 'websiteUrl', 'location', 'tags'])
 
+    scores = []
+    for nonprofit_tags in df['tags']:
+        scores.append(algorithm(user_causes, nonprofit_tags))
+    
     # turn tags into a string
     df['tags'] = df['tags'].apply(json.dumps)
-    df['score'] = 0
+    df['score'] = scores
 
     # specify the dataframe, selecting primary key in dataframe and in sqlite so that dupes don't get added
     df.to_sql('NonProfits', con=engine, if_exists='append', index=False)
@@ -31,8 +35,8 @@ def fetch_orgs(cause, num_of_results, engine):
     # TODO: how to prevent duplicate entries
         # add a GROUP BY
         query_result = connection.execute(db.text("SELECT * FROM NonProfits;")).fetchall()
-        print(pd.DataFrame(query_result))
-# check if duplicates
+        # print(pd.DataFrame(query_result))
+    # check if duplicates
 
 def algorithm(user_causes, nonprofit_tags):
     # input: dict, list
