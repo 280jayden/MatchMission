@@ -195,11 +195,3 @@ def run_quiz():
   return name, user_responses
 
 
-<<<<<<< HEAD
-
-
-
-
-
-=======
->>>>>>> 479639926688e3752d0f355abf2303b22b9d309d
