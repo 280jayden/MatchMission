@@ -94,23 +94,24 @@ def fetch_orgs(user_causes, cause, num_of_results, engine):
     # create a dataframe
     df = pd.DataFrame(result['nonprofits'], columns = ['name', 'description', 'profileUrl', 'websiteUrl', 'location', 'tags'])
 
-    scores = []
-    for nonprofit_tags in df['tags']:
-        scores.append(algorithm(user_causes, nonprofit_tags))
-    
-    # turn tags into a string
-    df['tags'] = df['tags'].apply(json.dumps)
-    df['score'] = scores
-
-    # specify the dataframe, selecting primary key in dataframe and in sqlite so that dupes don't get added
-    df.to_sql('NonProfits', con=engine, if_exists='append', index=False)
-
+    # filter out existing nonprofits
     with engine.connect() as connection:
-    # TODO: how to prevent duplicate entries
-        # add a GROUP BY
-        query_result = connection.execute(db.text("SELECT * FROM NonProfits;")).fetchall()
-        # print(pd.DataFrame(query_result))
-    # check if duplicates
+        existing_urls = pd.read_sql('SELECT "profileUrl" FROM "NonProfits"',
+        con=engine)['profileUrl'].tolist()
+    df_new = df[~df['profileUrl'].isin(existing_urls)].copy()
+
+    if df_new.empty: return
+
+    # calculate scores
+    scores = []
+    for nonprofit_tags in df_new['tags']:
+        scores.append(algorithm(user_causes, nonprofit_tags))
+    df_new['score'] = scores
+
+    # turn tags into a string
+    df_new['tags'] = df_new['tags'].apply(json.dumps)
+
+    df_new.to_sql('NonProfits', con=engine, if_exists='append', index=False)
 
 def algorithm(user_causes, nonprofit_tags):
     # input: dict, list
@@ -128,11 +129,10 @@ def select_orgs(engine):
 
 def display_orgs(nonprofits):
     for nonprofit in nonprofits:
-        print(nonprofit[0], '--', nonprofit[4]) # Name
+        print(nonprofit.name, '--', nonprofit.location) 
         print('-' * 50)
-        print("Description: ", nonprofit[1])
-        print("Profile URL: ", nonprofit[2])
-        print("Website URL: ", nonprofit[3])
-        # print("Why this fits: ") # call Gemini API for summary
+        print("Description: ", nonprofit.description)
+        print("Profile URL: ", nonprofit.profileUrl)
+        print("Website URL: ", nonprofit.websiteUrl)
         print()
 

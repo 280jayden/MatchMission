@@ -14,26 +14,43 @@ if __name__ == '__main__':
 
   engine = db.create_engine('sqlite:///MatchMission.db')
 
-  user_profile = {'name': 'Carlos Jusino',
+  with engine.connect() as connection:
+    connection.execute(db.text("""
+        CREATE TABLE IF NOT EXISTS NonProfits (
+            name TEXT,
+            description TEXT,
+            profileUrl TEXT PRIMARY KEY,
+            websiteUrl TEXT,
+            location TEXT,
+            tags TEXT,
+            score REAL
+        );
+    """))
+    connection.commit()
+  
+  default_user_profile = {'name': 'Carlos Jusino',
     # in descending order
-    'top_5_tags_to_search': ['animals', 'culture', 'immigrants', 'housing', 'youth'],
-    'animals' : 0.98,
+    'tags_list_to_fetch': ['animals', 'culture', 'immigrants', 'housing', 'youth'],
+    'causes': {'animals' : 0.98,
     'culture' : 0.67,
     'immigrants' : 0.65,
     'housing' : 0.58,
     'youth' : 0.55,
     'music' : 0.44,
     'health' : 0.32,
-    'freepress' : 0.21
-    # omit categories that are < 0.15 match
+    'freepress' : 0.21}
   }
   
   # Welcome & 10 Question Quiz
   name, responses = run_quiz()
 
   user_profile = generate_user_profile(name, responses)
-
-  # fetch_orgs({"animals": 0.99, "adoption": 0.8, "dogs":0.45, "cats":0.1},"animals", 10, engine) # West Hills Halo Fund Inc.
+    
+  if not user_profile: 
+    print()
+    print("Gemini API problem occured. Using default profile\n")
+    user_profile = default_user_profile
+    
   to_fetch = 50
   for cause in user_profile['tags_list_to_fetch']:
     fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
@@ -41,5 +58,4 @@ if __name__ == '__main__':
   
   nonprofits = select_orgs(engine)
   display_orgs(nonprofits)
-  
   
