@@ -34,6 +34,7 @@ if __name__ == '__main__':
     # tell llm to take the responses, give weights, output a 
     # json in the format of user_profile above
 
+  fetch_orgs("animals", 25, engine)
   # fetch_orgs(tag) for t in tags_to_search
     # get in batches of 30, 25, 20, 15, 10 (5 total fetches)
     # will be sorted in db by a 'match score'
