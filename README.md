@@ -27,6 +27,7 @@ Generic charity directories list hundreds of organizations without context, lead
 ```bash
 git clone [https://github.com/yourusername/MatchMission.git](https://github.com/yourusername/MatchMission.git)
 cd MatchMission
+```
 
 2. **Set up a virtual environment (Recommended)**
 ```bash
