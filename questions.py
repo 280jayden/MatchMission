@@ -195,10 +195,6 @@ def run_quiz():
   return name, user_responses
 
 
-run_quiz()
-
-
-
 
 
 
