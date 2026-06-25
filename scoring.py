@@ -7,7 +7,10 @@ import os
 import json
 from google import genai
 
-client = genai.Client(api_key='AQ.Ab8RN6JYs_pVJm_kt2K6iv7VndBv89ii5vLha8-uhqvm_2TUVg')
+load_dotenv()
+
+
+client = genai.Client(api_key=os.getenv("GENAI_KEY"))
 
 def generate_user_profile(name, user_responses):
   # takes users quiz answers, feeds them into gemini
