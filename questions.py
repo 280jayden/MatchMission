@@ -20,7 +20,7 @@ quiz_data = [
         "prompt": "Within that space, what are you most drawn to?",
         "options": {
             "Animals & Environment": [
-                "1usehold pets", 
+                "1. Household pets", 
                 "2. Protecting natural habitats", 
                 "3. Fighting the climate crisis", 
                 "4. Protecting oceans"
@@ -187,10 +187,11 @@ def run_quiz():
     print("\n")
 
   print("\n", "=" * 50)
-  print("Quiz complete!")
+  print("\nQuiz complete!")
 
-  print(name, user_responses)
-    
+  time.sleep(1.5)
+
+  print("Evaluating answers...")    
 
   return name, user_responses
 
