@@ -8,6 +8,12 @@ from fetch_orgs import *
 from scoring import generate_user_profile
 
 
+def is_valid_input(choice):
+  if choice == '1' or choice == '2' or choice == 'q':
+    return True
+  return False
+
+
 if __name__ == '__main__':
   load_dotenv()
   myGeminiApiKey = os.getenv('GENAI_KEY')
@@ -23,7 +29,9 @@ if __name__ == '__main__':
             websiteUrl TEXT,
             location TEXT,
             tags TEXT,
-            score REAL
+            score REAL,
+            shown BOOL,
+            favorited BOOL
         );
     """))
     connection.commit()
@@ -56,6 +64,25 @@ if __name__ == '__main__':
     fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
     to_fetch -= 5
   
-  nonprofits = select_orgs(engine)
-  display_orgs(nonprofits)
-  
+  is_running = True
+  while is_running:
+    print()
+    nonprofits = select_orgs(engine)
+    display_orgs(nonprofits)
+
+    is_valid = False
+    while not is_valid:
+      choice = input("Favorite (1), Keep Browsing (2), Exit (q): ")
+      is_valid = is_valid_input(choice)
+      if not is_valid:
+        print("Invalid choice, select 1/2/q")
+    
+    if choice == '1':
+      choice = input("Which would you like to favorite 1/2/3? ")
+      print(f"Favorited {choice}!")
+    elif choice == 'q':
+      is_running = False
+    
+  print()
+  print("="*50)
+  print("Thank you for using Match Mission, have a nice day!")

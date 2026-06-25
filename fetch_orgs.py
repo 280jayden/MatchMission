@@ -111,6 +111,9 @@ def fetch_orgs(user_causes, cause, num_of_results, engine):
     # turn tags into a string
     df_new['tags'] = df_new['tags'].apply(json.dumps)
 
+    df_new['shown'] = False
+    df_new['favorited'] = False
+
     df_new.to_sql('NonProfits', con=engine, if_exists='append', index=False)
 
 def algorithm(user_causes, nonprofit_tags):
@@ -123,9 +126,20 @@ def algorithm(user_causes, nonprofit_tags):
 
 def select_orgs(engine):
     with engine.connect() as connection:
-        result = connection.execute(db.text("SELECT * FROM NonProfits ORDER BY score DESC LIMIT 3"))
-        nonprofits = result
-    return result
+        result = connection.execute(db.text
+        ("SELECT * FROM NonProfits WHERE shown == FALSE ORDER BY score DESC LIMIT 3"))
+        rows = result.mappings().all()
+
+        if not rows: return []
+
+        # set the select orgs to shown
+        update_data = [{"url": row['profileUrl']} for row in rows]
+        connection.execute(db.text("""UPDATE NonProfits 
+            SET shown = TRUE 
+            WHERE profileURL = :url"""), update_data)
+        connection.commit()
+        
+        return rows
 
 def display_orgs(nonprofits):
     for nonprofit in nonprofits:
