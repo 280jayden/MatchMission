@@ -174,9 +174,7 @@ def run_quiz():
     valid_choice = False
     while not valid_choice:
       choice = input(f"Choose an option 1-{len(current_options)}: ")      
-    
-      # TODO: add try-except clause
-      if (choice.isdigit()) and (1 <= int(choice)) and (int(choice) <= len(current_options)):
+      if is_valid_choice(choice, current_options):
         valid_choice = True 
 
       else:
@@ -196,3 +194,10 @@ def run_quiz():
   return name, user_responses
 
 
+def is_valid_choice(choice, current_options):
+    # verifies user input as a valid option
+    if not choice.isdigit():
+        return False
+        
+    choice_num = int(choice)
+    return 1 <= choice_num <= len(current_options)

@@ -1,6 +1,7 @@
 import pytest
 import sqlalchemy as db
 from fetch_orgs import *
+from questions import is_valid_choice
 
 def test_algorithm():
     user_causes = {'animals': 0.99, 'research': 0.85, 'education': 0.65, 'environment': 0.56}
@@ -16,3 +17,6 @@ def test_invalid_fetch():
     with pytest.raises(Exception): # if code returns successfully, test fails
         fetch_orgs(user_causes, "invalid_cause", 15, engine)
 
+def test_invalid_choice():
+    options = ["1", "2", "3"]
+    assert is_valid_choice("4", options) == False
