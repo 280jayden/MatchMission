@@ -5,6 +5,7 @@
   --secondary2: #778D67; /* corresp border */
   --tertiary1: #E8F1E7;
   --tertiary2: #CCD8C4;
+  --card-bg: #F7FFF5; /* no border because it uses secondary1 as a border */
 }
 
 body {
@@ -26,6 +27,7 @@ h1 {
   font-weight: 700;
   line-height: 24px;
   letter-spacing: 0.15px;
+  margin-top: 0;
 }
 
 h2 {
@@ -36,6 +38,7 @@ h2 {
   font-weight: 700;
   line-height: 24px;
   letter-spacing: 0.15px;
+  margin-top: 0;
 }
 
 h3 {
@@ -44,10 +47,39 @@ h3 {
   font-size: 25px;
   font-style: normal;
   font-weight: 700;
-  line-height: 24px;
   letter-spacing: 0.15px;
+  margin-top: 0;
 }
 
 html {
   background-color: var(--background);
+}
+
+.centered {
+  text-align: center;
+}
+
+.page-background {
+  width: 75%;
+  min-height: 65vh;
+
+  background-color: white;
+
+  margin: 85px auto;
+
+  border-radius: 30px;
+
+  padding: 85px 75px;
+
+  display: flex;
+  flex-direction: column;
+  
+
+  box-sizing: border-box;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; 
 }

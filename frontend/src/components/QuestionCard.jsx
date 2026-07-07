@@ -1,12 +1,14 @@
+import "./QuestionCard.css"
+
 function QuestionCard({question, type, options, value, onChange}) {
   return (
-    <div>
+    <div className="question-card">
       <h3>{question}</h3>
 
       {type == "radio" && (
-        <div>
+        <div className = "question-options">
           {options.map(option => (
-            <label key={option}>
+            <label className="question-option" key={option}>
               <input
                 type="radio"
                 name={question}
@@ -20,9 +22,9 @@ function QuestionCard({question, type, options, value, onChange}) {
       )}
 
       {type == "checkbox" && (
-        <div>
+        <div className = "question-options">
           {options.map(option => (
-            <label key={option}>
+            <label className="question-option" key={option}>
               <input
                 type="checkbox"
                 name={question}
@@ -38,7 +40,8 @@ function QuestionCard({question, type, options, value, onChange}) {
       {type == "text" && (
         <textarea 
           value = {value}
-           onChange={(e) => onChange(e.target.value)}
+          className="question-textarea"
+          onChange={(e) => onChange(e.target.value)}
         />
       )}
 
