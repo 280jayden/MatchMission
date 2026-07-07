@@ -44,3 +44,5 @@ function QuestionCard({question, type, options, value, onChange}) {
     </div>
   )
 }
+
+export default QuestionCard
