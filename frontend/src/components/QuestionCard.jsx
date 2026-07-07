@@ -30,7 +30,14 @@ function QuestionCard({question, type, options, value, onChange}) {
                 name={question}
                 value={option}
                 checked={value.includes(option)} 
-                onChange={(e) => onChange(e.target.value)} />
+                onChange={(e) => {
+                  if (e.target.checked) {
+                      onChange([...value, option]);
+                    } else {
+                      onChange(value.filter(v => v !== option));
+                    }
+                }} 
+                />
               {option}
             </label>  
           ))}
