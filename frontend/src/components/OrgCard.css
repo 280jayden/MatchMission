@@ -1,0 +1,40 @@
+.org-card {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.org-top {
+  display: flex;
+  gap: 60px;
+}
+
+.org-bot {
+  display: flex;
+  gap: 10px;
+}
+
+.org-card img {
+  width: 40%;
+  height: auto;
+  border-radius: 30px;
+}
+
+.org-card button {
+  /* for the button */
+  border-radius: 30px;
+  border: 5px solid #778D67;
+  background: #AECCAA;
+  width: 301px;
+  height: 66px;
+
+  /* for the text */
+  color: #000;
+  text-align: center;
+  font-family: "DM Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+}

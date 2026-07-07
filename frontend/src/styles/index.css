@@ -83,3 +83,15 @@ html {
   flex-direction: column;
   gap: 30px; 
 }
+
+.item-card {
+  width: 100%;
+
+  background-color: var(--card-bg);
+  border-radius: 30px;
+  border: 5px solid var(--secondary1);
+
+  padding: 55px 75px;
+
+  box-sizing: border-box;
+}

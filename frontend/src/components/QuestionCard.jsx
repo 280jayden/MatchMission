@@ -2,7 +2,7 @@ import "./QuestionCard.css"
 
 function QuestionCard({question, type, options, value, onChange}) {
   return (
-    <div className="question-card">
+    <div className="item-card">
       <h3>{question}</h3>
 
       {type == "radio" && (

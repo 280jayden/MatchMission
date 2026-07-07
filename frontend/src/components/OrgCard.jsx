@@ -1,7 +1,33 @@
-function OrgCard() {
+import "./OrgCard.css"
+
+function OrgCard() { // would pass in a json later but for now....
   return (
-    <div>
-      <h1>Organization card placeholder</h1>
+    <div className="item-card org-card">
+      <div className="org-top">
+        <img src="https://placehold.net/600x600.png" alt="placeholder image" />
+
+        <div>
+          <h2>Org Name</h2>
+          <p style={{marginBottom: "50px"}}>description</p>
+
+          <h3>Why We Matched You</h3>
+          <p>description</p>
+        </div>
+      </div>
+
+      <div className="org-bot">
+        <button onClick={console.log("button pressed")}>
+          PROFILE
+        </button>
+
+        <button onClick={console.log("button pressed")}>
+          THEIR WEBSITE
+        </button>
+
+        <button onClick={console.log("button pressed")}>
+          meow
+        </button>
+      </div>
     </div>
   )
 }
