@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import './styles/App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 

@@ -9,8 +9,9 @@ function QuestionCard({question, type, options, value, onChange}) {
             <label key={option}>
               <input
                 type="radio"
+                name={question}
                 value={option}
-                checked={value==={option}} 
+                checked={value===option} 
                 onChange={(e) => onChange(e.target.value)} />
               {option}
             </label>  
@@ -24,6 +25,7 @@ function QuestionCard({question, type, options, value, onChange}) {
             <label key={option}>
               <input
                 type="checkbox"
+                name={question}
                 value={option}
                 checked={value.includes(option)} 
                 onChange={(e) => onChange(e.target.value)} />
