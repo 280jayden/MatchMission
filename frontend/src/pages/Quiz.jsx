@@ -7,8 +7,8 @@ function Quiz() {
 
   return (
     <>
-      <h1 className="centered">Quiz</h1>
-      <p className="centered">This is a Quiz page placeholder</p>
+      <h1 style={{textAlign:"center"}}>Quiz</h1>
+      <p style={{textAlign:"center"}}>This is a Quiz page placeholder</p>
 
       <div className="card-container">
         <QuestionCard
