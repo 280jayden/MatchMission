@@ -1,10 +1,11 @@
 import "./OrgCard.css"
+import StarButton from "./StarButton";
 
 function OrgCard() { // would pass in a json later but for now....
   return (
     <div className="item-card org-card">
       <div className="org-top">
-        <img src="https://placehold.net/600x600.png" alt="placeholder image" />
+        <img src="https://placehold.net/600x600.png" alt="placeholder image" className="org-img"/>
 
         <div>
           <h2>Org Name</h2>
@@ -16,17 +17,15 @@ function OrgCard() { // would pass in a json later but for now....
       </div>
 
       <div className="org-bot">
-        <button onClick={console.log("button pressed")}>
+        <button onClick={() => console.log("button pressed")}>
           PROFILE
         </button>
 
-        <button onClick={console.log("button pressed")}>
+        <button onClick={() => console.log("button pressed")}>
           THEIR WEBSITE
         </button>
 
-        <button onClick={console.log("button pressed")}>
-          meow
-        </button>
+        <StarButton />
       </div>
     </div>
   )
