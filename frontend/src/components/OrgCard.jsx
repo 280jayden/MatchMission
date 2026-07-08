@@ -23,7 +23,7 @@ function OrgCard() { // would pass in a json later but for now....
 
         <button onClick={() => console.log("button pressed")} className="norm-button">
           THEIR WEBSITE
-        </button>
+         </button>
 
         <StarButton />
       </div>
