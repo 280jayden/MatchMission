@@ -1,26 +1,32 @@
-import OrgCard from "../components/OrgCard"
+import { useState, useEffect } from "react";
+import OrgCard from "../components/OrgCard";
 
 function Result() {
+  const [orgs, setOrgs] = useState([]);
 
-  const dummy = {"nonprofits": [
-    {
-      "description": "Lil BUB is a one of a kind space cat. Since landing on Earth, she's raised over $1,000,000 for homeless pets nationwide.. Lil BUB’s Big Fund exists to advocate for special needs companion animals and build a community that celebrates and fosters the",
-      "ein": "844229672",
-      "name": "Lil BUB's Big Fund",
-      "profileUrl": "https://www.every.org/lilbubsbigfund",
-      "logoUrl": "https://res.cloudinary.com/everydotorg/image/upload/c_lfill,w_24,h_24,dpr_2/c_crop,ar_24:24/q_auto,f_auto,fl_progressive/profile_pics/dsor2nxk97p87umlwhvt",
-      "coverImageUrl": "https://res.cloudinary.com/everydotorg/image/upload/f_auto,c_limit,w_3840,q_80/profile_pics/ipxxsfqxtt6skku7vh1z",
-      "logoCloudinaryId": "profile_pics/dsor2nxk97p87umlwhvt",
-      "slug": "lilbubsbigfund",
-      "location": "BLOOMINGTON, IN",
-      "websiteUrl": "https://www.goodjobbub.org",
-      "tags": [
-        "dogs",
-        "cats",
-        "animals"
-      ]
-    }]
+  const getResults = async () => {
+    const formattedAnswers = Object.entries(answers).map(([questionId, answer]) => ({
+      questionId: Number(questionId),
+      answer
+    }));
+
+    const response = await fetch("http://localhost:5000/api/org", {
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("yuh")
+      setOrgs(data.nonprofits)
+    } else {
+      console.log(data.error)
+    }
   }
+
+  useEffect(() => { //so we can get results when it starts
+    getResults();
+  }, []);
 
 
   return (
@@ -28,9 +34,13 @@ function Result() {
       <h1 style={{textAlign:"center"}}>Results</h1>
       <p style={{textAlign:"center", marginBottom:"70px"}}>Based on your quiz responses, here are some organizations that might fit your preferences.</p>
       
-      {/* later, will make it a map based on a dict or array that gets passed in */}
       <div className="card-container">
-        <OrgCard org = {dummy["nonprofits"][0]} />
+        {orgs.map((org) => (
+          <OrgCard 
+            key={org.ein} 
+            nonprofit={org}
+          />
+        ))}
       </div>
     </div>
   )
