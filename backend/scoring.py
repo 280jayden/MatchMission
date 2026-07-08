@@ -1,16 +1,15 @@
 # scoring.py
-from questions import run_quiz
+#from questions import run_quiz <-- handled by flask now
 from dotenv import load_dotenv
-from google.genai import types
+from openai import OpenAI
 
 import os
 import json
-from google import genai
 
 load_dotenv()
 
 
-client = genai.Client(api_key=os.getenv("GENAI_KEY"))
+client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
 
 def generate_user_profile(name, user_responses):
   # takes users quiz answers, feeds them into gemini
@@ -41,37 +40,76 @@ def generate_user_profile(name, user_responses):
        - Tier 5 (Derived from Q10 - Open text specific mentions): Weight = 0.20 to 0.40.
     5. "tags_list_to_fetch": Select the absolute top 3 most relevant tags (combining core and secondary) that the backend should query the Every.org API with to get the best candidate batch.
 
+    STEP BY STEP PROCESS:
+    1. Read ALL 10 responses together as a complete picture of this person
+    2. From that full picture, identify which tags from AVAILABLE TAGS best represent who this person is and what they care about
+    3. Assign weights to those tags based on how strongly and consistently they appear across all responses
+    4. A tag that shows up across multiple responses gets a higher weight than one mentioned once
+    5. Use those tag names directly as keys in "causes"
+    6. Pick the top 3 highest weighted tags for "tags_list_to_fetch"
+
+    EXAMPLE:
+    User responses mention ocean health twice, climate change three times, and science once.
+    - "environment": 0.95 (climate mentioned most)
+    - "oceans": 0.88 (ocean mentioned multiple times)
+    - "research": 0.62 (science mentioned once)
+    These become the keys in "causes" — real tag names, not placeholders.
+
+    NEVER use placeholder names. ALWAYS use real tag names from AVAILABLE TAGS as keys.
+
     OUTPUT FORMAT (Return strictly this JSON structure and nothing else):
     {{
       "name": "User's Name",
       "tags_list_to_fetch": ["tag1", "tag2", "tag3"],
       "causes": {{
-        "core_tag1": 0.95,
-        "core_tag2": 0.78,
-        "core_tag3": 0.73
-        "secondary_tag1": 0.88,
-        "secondary_tag2": 0.71,
-        "secondary_tag3": 0.62,
-        "secondary_tag4": 0.50,
-        "secondary_tag5": 0.35
+        "core_tag1": <weight between 0.90-1.00>,
+        "core_tag2": <weight between 0.70-0.85>,
+        "core_tag3": <weight between 0.40-0.60>,
+        "secondary_tag1": <weight between 0.80-0.95>,
+        "secondary_tag2": <weight between 0.65-0.75>,
+        "secondary_tag3": <weight between 0.55-0.65>,
+        "secondary_tag4": <weight between 0.45-0.55>,
+        "secondary_tag5": <weight between 0.20-0.40>
       }}
     }}
+
+    REPLACE each placeholder key with the actual matched tag name from AVAILABLE TAGS:
+    - Replace "core_tag1", "core_tag2", "core_tag3" with your 3 matched core cause tags
+    - Replace "secondary_tag1" through "secondary_tag5" with your 5 matched secondary cause tags
+    - Replace "tag1", "tag2", "tag3" in tags_list_to_fetch with the top 3 highest weighted tags
+    - NEVER output the literal strings "core_tag1", "secondary_tag1" etc. in your response
+
+    STRICT REQUIREMENTS:
+    - You MUST output EXACTLY 3 core cause tags in "causes" (weights 0.40-1.00)
+    - You MUST output EXACTLY 5 secondary cause tags in "causes" (weights 0.20-0.95)
+    - The "causes" dict MUST have EXACTLY 8 keys total — no more, no less
+    - EVERY key MUST be a tag that exists EXACTLY as written in AVAILABLE TAGS above
+    - Do NOT invent tags like "future", "technology", "sustainability" — if it's not in AVAILABLE TAGS it is forbidden
+    - If you cannot find enough relevant tags, pick the closest matching ones from AVAILABLE TAGS
+    - Do NOT return fewer than 8 causes under any circumstances
+
+    - Weights must reflect genuine reasoning about the user's responses
+    - A cause mentioned passionately across multiple answers should score near the top of its range
+    - A cause only loosely implied should score near the bottom of its range
+    - Do not space weights evenly — the gaps between weights should reflect how much more one cause matters than another
     """
 
   try:
-    response = client.models.generate_content(
-      model="gemini-2.5-flash", contents=prompt,
-      config=types.GenerateContentConfig(response_mime_type='application/json')
+    response = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+        {'role': 'user', 'content': prompt}
+      ],
+      response_format={'type': 'json_object'}
     )
     
-    user_profile = json.loads(response.text)
+    user_profile = json.loads(response.choices[0].message.content)
     return user_profile
 
   except Exception as e:
     print(f"\nThere was an error fetching Gemini: {e}")
     return None
-    
-
+  
 
 #TODO: put this in main
 #print(f"\nEvaluating {name}'s interests...")
