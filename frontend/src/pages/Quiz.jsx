@@ -1,38 +1,41 @@
 import { useState } from "react"
 import QuestionCard from "../components/QuestionCard"
 import Navbar from "../components/Navbar"
+import questions from "../data/questions.json"
 
 function Quiz() {
-  const [questionAnswer, setQuestionAnswer] = useState("") // just to have something to store for now
+  const [answers, setAnswers] = useState({}) // just to have something to store for now
+
+  function handleAnswer(qid, answer) {
+    setAnswers(prev => ({
+      ...prev,
+      [qid]: answer
+    }))
+  }
 
   return (
-    <>
-      <h1 style={{textAlign:"center"}}>Quiz</h1>
-      <p style={{textAlign:"center"}}>This is a Quiz page placeholder</p>
+    <div className="quiz-container">
+      <h1 style={{textAlign:"center"}}>Mission Matcher</h1>
+      <p style={{textAlign:"center", marginTop:"-30px"}}>This is a Quiz page placeholder</p>
 
       <div className="card-container">
-        <QuestionCard
-          question="Are you questioning?"
-          type="radio"
-          options={["yes", "no", "maybe"]}
-          value = {questionAnswer}
-          onChange = {setQuestionAnswer} />
 
-        <QuestionCard
-          question="Are you questioning?"
-          type="checkbox"
-          options={["yes", "no", "maybe"]}
-          value = {questionAnswer}
-          onChange = {setQuestionAnswer} />
+        {questions.map((q) => (
+          <QuestionCard
+            key={q.id}
+            qid={q.id}
+            question={q.question}
+            type={q.type}
+            options={q.options || []}
+            value={answers[q.id] || (q.type === "checkbox" ? [] : "")} // cuz only checkbox takes array
+            onChange={(answer) => handleAnswer(q.id, answer)}
+            />
+        ))}
 
-        <QuestionCard
-          question="Are you questioning?"
-          type="text"
-          options={[]}
-          value = {questionAnswer}
-          onChange = {setQuestionAnswer} />
       </div>
-    </>
+
+      <button>SUBMIT QUIZ</button>
+    </div>
   )
 }
 

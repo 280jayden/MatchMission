@@ -1,21 +1,22 @@
 import "./QuestionCard.css"
 
-function QuestionCard({question, type, options, value, onChange}) {
+function QuestionCard({qid, question, type, options, value, onChange}) {
   return (
     <div className="item-card">
-      <h3>{question}</h3>
+      <h3>Question {qid}:</h3>
+      <p>{question}</p>
 
       {type == "radio" && (
         <div className = "question-options">
           {options.map(option => (
-            <label className="question-option" key={option}>
+            <label className="question-option" key={option.value}>
               <input
                 type="radio"
                 name={question}
-                value={option}
-                checked={value===option} 
+                value={option.value}
+                checked={value===option.value} 
                 onChange={(e) => onChange(e.target.value)} />
-              {option}
+              {option.option}
             </label>  
           ))}
         </div>
@@ -24,21 +25,21 @@ function QuestionCard({question, type, options, value, onChange}) {
       {type == "checkbox" && (
         <div className = "question-options">
           {options.map(option => (
-            <label className="question-option" key={option}>
+            <label className="question-option" key={option.value}>
               <input
                 type="checkbox"
                 name={question}
-                value={option}
-                checked={value.includes(option)} 
+                value={option.value}
+                checked={value.includes(option.value)} 
                 onChange={(e) => {
                   if (e.target.checked) {
-                      onChange([...value, option]);
+                      onChange([...value, option.value]);
                     } else {
-                      onChange(value.filter(v => v !== option));
+                      onChange(value.filter(v => v !== option.value));
                     }
                 }} 
                 />
-              {option}
+              {option.option}
             </label>  
           ))}
         </div>
@@ -46,12 +47,11 @@ function QuestionCard({question, type, options, value, onChange}) {
 
       {type == "text" && (
         <textarea 
-          value = {value}
+          value={value}
           className="question-textarea"
           onChange={(e) => onChange(e.target.value)}
         />
       )}
-
 
     </div>
   )
