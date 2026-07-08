@@ -16,6 +16,7 @@ body {
   font-weight: 700;
   line-height: 24px;
   letter-spacing: 0.15px;
+  margin: 0;
 }
 
 
@@ -79,7 +80,7 @@ button {
 }
 
 .page-background {
-  width: 75%;
+  /* width: 75%;
   min-height: 65vh;
 
   background-color: white;
@@ -93,6 +94,20 @@ button {
   display: flex;
   flex-direction: column;
   
+
+  box-sizing: border-box; */
+
+  width: 75%;
+  min-height: 65vh;
+
+  margin: 5vh auto;
+
+  background-color: white;
+  border-radius: 30px;
+  padding: 85px 75px;
+
+  display: flex;
+  flex-direction: column;
 
   box-sizing: border-box;
 }
