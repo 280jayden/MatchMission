@@ -1,0 +1,284 @@
+[
+  {
+    "id": 1,
+    "question": "Imagine you could leave behind one kind of legacy. What would you want it to be?",
+    "type": "radio",
+    "options": [
+      {
+        "option": "A healthier planet for future generations",
+        "value": "environment"
+      },
+      {
+        "option": "A world where fewer people struggle to survive",
+        "value": "human_services"
+      },
+      {
+        "option": "A breakthrough that changes millions of lives",
+        "value": "health_research"
+      },
+      {
+        "option": "A future where every person has the opportunity to succeed",
+        "value": "education"
+      },
+      {
+        "option": "A world where everyone is treated with dignity and fairness",
+        "value": "human_rights"
+      },
+      {
+        "option": "A world richer in creativity, culture, and connection",
+        "value": "arts_culture"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "Sometimes one cause leads to another. What other issues do you care deeply about?",
+    "type": "checkbox",
+    "options": [
+      {
+        "option": "Protecting animals and the environment",
+        "value": "animals_environment"
+      },
+      {
+        "option": "Preserving culture, creativity, and human expression",
+        "value": "arts_culture"
+      },
+      {
+        "option": "Helping people learn and reach their potential",
+        "value": "education"
+      },
+      {
+        "option": "Improving health and supporting medical progress",
+        "value": "health"
+      },
+      {
+        "option": "Creating a fairer world and protecting people's rights",
+        "value": "human_rights"
+      },
+      {
+        "option": "Supporting spiritual or faith-based communities",
+        "value": "religion"
+      },
+      {
+        "option": "I don't have a second cause, I want to focus on my main one",
+        "value": "none"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Which statement feels closest to how you see change happening?",
+    "type": "radio",
+    "options": [
+      {
+        "option": "People need help right now, and immediate action matters most.",
+        "value": "direct_relief"
+      },
+      {
+        "option": "We need to fix the systems that create problems in the first place.",
+        "value": "systemic_change"
+      },
+      {
+        "option": "Education and awareness are how we create lasting change.",
+        "value": "education_awareness"
+      },
+      {
+        "option": "Innovation and research can solve problems we can't solve today.",
+        "value": "research_innovation"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "What type of organization do you trust most?",
+    "type": "radio",
+    "options": [
+      {
+        "option": "A small local group making a direct difference",
+        "value": "small_local"
+      },
+      {
+        "option": "A trusted organization with global impact",
+        "value": "large_global"
+      },
+      {
+        "option": "A research-driven organization creating new solutions",
+        "value": "research_driven"
+      },
+      {
+        "option": "A movement changing policies and systems",
+        "value": "advocacy_policy"
+      },
+      {
+        "option": "A community-led organization built around lived experience",
+        "value": "community_led"
+      },
+      {
+        "option": "An organization with strong evidence of impact",
+        "value": "evidence_based"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "Are there communities or groups you feel especially connected to supporting?",
+    "type": "checkbox",
+    "options": [
+      {
+        "option": "Children and youth",
+        "value": "children_youth"
+      },
+      {
+        "option": "Older adults",
+        "value": "older_adults"
+      },
+      {
+        "option": "Veterans and their families",
+        "value": "veterans"
+      },
+      {
+        "option": "Immigrants and refugees",
+        "value": "immigrants_refugees"
+      },
+      {
+        "option": "People with disabilities",
+        "value": "disability"
+      },
+      {
+        "option": "Women and girls",
+        "value": "women_girls"
+      },
+      {
+        "option": "LGBTQ+ communities",
+        "value": "lgbtq"
+      },
+      {
+        "option": "No specific group, I care about broad impact",
+        "value": "broad_impact"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "question": "What kind of impact would make you proud to say “I helped with that”?",
+    "type": "radio",
+    "options": [
+      {
+        "option": "Someone's life became better because of my support.",
+        "value": "direct_impact"
+      },
+      {
+        "option": "A future problem was prevented because people acted early.",
+        "value": "prevention"
+      },
+      {
+        "option": "A new discovery or breakthrough happened.",
+        "value": "breakthrough"
+      },
+      {
+        "option": "A community became stronger and more independent.",
+        "value": "community_strength"
+      },
+      {
+        "option": "People who were overlooked finally had support and representation.",
+        "value": "representation"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "Which story would make you stop scrolling and want to help?",
+    "type": "radio",
+    "options": [
+      {
+        "option": "A family getting back on their feet after a crisis",
+        "value": "poverty_support"
+      },
+      {
+        "option": "A scientist making progress toward a life-saving treatment",
+        "value": "medical_research"
+      },
+      {
+        "option": "A student overcoming barriers to achieve their dreams",
+        "value": "education_access"
+      },
+      {
+        "option": "A community fighting for equal rights and recognition",
+        "value": "justice_equality"
+      },
+      {
+        "option": "An animal being rescued or a habitat being restored",
+        "value": "animals_environment"
+      },
+      {
+        "option": "A cultural tradition being preserved for future generations",
+        "value": "culture_preservation"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "Some people give because they want to solve a problem today. Others want to prevent problems tomorrow. Which feels closer to you?",
+    "type": "radio",
+    "options": [
+      {
+        "option": "I want to help people through urgent challenges happening right now",
+        "value": "immediate_crisis"
+      },
+      {
+        "option": "I want to support solutions that prevent problems before they happen",
+        "value": "long_term_prevention"
+      },
+      {
+        "option": "I want to do both! Help today while building a better future",
+        "value": "balanced_impact"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "Does the faith background of an organization matter to you?",
+    "type": "radio",
+    "options": [
+      {
+        "option": "I prefer organizations connected to Christianity",
+        "value": "christian"
+      },
+      {
+        "option": "I prefer organizations connected to Islam",
+        "value": "islamic"
+      },
+      {
+        "option": "I prefer organizations connected to Judaism",
+        "value": "jewish"
+      },
+      {
+        "option": "I prefer organizations connected to Hinduism or Buddhism",
+        "value": "hindu_buddhist"
+      },
+      {
+        "option": "I prefer secular organizations",
+        "value": "secular"
+      },
+      {
+        "option": "I don't have a preference, I care most about the impact",
+        "value": "no_preference"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "What is a problem in the world you wish more people paid attention to?",
+    "type": "text"
+  },
+  {
+    "id": 11,
+    "question": "What gives you hope about the future?",
+    "type": "text"
+  },
+  {
+    "id": 12,
+    "question": "What is something you believe the world needs more of?",
+    "type": "text"
+  }
+]
