@@ -1,0 +1,97 @@
+import time
+import redis
+import requests
+# add Threadpool executor in future
+import os
+import redis
+import json
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+def get_redis_client():
+    # fallback to localhost
+    redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+    
+    return redis.Redis.from_url(redis_url,decode_responses=True)
+
+r = get_redis_client()
+
+# save_user_weights(user_id, causes: dict) -> None
+## 
+
+def get_user_weights(user_id): # -> dict {'tag': weight}
+    
+    # calculates top 5 tags to fetch via sort
+    print("hello")
+    # returns tag_lists to fetch [], cause_wts {}
+    return ['animals', 'culture', 'immigrants', 'housing', 'youth'], {
+    'animals' : 0.98,
+    'culture' : 0.67,
+    'immigrants' : 0.65,
+    'housing' : 0.58,
+    'youth' : 0.55,
+    'music' : 0.44,
+    'health' : 0.32,
+    'freepress' : 0.21}
+
+# update_user_weights(user_id, tags: list)
+## after a user favorites a np, or unfavorites
+
+
+
+
+# add nonprofits with tags
+def cache_tags(tags: list, np_eins: list): # TODO: filter tags to fetch in api.py, already cached and seen
+    # np_eins called from Every.org API, dict.keys()
+    # z(set) is a sorted set allowing for scores
+
+    pipe = r.pipeline()
+
+    for tag in tags:
+        # initialize with base score of 1
+        r.zadd(f"tag:{tag}", {ein: 1 for ein in np_eins})
+
+# adds nonprofits info to main cache
+def load_nonprofits_json(nonprofits: list):
+    # input is list of dicts {ein:{info}}
+    # called by backend to add to np table
+
+    # prevents network bottlenecks for large batch
+    pipe = r.pipeline()
+    
+    for np in nonprofits:
+        for ein, info in np.items():
+            pipe.set(f"nonprofit:{ein}", json.dumps(info))
+    
+    # execute all comands in the pipeline
+    pe.execute()
+
+def get_nonprofits(np_eins: list): # output: initial filter of nonprofits (2k)
+    # retrieves possible candidates of nonprofits
+    return
+    
+def get_next_batch(user_id, batch_size:int = 100):
+    # retrieve user weights (put into backend.py?) or easy redis
+    tags_to_fetch, user_wts = get_user_weights(user_id)
+
+    # run ZUNIONSTORE to calculate scores across all nonprofits matching user's tags (get_nonprofits)
+    
+
+    # run ZDIFFSTORE against the shown:user:{user_id}
+
+
+    # run ZREVRANGE to return the top batch_size IDs
+
+    return
+
+# updates redis when user sees a np
+def mark_shown(user_id, nonprofit_ein: list[str]):
+    # redis cache has a set of shown
+    now = time.time()
+    r.zadd(f"shown:user:{user_id}", {ein: now for np_ein in nonprofit_eins})
+    
+    # TODO: INSERT INTO DB UserInteractions table
+
+
