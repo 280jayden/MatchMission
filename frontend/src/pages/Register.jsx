@@ -1,39 +1,77 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./Auth.css"
 
 function Register() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    const response = await fetch("http://localhost:5000/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({email, password})
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("logged in")
+      navigate("/");
+    } else {
+      console.log(data.error)
+    }
+  }
+
   return (
-    <div className="auth-form register-form">
+    <form className="auth-form register-form" onSubmit={(e) => {
+        e.preventDefault();
+        handleRegister();
+      }}>
+
       <h1>Register</h1>
 
       <div className="auth-input-pair">
         <h3>Email</h3>
         <input 
-            // value = {value}
+            type="email"
             className="auth-field"
-            // onChange={(e) => onChange(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
       </div>
       
       <div className="auth-input-pair">
         <h3>Password</h3>
         <input 
-            // value = {value}
+            type="password"
             className="auth-field"
-            // onChange={(e) => onChange(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
       </div>
 
       <div className="auth-input-pair">
         <h3>Confirm Password</h3>
         <input 
-            // value = {value}
+            type="password"
             className="auth-field"
-            // onChange={(e) => onChange(e.target.value)}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
       </div>
 
-      <button>SIGN UP</button>
+      <button type="submit">SIGN UP</button>
 
       <div className="auth-bottom-text">
         <p>Already have an account?</p>
@@ -42,7 +80,7 @@ function Register() {
         </nav>
       </div>
 
-    </div>
+    </form>
   )
 }
 

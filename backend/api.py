@@ -8,8 +8,6 @@ from fetch_orgs import fetch_orgs, select_orgs
 from scoring import generate_user_profile
 from questions import get_quiz_data
 
-import time
-
 load_dotenv()
 
 app = Flask(__name__)
@@ -87,8 +85,33 @@ add redis support, updated sql support
 
 """
 
-"""
-@app.route('/api/time')
-def get_current_time():
-    return {"time": time.time()}
-"""
+
+# AUTH ENDPOINTS
+
+@app.route("/api/register", methods=['POST'])
+def register():
+  data = request.get_json()
+
+  email = data.get("email")
+  password = data.get("password")
+  
+  if not email or not password:
+    return jsonify({"error": "Missing fields"}), 400
+  
+  #TODO: connect to db - add user to db and set current session user to this one
+  #idk how to handle passwords so that it's not just plainly in the database :P
+  return jsonify({"success": True, "message": "Account created."}), 201
+
+
+@app.route("/api/login", methods=['POST'])
+def login():
+  data = request.get_json()
+
+  email = data.get("email")
+  password = data.get("password")
+  
+  #TODO: query db to see if this user exists
+
+  #if user exists and password is correct
+  #TODO: set current session user to this one
+  return jsonify({"success": True, "message": "Logged in."}), 201
