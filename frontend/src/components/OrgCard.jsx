@@ -17,11 +17,11 @@ function OrgCard() { // would pass in a json later but for now....
       </div>
 
       <div className="org-bot">
-        <button onClick={() => console.log("button pressed")}>
+        <button onClick={() => console.log("button pressed")} className="norm-button">
           PROFILE
         </button>
 
-        <button onClick={() => console.log("button pressed")}>
+        <button onClick={() => console.log("button pressed")} className="norm-button">
           THEIR WEBSITE
         </button>
 

@@ -16,6 +16,7 @@ body {
   font-weight: 700;
   line-height: 24px;
   letter-spacing: 0.15px;
+  margin: 0;
 }
 
 
@@ -82,17 +83,14 @@ button {
   width: 75%;
   min-height: 65vh;
 
+  margin: 5vh auto;
+
   background-color: white;
-
-  margin: 85px auto;
-
   border-radius: 30px;
-
   padding: 85px 75px;
 
   display: flex;
   flex-direction: column;
-  
 
   box-sizing: border-box;
 }

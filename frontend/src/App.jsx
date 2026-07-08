@@ -1,5 +1,6 @@
 import './styles/App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Navbar from "./components/Navbar"
 
 import Home from "./pages/Home"
 import LogIn from "./pages/LogIn"
@@ -12,14 +13,17 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LogIn />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/quiz" element={<Quiz />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/result" element={<Result />} />
-        </Routes>
+        <Navbar />
+        <div className="page-background">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/result" element={<Result />} />
+          </Routes>
+        </div>
       </BrowserRouter>
     </>
   )
