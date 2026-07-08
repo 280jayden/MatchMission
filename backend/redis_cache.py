@@ -1,23 +1,16 @@
 import time
 import redis
 import requests
-# add Threadpool executor in future
 import os
-import redis
 import json
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
-
-def get_redis_client():
-    # fallback to localhost
-    redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
-    
-    return redis.Redis.from_url(redis_url,decode_responses=True)
-
-r = get_redis_client()
-
+# initalize global redis object
+redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+r = redis.Redis.from_url(redis_url,decode_responses=True)
 
 
 # save_user_weights(user_id, causes: dict) -> None
@@ -43,21 +36,28 @@ def get_user_weights(user_id): # -> dict {'tag': weight}
 
 
 
+def is_cached(tag):
+    # checks if a specific tag is already loaded into a cache
+    return r.exists(f"tag:{tag}") == 1
 
-# add nonprofits with tags
-def cache_tags(tags: list, np_eins: list): # TODO: filter tags to fetch in api.py, already cached and seen
-    # np_eins called from Every.org API, dict.keys()
+
+def cache_tags(tags: list, np_eins: list):
+    # create caches for tags
+    # np_eins called from API, dict.keys()
     # z(set) is a sorted set allowing for scores
 
     pipe = r.pipeline()
 
     for tag in tags:
         # initialize with base score of 1
-        r.zadd(f"tag:{tag}", {ein: 1 for ein in np_eins})
+        pipe.zadd(f"tag:{tag}", {ein: 1 for ein in np_eins})
+    
+    pipe.execute()
 
-# adds nonprofits info to main cache
+
 def load_nonprofits_json(nonprofits: list):
-    # input is list of dicts {ein:{info}}
+    # adds nonprofits info to main cache
+    # input: list of dicts {ein:{info}}
     # called by backend to add to np table
 
     # prevents network bottlenecks for large batch
@@ -69,6 +69,7 @@ def load_nonprofits_json(nonprofits: list):
     
     # execute all comands in the pipeline
     pipe.execute()
+
 
 def get_nonprofits(np_eins: list): # output: initial filter of nonprofits (2k)
     # retrieves possible candidates of nonprofits
@@ -92,7 +93,7 @@ def get_next_batch(user_id, batch_size:int = 100):
     return
 
 # updates redis when user sees a np
-def mark_shown(user_id, nonprofit_ein: list[str]):
+def mark_shown(user_id, nonprofit_eins: list[str]):
     # redis cache has a set of shown
     now = time.time()
     r.zadd(f"shown:user:{user_id}", {ein: now for ein in nonprofit_eins})
