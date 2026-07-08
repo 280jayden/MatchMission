@@ -18,6 +18,8 @@ def get_redis_client():
 
 r = get_redis_client()
 
+
+
 # save_user_weights(user_id, causes: dict) -> None
 ## 
 
@@ -66,18 +68,21 @@ def load_nonprofits_json(nonprofits: list):
             pipe.set(f"nonprofit:{ein}", json.dumps(info))
     
     # execute all comands in the pipeline
-    pe.execute()
+    pipe.execute()
 
 def get_nonprofits(np_eins: list): # output: initial filter of nonprofits (2k)
     # retrieves possible candidates of nonprofits
-    return
-    
+    keys = [f"nonprofit:{ein}" for ein in np_eins]
+    raw_data = r.mget(keys)
+    return [json.loads(data) for data in raw_data if data]
+
+
 def get_next_batch(user_id, batch_size:int = 100):
     # retrieve user weights (put into backend.py?) or easy redis
     tags_to_fetch, user_wts = get_user_weights(user_id)
 
     # run ZUNIONSTORE to calculate scores across all nonprofits matching user's tags (get_nonprofits)
-    
+
 
     # run ZDIFFSTORE against the shown:user:{user_id}
 
@@ -90,7 +95,7 @@ def get_next_batch(user_id, batch_size:int = 100):
 def mark_shown(user_id, nonprofit_ein: list[str]):
     # redis cache has a set of shown
     now = time.time()
-    r.zadd(f"shown:user:{user_id}", {ein: now for np_ein in nonprofit_eins})
+    r.zadd(f"shown:user:{user_id}", {ein: now for ein in nonprofit_eins})
     
     # TODO: INSERT INTO DB UserInteractions table
 
