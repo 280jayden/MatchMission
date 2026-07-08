@@ -40,9 +40,11 @@ def get_questions():
 
 def submit_quiz():
     data = request.get_json()
-    name = data['name']
-    responses = data['responses']
-
+    name = data.get('name', 'User')
+    responses = data.get('responses')
+    
+    if not responses:
+        return jsonify({'error': 'missing quiz responses'}), 400
     user_profile = generate_user_profile(name, responses)
 
     if not user_profile:
@@ -54,6 +56,11 @@ def submit_quiz():
         fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
     """
     #nonprofits
+
+    return jsonify({
+        'success': True,
+        'profile': user_profile
+    })
 
 @app.route('/api/orgs', methods=['GET']) # gets the orgs needed
 # get bc react is asking for the org data
