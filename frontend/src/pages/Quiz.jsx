@@ -16,7 +16,7 @@ function Quiz() {
   return (
     <div className="quiz-container">
       <h1 style={{textAlign:"center"}}>Mission Matcher</h1>
-      <p style={{textAlign:"center", marginTop:"-30px"}}>This is a Quiz page placeholder</p>
+      <p style={{textAlign:"center", marginTop:"-30px"}}>Your answers will help us understand your passions and connect you with nonprofits that fit your goals, values, and vision for making an impact. Take the quiz and discover organizations worth supporting.</p>
 
       <div className="card-container">
 
