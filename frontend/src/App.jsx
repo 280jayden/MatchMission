@@ -1,31 +1,30 @@
-import { useState, useEffect } from 'react'
-import './App.css'
+import './styles/App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Navbar from "./components/Navbar"
+
+import Home from "./pages/Home"
+import LogIn from "./pages/LogIn"
+import Profile from "./pages/Profile"
+import Quiz from "./pages/Quiz"
+import Register from "./pages/Register"
+import Result from "./pages/Result"
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [currentTime, setCurrentTime] = useState(0)
-
-  useEffect(() => {
-    fetch('/api/time')
-      .then(res => res.json())
-      .then(data => {
-        setCurrentTime(data.time)
-      })
-  }, [])
-
   return (
     <>
-      <h1>MatchMission</h1>
-
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-
-        <p>
-          The current time is {new Date(currentTime * 1000).toLocaleString()}.
-        </p>
-      </div>
+      <BrowserRouter>
+        <Navbar />
+        <div className="page-background">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/result" element={<Result />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     </>
   )
 }
