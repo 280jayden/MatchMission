@@ -7,6 +7,7 @@ from dotenv import load_dotenv # loads env file
 from fetch_orgs import fetch_orgs, select_orgs
 from scoring import generate_user_profile
 from questions import get_quiz_data
+from werkzeug.security import generate_password_hash, check_password_hash
 
 load_dotenv()
 
@@ -97,9 +98,12 @@ def register():
   
   if not email or not password:
     return jsonify({"error": "Missing fields"}), 400
+
+  password_hash = generate_password_hash(password) #instead of putting password in directly, do this hash
   
-  #TODO: connect to db - add user to db and set current session user to this one
-  #idk how to handle passwords so that it's not just plainly in the database :P
+  #TODO: connect to db - add user to db 
+  #TODO: set current session user to this one
+  
   return jsonify({"success": True, "message": "Account created."}), 201
 
 
@@ -112,6 +116,13 @@ def login():
   
   #TODO: query db to see if this user exists
 
-  #if user exists and password is correct
-  #TODO: set current session user to this one
+  # TODO: add this in when the db exists and we can query it
+  # if not user:
+  #   return jsonify({"error": "Invalid email or password"}), 401
+
+  # if not check_password_hash(user["password_hash"], password):
+  #   return jsonify({"error": "Invalid email or password"}), 401
+
+  # otherwise, user should exist and password should be correct. TODO: set current session user to this one
+  
   return jsonify({"success": True, "message": "Logged in."}), 201
