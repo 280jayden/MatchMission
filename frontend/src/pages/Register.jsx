@@ -38,7 +38,7 @@ function Register() {
       <div className="auth-bottom-text">
         <p>Already have an account?</p>
         <nav>
-          <Link to="/register">Log In</Link>
+          <Link to="/login">Log In</Link>
         </nav>
       </div>
 

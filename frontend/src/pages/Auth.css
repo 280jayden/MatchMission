@@ -40,11 +40,12 @@
 }
 
 .auth-bottom-text {
+  color: var(--secondary2);
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 5px;
   transform: translateY(35px);
+  text-decoration: none;
 }
 
 .register-form {

@@ -1,34 +1,34 @@
 .navbar {
   width: 100%;
-  height: 23vh;
+  min-height: 120px;
+  padding: 1rem 0;
   background: white;
-  margin: 0px;
+
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .navbar img {
-  height: 16vh;
-  max-height: 144px;
   width: auto;
+  height: clamp(60px, 10vw, 140px);
 }
 
 .navbar nav {
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: clamp(20px, 5vw, 50px);
+  margin-top: 10px;
 }
 
 .navbar a {
   color: var(--secondary2);
   text-decoration: none;
-  font-size: 2vh;
-}
-
-.nav-links {
-  display: flex;
-  gap: 50px;
-  margin: 10px
+  font-size: clamp(1rem, 1vw, 2rem);
 }
