@@ -35,25 +35,13 @@ function OrgCard({ org }) { // would pass in a json later but for now....
           THEIR WEBSITE
          </button>
 
-        <StarButton />
+        <StarButton profileUrl="placeholder.com"/> 
+        {/* lowkey im not really sure what jayden wants for profileurl?? user profile? i put a placeholder.
+        we don't have that because i thought we were storing user session in db so am confused. 
+        anyways if it's for user profile then we would also need to pass in some identifier for the org/nonprofit we're trying to favorite*/}
       </div>
     </div>
   )
 }
 
 export default OrgCard
-
-
-/*
-nonprofit_card_data = {
-    "ein": "844229672",
-    "name": "Lil BUB's Big Fund",
-    "description": "Lil BUB is a one of a kind space cat. Since landing on Earth, she's raised over $1,000,000 for homeless pets nationwide...",
-    "logoUrl": "https://res.cloudinary.com/.../dsor2nxk97p87umlwhvt",
-    "coverImageUrl": "https://res.cloudinary.com/.../ipxxsfqxtt6skku7vh1z",
-    "location": "BLOOMINGTON, IN",
-    "websiteUrl": "https://www.goodjobbub.org",
-    "tags": ["dogs", "cats", "animals"]
-}
-
- */

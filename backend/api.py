@@ -79,6 +79,22 @@ def favorite_org():
         connection.commit()
     return jsonify({"success": True})
 
+
+@app.route('/api/unfavorite', methods=['POST']) # records when a user un-favorites an org
+# post bc react is sending the data
+def favorite_org():
+    # get the json body
+    data = request.get_json()
+    profile_url = data['profileUrl']
+
+    # flip favorited to true in the database
+    with engine.connect() as connection:
+        connection.execute(db.text(
+            "UPDATE NonProfits SET favorited = FALSE WHERE profileUrl = :url"
+        ), {"url": profile_url})
+        connection.commit()
+    return jsonify({"success": True})
+
 """
 endpoints to add
 
