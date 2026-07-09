@@ -35,24 +35,34 @@ def get_user_weights(user_id): # -> dict {'tag': weight}
     # TODO: calculates top 5 tags to fetch via sort, 
     
     # this should get the user's saved weights from Redis
-    key = f'user:{user_id}:weights'
-    stored_weights = r.hgetall(key)
+    # key = f'user:{user_id}:weights'
+    # stored_weights = r.hgetall(key)
 
-    if not stored_weights:
-        return [], {}
+    # if not stored_weights:
+    #     return [], {}
 
-    user_wts = {
-        tag: float(weight)
-        for tag, weight in stored_weights.items()
-    }
+    # user_wts = {
+    #     tag: float(weight)
+    #     for tag, weight in stored_weights.items()
+    # }
 
-    tags_to_fetch = sorted(
-        user_wts,
-        key=user_wts.get,
-        reverse=True
-    )[:5] # gets top 5
+    # tags_to_fetch = sorted(
+    #     user_wts,
+    #     key=user_wts.get,
+    #     reverse=True
+    # )[:5] # gets top 5
 
-    return tags_to_fetch, user_wts
+    # return tags_to_fetch, user_wts
+
+    return ['animals', 'culture', 'immigrants', 'housing', 'youth'], {
+      'animals' : 0.98,
+      'culture' : 0.67,
+      'immigrants' : 0.65,
+      'housing' : 0.58,
+      'youth' : 0.55,
+      'music' : 0.44,
+      'health' : 0.32,
+      'freepress' : 0.21}
 
 # update_user_weights(user_id, tags: list)
 ## after a user favorites a np, or unfavorites

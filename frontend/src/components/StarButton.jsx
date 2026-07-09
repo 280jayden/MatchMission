@@ -7,7 +7,7 @@ function StarButton({profileUrl}) { //profileUrl is the identifier used in the a
   const [starred, setStarred] = useState(false);
 
   async function handleStar() {
-    const api_url = (!starred ? "http://localhost:5000/api/favorite" : "http://localhost:5000/api/unfavorite"); //change the unfavorite url to what they make the endpoint
+    const api_url = (!starred ? "/api/favorite" : "/api/unfavorite"); //change the unfavorite url to what they make the endpoint
 
     const response = await fetch(api_url, {
       method: "POST",

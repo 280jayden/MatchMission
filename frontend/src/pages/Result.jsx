@@ -14,7 +14,7 @@ function Result() {
 
     if (response.ok) {
       console.log("yuh")
-      setOrgs(data.nonprofits)
+      setOrgs(data)
     } else {
       console.log(data.error)
     }
@@ -34,7 +34,7 @@ function Result() {
         {orgs.map((org) => (
           <OrgCard 
             key={org.ein} 
-            nonprofit={org}
+            org={org}
           />
         ))}
       </div>
