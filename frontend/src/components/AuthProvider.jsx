@@ -17,7 +17,10 @@ function AuthProvider({ children }){
         const data = await response.json();
 
         if (response.ok) {
-          setUser(data)
+          setUser({
+            ...data,
+            has_taken_quiz: Boolean(data.has_taken_quiz),
+          })
         }
 
       } catch (err) {
@@ -31,9 +34,12 @@ function AuthProvider({ children }){
     loadUser();
   }, []);
 
+  function hasTakenQuiz(){
+    return user?.has_taken_quiz ?? false
+  }
 
   return(
-    <AuthContext.Provider value={{ user, setUser, loading}}>
+    <AuthContext.Provider value={{ user, setUser, loading, hasTakenQuiz }}>
       {children}
     </AuthContext.Provider>
   )
@@ -42,5 +48,6 @@ function AuthProvider({ children }){
 export function useAuth() {
   return useContext(AuthContext);
 }
+
 
 export default AuthProvider;
