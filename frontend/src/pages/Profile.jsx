@@ -12,7 +12,7 @@ function Profile() {
       answer
     }));
 
-    const response = await fetch("/api/org", { //LATER, SWITCH THIS ENDPOINT TO BE THE ONE THAT GETS ALL THE FAVORITED ORGS
+    const response = await fetch("/api/favorites", { 
       method: "GET",
     });
 
