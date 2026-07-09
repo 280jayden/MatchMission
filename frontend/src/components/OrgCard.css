@@ -39,3 +39,12 @@
   width: clamp(70px, 25vw, 1000px);
   font-size: clamp(1rem, 1.5vw, 2rem);
 }
+
+.tag {
+  display: inline-block;
+  background-color: var(--secondary2);
+  color: white;
+  padding: 10px;
+  border-radius: 30px;
+  margin: 0 6px 6px 0;
+}

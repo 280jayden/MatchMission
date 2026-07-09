@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import sqlalchemy as db
 import json
+import numpy as np
 
 
 cause_list = {
@@ -92,7 +93,18 @@ def fetch_orgs(user_causes, cause, num_of_results, engine):
     result = response.json()
 
     # create a dataframe
-    df = pd.DataFrame(result['nonprofits'], columns = ['name', 'description', 'profileUrl', 'websiteUrl', 'location', 'tags'])
+    df = pd.DataFrame(result['nonprofits'], columns = ['ein', 'name', 'description', 'profileUrl',
+    'websiteUrl', 'donationUrl', 'logoUrl', 'coverImageUrl', 'slug', 'location', 'tags'])
+
+    df = df.replace({np.nan: None})
+    
+    # np_eins = df['ein'].tolist()
+    # np_info_dicts = df.to_dict('records')
+
+    np_eins = [ein for ein in df['ein'].tolist() if ein is not None]  # clean list, only for redis
+    np_info_dicts = df.to_dict('records')  # untouched, still has None for missing eins, safe for JSON
+
+    return np_eins, np_info_dicts
 
     # filter out existing nonprofits
     with engine.connect() as connection:

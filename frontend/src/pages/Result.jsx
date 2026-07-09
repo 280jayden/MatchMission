@@ -10,7 +10,7 @@ function Result() {
       answer
     }));
 
-    const response = await fetch("http://localhost:5000/api/org", {
+    const response = await fetch("/api/org", {
       method: "GET",
     });
 
@@ -18,7 +18,7 @@ function Result() {
 
     if (response.ok) {
       console.log("yuh")
-      setOrgs(data.nonprofits)
+      setOrgs(data)
     } else {
       console.log(data.error)
     }
@@ -38,7 +38,7 @@ function Result() {
         {orgs.map((org) => (
           <OrgCard 
             key={org.ein} 
-            nonprofit={org}
+            org={org}
           />
         ))}
       </div>

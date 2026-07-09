@@ -1,11 +1,12 @@
 import "./OrgCard.css"
 import StarButton from "./StarButton";
+import logo from "../assets/mm_logo.png";
 
 function OrgCard({ org }) { // would pass in a json later but for now....
   return (
     <div className="item-card org-card">
       <div className="org-top">
-        <img src={org.logoUrl} alt="organization logo" className="org-img"/>
+        <img src={org.logoUrl || logo} alt="organization logo" className="org-img"/>
 
         <div>
           <h2>{org.name}</h2>
