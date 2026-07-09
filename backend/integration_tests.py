@@ -5,7 +5,7 @@ from api import app
 
 client = app.test_client()
 
-def test_refresh_orgs():
+def test_refresh_orgs_api():
     print("Testing the API internally via Flask Test Client...\n")
 
     # GET request
@@ -18,4 +18,3 @@ def test_refresh_orgs():
 
     # checks if response is successful
     assert response.status_code == 200
-    # print("Success! Status Code: 200")

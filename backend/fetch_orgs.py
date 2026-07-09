@@ -95,6 +95,8 @@ def fetch_orgs(user_causes, cause, num_of_results, engine):
     df = pd.DataFrame(result['nonprofits'], columns = ['ein', 'name', 'description', 'profileUrl',
     'websiteUrl', 'donationUrl', 'logoUrl', 'coverImageUrl', 'slug', 'location', 'tags'])
 
+    df = df.replace({np.nan: None})
+    
     np_eins = df['ein'].tolist()
     np_info_dicts = df.to_dict('records')
 
