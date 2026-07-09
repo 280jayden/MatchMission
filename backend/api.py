@@ -4,7 +4,7 @@ from flask_cors import CORS # lets frontend talk to flask
 import os # needed for os.getenv()
 import sqlalchemy as db # talks to sqlite database
 from dotenv import load_dotenv # loads env file
-from fetch_orgs import fetch_orgs, select_orgs
+from fetch_orgs import fetch_orgs, select_orgs, fetch_org
 from scoring import generate_user_profile
 from werkzeug.security import generate_password_hash, check_password_hash
 # from questions import get_quiz_data
@@ -117,6 +117,13 @@ def get_orgs():
 
     return jsonify(next_batch)
     # sends to react as json
+
+@app.route('/api/org/<ein>', methods=['GET'])
+def get_org(ein):
+  """
+  Gets one org by the ein
+  """
+  return fetch_org(ein, engine)
     
 
 @app.route('/api/favorite', methods=['POST']) # records when a user favorites an org

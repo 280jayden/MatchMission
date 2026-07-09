@@ -163,3 +163,12 @@ def display_orgs(nonprofits):
         print("Website URL: ", nonprofit.websiteUrl)
         print()
 
+
+def fetch_org(ein, engine):
+    apiKey = os.getenv('EVERYORG_KEY')
+
+    # GET request
+    response = requests.get(f"https://partners.every.org/v0.2/nonprofit/{ein}?apiKey={apiKey}")
+    result = response.json()
+
+    return result.get('data', {})
