@@ -40,9 +40,10 @@ with engine.connect() as connection:
             id TEXT PRIMARY KEY,
             email TEXT,
             password_hash TEXT,
-            profile TEXT
+            has_taken_quiz BOOL,
+            profile TEXT # TODO: add CHECK (json_valid(profile))
         );
-    """)) # TODO: add CHECK (json_valid(profile))
+    """))
 
 @app.route('/api/questions', methods=['GET']) # this will give the frontend quiz questions, GET bc react is asking for the data
 def get_questions():
@@ -240,3 +241,13 @@ def login():
     session['user_id'] = user_id
     
     return jsonify({"success": True, "message": "Logged in."}), 201
+
+
+@app.route("/api/get_current_user", methods=['GET'])
+def get_current_user():
+    uid = session.get('user_id')
+
+    if uid:
+      return jsonify({"user_id": uid})
+    else:
+      return jsonify({"error": "Not logged in"}), 401
