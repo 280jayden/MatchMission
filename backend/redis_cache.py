@@ -41,18 +41,15 @@ def is_cached(tag):
     return r.exists(f"tag:{tag}") == 1
 
 
-def cache_tags(tags: list, np_eins: list):
+def cache_tags(tag: str, np_eins: list):
     # create caches for tags
     # np_eins called from API, dict.keys()
     # z(set) is a sorted set allowing for scores
 
-    pipe = r.pipeline()
 
-    for tag in tags:
-        # initialize with base score of 1
-        pipe.zadd(f"tag:{tag}", {ein: 1 for ein in np_eins})
+    # initialize with base score of 1
+    r.zadd(f"tag:{tag}", {ein: 1 for ein in np_eins})
     
-    pipe.execute()
 
 
 def load_nonprofits_json(nonprofits: list):
@@ -64,33 +61,46 @@ def load_nonprofits_json(nonprofits: list):
     pipe = r.pipeline()
     
     for np in nonprofits:
-        for ein, info in np.items():
-            pipe.set(f"nonprofit:{ein}", json.dumps(info))
+        pipe.set(f"nonprofit:{np['ein']}", json.dumps(np))
     
     # execute all comands in the pipeline
     pipe.execute()
 
 
-def get_nonprofits(np_eins: list): # output: initial filter of nonprofits (2k)
+def get_nonprofits(np_eins: list):
     # retrieves possible candidates of nonprofits
     keys = [f"nonprofit:{ein}" for ein in np_eins]
     raw_data = r.mget(keys)
     return [json.loads(data) for data in raw_data if data]
 
 
-def get_next_batch(user_id, batch_size:int = 100):
-    # retrieve user weights (put into backend.py?) or easy redis
-    tags_to_fetch, user_wts = get_user_weights(user_id)
+def get_next_batch(user_id, user_wts, batch_size:int = 100):
+    # filter for tags that actually exist in the cache to prevent Redis errors
+    tag_weights = {f"tag:{tag}": weight for tag, weight in user_wts.items() if r.exists(f"tag:{tag}")}
+    
+    if not tag_weights:
+        return [] # return empty if no tags are cached yet
 
-    # run ZUNIONSTORE to calculate scores across all nonprofits matching user's tags (get_nonprofits)
+    user_scored_key = f"user_scored:{user_id}"
+    user_batch_key = f"user_batch:{user_id}"
+    shown_key = f"shown:user:{user_id}"
 
+    # make sure shown_key exists
+    if not r.exists(shown_key):
+        r.zadd(shown_key, {"_dummy_": 0})
 
-    # run ZDIFFSTORE against the shown:user:{user_id}
+    # ZUNIONSTORE: combine all matching tags, multiply by baseline scores by user weights
+    r.zunionstore(user_scored_key, tag_weights, aggregate='SUM')
 
+    # ZDIFFSTORE: take the scored list and remove any EINs that exist in the 'shown' set
+    r.zdiffstore(user_batch_key, [user_scored_key, shown_key])
 
-    # run ZREVRANGE to return the top batch_size IDs
+    # ZREVRANGE: get the top `batch_size` EINs sorted by highest score descending
+    top_eins = r.zrevrange(user_batch_key, 0, batch_size - 1)
 
-    return
+    # fetch the full JSON profiles for these EINs
+    return get_nonprofits(top_eins)
+
 
 # updates redis when user sees a np
 def mark_shown(user_id, nonprofit_eins: list[str]):
