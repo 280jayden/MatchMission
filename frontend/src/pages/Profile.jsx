@@ -1,17 +1,48 @@
-import OrgCard from "../components/OrgCard"
+import { useState, useEffect } from "react";
+import OrgCard from "../components/OrgCard";
 
 function Profile() {
+  const [orgs, setOrgs] = useState([]);
+
+  const getResults = async () => {
+    const formattedAnswers = Object.entries(answers).map(([questionId, answer]) => ({
+      questionId: Number(questionId),
+      answer
+    }));
+
+    const response = await fetch("http://localhost:5000/api/org", { //LATER, SWITCH THIS ENDPOINT TO BE THE ONE THAT GETS ALL THE FAVORITED ORGS
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("yuh")
+      setOrgs(data.nonprofits)
+    } else {
+      console.log(data.error)
+    }
+  }
+
+  useEffect(() => { //so we can get results when it starts
+    getResults();
+  }, []);
+
   return (
     <div>
       <h1 style={{textAlign:"center"}}>Profile</h1>
-      <p style={{textAlign:"center", marginBottom:"50px"}}>This is a profile page placeholder</p>
+      {/* <p style={{textAlign:"center", marginBottom:"50px"}}>This is a profile page placeholder</p> */}
 
       <h2 style={{textAlign:"center"}}>Your Saved Organizations</h2>
-      {/* later, will make it a map based on a dict or array that gets passed in */}
-      <div className="card-container">
-        <OrgCard />
-        <OrgCard />
-      </div>
+      {/* <div className="card-container">
+        {orgs.map((org) => (
+          <OrgCard 
+            key={org.ein} 
+            nonprofit={org}
+          />
+        ))}
+      </div> */}
+      <p style={{textAlign:"center"}}>This feature is currently a work in progress.</p>
     </div>
   )
 }

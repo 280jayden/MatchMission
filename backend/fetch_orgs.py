@@ -92,29 +92,36 @@ def fetch_orgs(user_causes, cause, num_of_results, engine):
     result = response.json()
 
     # create a dataframe
-    df = pd.DataFrame(result['nonprofits'], columns = ['name', 'description', 'profileUrl', 'websiteUrl', 'location', 'tags'])
+    df = pd.DataFrame(result['nonprofits'], columns = ['ein', 'name', 'description', 'profileUrl',
+    'websiteUrl', 'donationUrl', 'logoUrl', 'coverImageUrl', 'slug', 'location', 'tags'])
+
+    np_eins = df['ein'].tolist()
+    np_info_dicts = df.to_dict('records')
+
+    return np_eins, np_info_dicts
 
     # filter out existing nonprofits
-    with engine.connect() as connection:
-        existing_urls = pd.read_sql('SELECT "profileUrl" FROM "NonProfits"',
-        con=engine)['profileUrl'].tolist()
-    df_new = df[~df['profileUrl'].isin(existing_urls)].copy()
+    # with engine.connect() as connection:
+    #     existing_urls = pd.read_sql('SELECT "profileUrl" FROM "NonProfits"',
+    #     con=engine)['profileUrl'].tolist()
+    # df_new = df[~df['profileUrl'].isin(existing_urls)].copy()
 
-    if df_new.empty: return
+    # if df_new.empty: return
 
-    # calculate scores
-    scores = []
-    for nonprofit_tags in df_new['tags']:
-        scores.append(algorithm(user_causes, nonprofit_tags))
-    df_new['score'] = scores
+    # # calculate scores
+    # scores = []
+    # for nonprofit_tags in df_new['tags']:
+    #     scores.append(algorithm(user_causes, nonprofit_tags))
+    # df_new['score'] = scores
 
-    # turn tags into a string
-    df_new['tags'] = df_new['tags'].apply(json.dumps)
+    # # turn tags into a string
+    # df_new['tags'] = df_new['tags'].apply(json.dumps)
 
-    df_new['shown'] = False
-    df_new['favorited'] = False
+    # df_new['shown'] = False
+    # df_new['favorited'] = False
 
-    df_new.to_sql('NonProfits', con=engine, if_exists='append', index=False)
+    # df_new.to_sql('NonProfits', con=engine, if_exists='append', index=False)
+
 
 def algorithm(user_causes, nonprofit_tags):
     # input: dict, list
