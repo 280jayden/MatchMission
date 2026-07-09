@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import OrgCard from "../components/OrgCard";
+import { useAuth } from "../components/AuthContext";
 
 function Profile() {
   const [orgs, setOrgs] = useState([]);
+  const { user } = useAuth();
 
   const getResults = async () => {
     const formattedAnswers = Object.entries(answers).map(([questionId, answer]) => ({
