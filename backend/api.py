@@ -40,8 +40,8 @@ with engine.connect() as connection:
             id TEXT PRIMARY KEY,
             email TEXT,
             password_hash TEXT,
-            has_taken_quiz BOOL,
-            profile TEXT # TODO: add CHECK (json_valid(profile))
+            has_taken_quiz BOOL DEFAULT FALSE,
+            profile TEXT, CHECK (json_valid(profile))
         );
     """))
 
@@ -77,7 +77,9 @@ def submit_quiz():
         return jsonify({'error': 'missing quiz responses'}), 400
     user_profile = generate_user_profile("placeholder name", responses)
 
-    user_id = '123456789' # TODO: configure with auth (JUST A PLACEHOLDER)
+    used_id = session.get('user_id')  # Use session user_id if available
+    if not user_id:
+        return jsonify({'error': 'User not logged in'}), 401
 
     # saving user weights that openai scoring generated in redis under the user id
     save_user_weights(user_id, user_profile['causes']) # saving the specific user cause weights
@@ -93,6 +95,12 @@ def submit_quiz():
         fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
     """
     #nonprofits
+
+    with engine.connect() as connection:
+        connection.execute(db.text(
+            "UPDATE Users SET has_taken_quiz = TRUE, profile = :profile WHERE id = :user_id"
+        ), {"profile": jsonify(user_profile).get_data(as_text=True), "user_id": user_id})
+        connection.commit()
 
     return jsonify({
         'success': True,
