@@ -15,7 +15,7 @@ import time
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'production_12347asy39nowzxuyexoiwokx982j3947mpz8vnt4ikde86h7878tgehas')
 
 engine = db.create_engine('sqlite:///MatchMission.db')
