@@ -3,7 +3,7 @@ import fullStar from "../assets/full_star.png";
 import emptyStar from "../assets/empty_star.png";
 import "./OrgCard.css"
 
-function StarButton({profileUrl}) { //profileUrl is the identifier used in the api endpoint. we probably need to also send in an identifier for the org
+function StarButton({ein}) { 
   const [starred, setStarred] = useState(false);
 
   async function handleStar() {
@@ -15,7 +15,7 @@ function StarButton({profileUrl}) { //profileUrl is the identifier used in the a
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        profileUrl: profileUrl,
+        profileUrl: ein, // ein: the identification number of the org to be favorited
       }),
     });
 
