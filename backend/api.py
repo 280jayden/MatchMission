@@ -1,4 +1,4 @@
-
+import json
 from flask import Flask, request, jsonify # creates web server, lets you read json data frontend sends, converts Python dicts into JSON
 from flask_cors import CORS # lets frontend talk to flask
 import os # needed for os.getenv()
@@ -157,6 +157,18 @@ add redis support, updated sql support
 
 
 """
+
+# endpoint toget all saved orgs
+@app.route('/api/favorites', methods=['GET'])
+def get_favorites():
+    with engine.connect() as connection:
+        result = connection.execute(db.text(
+            "SELECT * FROM NonProfits WHERE favorited = TRUE"
+        ))
+        rows = result.mappings().all()
+
+    return jsonify([dict(row) for row in rows])
+    # return a plain array of org objects
 
 
 # AUTH ENDPOINTS
