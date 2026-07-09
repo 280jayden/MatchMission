@@ -41,23 +41,47 @@ def get_questions():
 
 @app.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
 
+# def submit_quiz():
+#     data = request.get_json()
+#     # name = data['name']
+#     responses = data['responses']
+
+#     user_profile = generate_user_profile(name, responses)
+
+#     if not user_profile:
+#         return jsonify({'error': 'failed to generate the profile'})
+
+#     #to_fetch
+#     """
+#     for cause in user_profile['tags_list_to_fetch']:
+#         fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
+#     """
+#     #nonprofits
+
 def submit_quiz():
     data = request.get_json()
-    name = data['name']
-    responses = data['responses']
-
-    user_profile = generate_user_profile(name, responses)
+    # name = data.get('name', 'User')
+    responses = data.get('responses')
+    
+    if not responses:
+        return jsonify({'error': 'missing quiz responses'}), 400
+    user_profile = generate_user_profile("placeholder name", responses)
 
     if not user_profile:
         return jsonify({'error': 'failed to generate the profile'})
 
-    return jsonify({'success': 'user profile generated successfully'})
     #to_fetch
     """
     for cause in user_profile['tags_list_to_fetch']:
         fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
     """
     #nonprofits
+
+    return jsonify({
+        'success': True,
+        'profile': user_profile
+    })
+
 
 @app.route('/api/refresh_orgs', methods=['GET']) # gets the orgs needed
 # get bc react is asking for the org data

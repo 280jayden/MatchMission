@@ -5,12 +5,8 @@ function Result() {
   const [orgs, setOrgs] = useState([]);
 
   const getResults = async () => {
-    const formattedAnswers = Object.entries(answers).map(([questionId, answer]) => ({
-      questionId: Number(questionId),
-      answer
-    }));
 
-    const response = await fetch("http://localhost:5000/api/org", {
+    const response = await fetch("/api/refresh_orgs", {
       method: "GET",
     });
 
