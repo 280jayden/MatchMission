@@ -6,7 +6,8 @@ import sqlalchemy as db # talks to sqlite database
 from dotenv import load_dotenv # loads env file
 from fetch_orgs import fetch_orgs, select_orgs
 from scoring import generate_user_profile
-from questions import get_quiz_data
+# from questions import get_quiz_data
+from redis_cache import *
 
 import time
 
@@ -20,6 +21,7 @@ engine = db.create_engine('sqlite:///MatchMission.db')
 with engine.connect() as connection:
     connection.execute(db.text("""
         CREATE TABLE IF NOT EXISTS NonProfits (
+            ein TEXT,
             name TEXT,
             description TEXT,
             profileUrl TEXT PRIMARY KEY,
@@ -55,12 +57,32 @@ def submit_quiz():
     """
     #nonprofits
 
-@app.route('/api/orgs', methods=['GET']) # gets the orgs needed
+@app.route('/api/refresh_orgs', methods=['GET']) # gets the orgs needed
 # get bc react is asking for the org data
 def get_orgs():
     # migrate to redis
-    nonprofits = select_orgs(engine)
-    return jsonify({'nonprofits': [dict(n) for n in nonprofits]}) # this will convert each sqlalchemy row obj into a plain python dict. 
+    user_id = '123456789' # TODO: configure with auth
+    user_tags, user_wts = get_user_weights(user_id)
+
+    tags_to_fetch = [tag for tag in user_tags if not is_cached(tag)]
+    # TODO: figure out how to see if there are enough not shown nonprofits in cache, if not fetch more
+    
+    if tags_to_fetch:
+        nonprofits_dict_list = []
+        for tag in tags_to_fetch:
+            # fetches orgs (max 100) for each tag
+            np_eins, nonprofits_info = fetch_orgs(user_tags, tag, 100, engine) 
+            cache_tags(tag, np_eins) # redis caches the ein list for each tag
+            nonprofits_dict_list.extend(nonprofits_info)
+        
+        # loads nonprofits into redis main cache
+        load_nonprofits_json(nonprofits_dict_list)
+
+    
+    next_batch = get_next_batch(user_id, user_wts, 10)
+    # TODO: add shown logic for the sent batch
+
+    return jsonify(next_batch)
     # sends to react as json
     
 
