@@ -48,10 +48,14 @@ function OrgCard({ org }) {
         </button>
         
         <button
-          onClick={() => window.open(org.websiteUrl, "_blank")} //TODO: fix url
+          onClick={() => {
+            const url = org.websiteUrl.startsWith("http") ? org.websiteUrl : `https://${org.websiteUrl}`;
+            window.open(url, "_blank");
+          }}
           className="norm-button"
+          disabled={!org.websiteUrl}
         >
-          THEIR WEBSITE
+          {org.websiteUrl ? "THEIR WEBSITE" : "NO WEBSITE"}
         </button>
 
         <StarButton profileUrl="placeholder.com"/> 

@@ -58,7 +58,20 @@ function OrgProfile() {
           <h2>{org.name}</h2>
           <h3>Based in {org.locationAddress}</h3>
           <p>{org.description}</p>
-          <h3>"Why We Matched You": coming soon</h3>
+          <h3>Why We Matched You</h3>
+          <p>Analysis feature coming soon</p>
+          
+          <button
+            onClick={() => {
+              const url = org.websiteUrl.startsWith("http") ? org.websiteUrl : `https://${org.websiteUrl}`;
+              window.open(url, "_blank");
+            }}
+            className="norm-button"
+            disabled={!org.websiteUrl}
+          >
+            {org.websiteUrl ? "THEIR WEBSITE" : "NO WEBSITE"}
+          </button>
+       
         </div>
 
         <div className="profile-side">
