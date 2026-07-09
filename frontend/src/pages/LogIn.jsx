@@ -1,30 +1,59 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css"
+import { useState } from "react";
 
 function LogIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const response = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({email, password})
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("logged in")
+      navigate("/");
+    } else {
+      console.log(data.error)
+    }
+  }
+
   return (
-    <div className="auth-form">
+    <form className="auth-form" onSubmit={(e) => {
+      e.preventDefault();
+      handleLogin();
+    }}>
       <h1>Log In</h1>
 
       <div className="auth-input-pair">
         <h3>Email</h3>
         <input 
-            // value = {value}
+            type="email"
             className="auth-field"
-            // onChange={(e) => onChange(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
       </div>
       
       <div className="auth-input-pair">
         <h3>Password</h3>
         <input 
-            // value = {value}
+            type="password"
             className="auth-field"
-            // onChange={(e) => onChange(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
       </div>
 
-      <button>LOG IN</button>
+      <button type="submit">LOG IN</button>
 
       <div className="auth-bottom-text">
         <p>Need to make a new account?</p>
@@ -33,7 +62,7 @@ function LogIn() {
         </nav>
       </div>
 
-    </div>
+    </form>
   )
 }
 
