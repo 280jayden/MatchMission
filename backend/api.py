@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify # creates web server, lets you read json data frontend sends, converts Python dicts into JSON
+from flask import Flask, request, jsonify, session # creates web server, lets you read json data frontend sends, converts Python dicts into JSON, tracks session
 from flask_cors import CORS # lets frontend talk to flask
 import os # needed for os.getenv()
 import sqlalchemy as db # talks to sqlite database
@@ -9,13 +9,14 @@ from scoring import generate_user_profile
 from werkzeug.security import generate_password_hash, check_password_hash
 # from questions import get_quiz_data
 from redis_cache import *
-
+import uuid # for user id
 import time
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'production_12347asy39nowzxuyexoiwokx982j3947mpz8vnt4ikde86h7878tgehas')
 
 engine = db.create_engine('sqlite:///MatchMission.db')
 
@@ -34,6 +35,14 @@ with engine.connect() as connection:
             favorited BOOL
         );
     """))
+    connection.execute(db.text("""
+        CREATE TABLE IF NOT EXISTS Users (
+            id TEXT PRIMARY KEY,
+            email TEXT,
+            password_hash TEXT,
+            profile TEXT
+        );
+    """)) # TODO: add CHECK (json_valid(profile))
 
 @app.route('/api/questions', methods=['GET']) # this will give the frontend quiz questions, GET bc react is asking for the data
 def get_questions():
@@ -179,12 +188,36 @@ def register():
     return jsonify({"error": "Missing fields"}), 400
 
   password_hash = generate_password_hash(password) #instead of putting password in directly, do this hash
-  
-  #TODO: connect to db - add user to db 
-  #TODO: set current session user to this one
-  
-  return jsonify({"success": True, "message": "Account created."}), 201
+  generated_id = str(uuid.uuid4()) # generates id from uuid
 
+  #TODO: connect to db - add user to db
+  with engine.connect() as connection:
+    try:
+        # check if user exists
+        existing_user = connection.execute("""SELECT EXISTS(
+            SELECT 1 
+            FROM users 
+            WHERE email = 'user@example.com'
+            ) AS user_exists;""", {"email": email}).fetchone()
+        
+        if existing_user[0]:
+            return jsonify({"error": "User already exists"}), 400
+        
+        # add user to db
+        connection.execute(db.text(
+            "INSERT INTO Users (id, email, password) VALUES (:email, :password_hash)"
+        ), {"id": generated_id, "email": email, "password_hash": password_hash})
+        connection.commit()
+
+        #set current session user to this one
+        session['user_id'] = generated_id
+
+        return jsonify({"success": True, "message": "Account created."}), 201
+
+    except Exception as e:
+        connection.rollback()
+        return jsonify({"error": str(e)}), 500
+  
 
 @app.route("/api/login", methods=['POST'])
 def login():
