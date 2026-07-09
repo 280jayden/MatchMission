@@ -58,10 +58,7 @@ function OrgCard({ org }) {
           {org.websiteUrl ? "THEIR WEBSITE" : "NO WEBSITE"}
         </button>
 
-        <StarButton profileUrl="placeholder.com"/> 
-        {/* lowkey im not really sure what jayden wants for profileurl?? user profile? i put a placeholder.
-        we don't have that because i thought we were storing user session in db so am confused. 
-        anyways if it's for user profile then we would also need to pass in some identifier for the org/nonprofit we're trying to favorite*/}
+        <StarButton ein={org.ein}/> 
       </div>
     </div>
   )
