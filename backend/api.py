@@ -6,7 +6,7 @@ import sqlalchemy as db # talks to sqlite database
 from dotenv import load_dotenv # loads env file
 from fetch_orgs import fetch_orgs, select_orgs
 from scoring import generate_user_profile
-from questions import get_quiz_data
+# from questions import get_quiz_data
 from redis_cache import *
 
 import time
@@ -77,7 +77,7 @@ def get_orgs():
         # loads nonprofits into redis main cache
         load_nonprofits_json(nonprofits_dict_list)
 
-    print(nonprofits_dict_list) # TESTING
+    # print(nonprofits_dict_list) # TESTING
     
     next_batch = get_next_batch(user_id, user_wts, 100)
 

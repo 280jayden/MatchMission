@@ -17,9 +17,7 @@ r = redis.Redis.from_url(redis_url,decode_responses=True)
 ## 
 
 def get_user_weights(user_id): # -> dict {'tag': weight}
-    
-    # calculates top 5 tags to fetch via sort
-    print("hello")
+    # TODO: calculates top 5 tags to fetch via sort, 
     # returns tag_lists to fetch [], cause_wts {}
     return ['animals', 'culture', 'immigrants', 'housing', 'youth'], {
     'animals' : 0.98,

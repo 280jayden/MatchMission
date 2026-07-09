@@ -1,7 +1,9 @@
 python-dotenv
+pytest
 requests
 pandas
 sqlalchemy
 openai
 flask
+flask-cors
 redis
