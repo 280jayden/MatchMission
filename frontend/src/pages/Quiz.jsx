@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function Quiz() {
   const [answers, setAnswers] = useState({})
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
 
   function handleAnswer(qid, answer) {
@@ -36,28 +37,47 @@ function Quiz() {
       answer
     }));
 
-    const response = await fetch("/api/quiz", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ responses: formattedAnswers })
-    });
+    setLoading(true)
 
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/quiz", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ responses: formattedAnswers })
+      });
 
-    if (response.ok) {
-      console.log("successfully sent answers to db")
-      navigate("/result");
-    } else {
-      console.log(data.error)
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("successfully sent answers to db")
+        navigate("/result");
+      } else {
+        console.log(data.error)
+        setLoading(false)
+      }
+    } catch (err) {
+      console.log(err)
+      setLoading(false)
     }
+
+  }
+
+  if (loading) {
+    return (
+      <div className="quiz-container">
+        <h1 style={{textAlign:"center"}}>Loading....</h1>
+      </div>
+    )
   }
 
   return (
     <div className="quiz-container">
+      
       <h1 style={{textAlign:"center"}}>Mission Matcher</h1>
       <p style={{textAlign:"center", marginTop:"-30px"}}>Your answers will help us understand your passions and connect you with nonprofits that fit your goals, values, and vision for making an impact. Take the quiz and discover organizations worth supporting.</p>
+
 
       <div className="card-container">
 
@@ -75,7 +95,9 @@ function Quiz() {
 
       </div>
 
-      <button onClick={handleSubmit}>SUBMIT QUIZ</button>
+      <button onClick={handleSubmit}disabled={loading}>
+        {loading ? "MATCHING YOU..." : "SUBMIT QUIZ" }
+        </button>
     </div>
   )
 }
