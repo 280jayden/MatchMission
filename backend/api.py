@@ -67,6 +67,13 @@ def submit_quiz():
         return jsonify({'error': 'missing quiz responses'}), 400
     user_profile = generate_user_profile("placeholder name", responses)
 
+    user_id = '123456789' # TODO: configure with auth (JUST A PLACEHOLDER)
+
+    # saving user weights that openai scoring generated in redis under the user id
+    save_user_weights(user_id, user_profile['causes']) # saving the specific user cause weights
+ 
+
+
     if not user_profile:
         return jsonify({'error': 'failed to generate the profile'})
 
