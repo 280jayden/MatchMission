@@ -14,20 +14,45 @@ r = redis.Redis.from_url(redis_url,decode_responses=True)
 
 
 # save_user_weights(user_id, causes: dict) -> None
+def save_user_weights(user_id, causes: dict):
+    # save the user's cause/tag weights in Redis
+    # ex key: user:123:weights -> animals: 0.98, health: 0.32
+
+    if not user_id or not causes:
+        return
+    
+    key = f'user:{user_id}:weights'
+
+    r.hset(
+        key,
+        mapping={tag: float(weight) for tag, weight in causes.items()}
+    )
+
+
 ## 
 
 def get_user_weights(user_id): # -> dict {'tag': weight}
     # TODO: calculates top 5 tags to fetch via sort, 
-    # returns tag_lists to fetch [], cause_wts {}
-    return ['animals', 'culture', 'immigrants', 'housing', 'youth'], {
-    'animals' : 0.98,
-    'culture' : 0.67,
-    'immigrants' : 0.65,
-    'housing' : 0.58,
-    'youth' : 0.55,
-    'music' : 0.44,
-    'health' : 0.32,
-    'freepress' : 0.21}
+    
+    # this should get the user's saved weights from Redis
+    key = f'user:{user_id}:weights'
+    stored_weights = r.hgetall(key)
+
+    if not stored_weights:
+        return [], {}
+
+    user_wts = {
+        tag: float(weight)
+        for tag, weight in stored_weights.items()
+    }
+
+    tags_to_fetch = sorted(
+        user_wts,
+        key=user_wts.get,
+        reverse=True
+    )[:5] # gets top 5
+
+    return tags_to_fetch, user_wts
 
 # update_user_weights(user_id, tags: list)
 ## after a user favorites a np, or unfavorites
