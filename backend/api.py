@@ -70,16 +70,17 @@ def get_orgs():
     if tags_to_fetch:
         nonprofits_dict_list = []
         for tag in tags_to_fetch:
-            np_eins, nonprofits_info = fetch_orgs(user_tags, tag, 4, engine) # fetches 100 orgs (max) for each tag
+            # fetches orgs (max 100) for each tag
+            np_eins, nonprofits_info = fetch_orgs(user_tags, tag, 100, engine) 
             cache_tags(tag, np_eins) # redis caches the ein list for each tag
             nonprofits_dict_list.extend(nonprofits_info)
         
         # loads nonprofits into redis main cache
         load_nonprofits_json(nonprofits_dict_list)
 
-    # print(nonprofits_dict_list) # TESTING
     
-    next_batch = get_next_batch(user_id, user_wts, 100)
+    next_batch = get_next_batch(user_id, user_wts, 10)
+    # TODO: add shown logic for the sent batch
 
     return jsonify(next_batch)
     # sends to react as json

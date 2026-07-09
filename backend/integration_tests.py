@@ -14,7 +14,7 @@ def test_refresh_orgs():
         
     # extract the json data from the response object
     data = response.get_json() 
-    print(json.dumps(data, indent=4))
+    # print(json.dumps(data, indent=4))
 
     # checks if response is successful
     assert response.status_code == 200
