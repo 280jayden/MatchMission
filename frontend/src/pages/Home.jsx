@@ -2,9 +2,29 @@ import Navbar from "../components/Navbar"
 import "./Home.css"
 import logo from "../assets/mm_logo.png";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function Home() {
   const navigate = useNavigate();
+
+  const getUser = async () => {
+    const response = await fetch("/api/get_current_user", { 
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("response ok")
+      console.log(data)
+    } else {
+      console.log(data.error)
+    }
+  }
+
+  useEffect(() => { //so we can get results when it starts
+    getUser();
+  }, []);
   
   return (
     <div className="home-container">

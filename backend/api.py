@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify # creates web server, lets you read json data frontend sends, converts Python dicts into JSON
+from flask import Flask, request, jsonify, session # creates web server, lets you read json data frontend sends, converts Python dicts into JSON, tracks session
 from flask_cors import CORS # lets frontend talk to flask
 import os # needed for os.getenv()
 import sqlalchemy as db # talks to sqlite database
@@ -9,13 +9,14 @@ from scoring import generate_user_profile
 from werkzeug.security import generate_password_hash, check_password_hash
 # from questions import get_quiz_data
 from redis_cache import *
-
+import uuid # for user id
 import time
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'production_12347asy39nowzxuyexoiwokx982j3947mpz8vnt4ikde86h7878tgehas')
 
 engine = db.create_engine('sqlite:///MatchMission.db')
 
@@ -32,6 +33,15 @@ with engine.connect() as connection:
             score REAL,
             shown BOOL,
             favorited BOOL
+        );
+    """))
+    connection.execute(db.text("""
+        CREATE TABLE IF NOT EXISTS Users (
+            id TEXT PRIMARY KEY,
+            email TEXT,
+            password_hash TEXT,
+            has_taken_quiz BOOL DEFAULT FALSE,
+            profile TEXT, CHECK (json_valid(profile))
         );
     """))
 
@@ -67,7 +77,9 @@ def submit_quiz():
         return jsonify({'error': 'missing quiz responses'}), 400
     user_profile = generate_user_profile("placeholder name", responses)
 
-    user_id = '123456789' # TODO: configure with auth (JUST A PLACEHOLDER)
+    used_id = session.get('user_id')  # Use session user_id if available
+    if not user_id:
+        return jsonify({'error': 'User not logged in'}), 401
 
     # saving user weights that openai scoring generated in redis under the user id
     save_user_weights(user_id, user_profile['causes']) # saving the specific user cause weights
@@ -83,6 +95,12 @@ def submit_quiz():
         fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
     """
     #nonprofits
+
+    with engine.connect() as connection:
+        connection.execute(db.text(
+            "UPDATE Users SET has_taken_quiz = TRUE, profile = :profile WHERE id = :user_id"
+        ), {"profile": jsonify(user_profile).get_data(as_text=True), "user_id": user_id})
+        connection.commit()
 
     return jsonify({
         'success': True,
@@ -170,7 +188,7 @@ add redis support, updated sql support
 
 @app.route("/api/register", methods=['POST'])
 def register():
-  data = request.get_json()
+  data = request.get_json() or {}
 
   email = data.get("email")
   password = data.get("password")
@@ -179,29 +197,65 @@ def register():
     return jsonify({"error": "Missing fields"}), 400
 
   password_hash = generate_password_hash(password) #instead of putting password in directly, do this hash
-  
-  #TODO: connect to db - add user to db 
-  #TODO: set current session user to this one
-  
-  return jsonify({"success": True, "message": "Account created."}), 201
+  generated_id = str(uuid.uuid4()) # generates id from uuid
 
+  # connect to db - add user to db
+  with engine.connect() as connection:
+    try:
+        # check if user exists
+        check_query = db.text("SELECT 1 FROM Users WHERE email = :email LIMIT 1")
+        existing_user = connection.execute(check_query, {"email": email}).fetchone()
+        
+        if existing_user:
+            return jsonify({"error": "User already exists"}), 400
+        
+        # add user to db
+        connection.execute(db.text(
+            "INSERT INTO Users (id, email, password_hash) VALUES (:id, :email, :password_hash)"
+        ), {"id": generated_id, "email": email, "password_hash": password_hash})
+        connection.commit()
+
+
+        return jsonify({"success": True, "message": "Account created."}), 201
+
+    except Exception as e:
+        connection.rollback()
+        return jsonify({"error": str(e)}), 500
+  
 
 @app.route("/api/login", methods=['POST'])
 def login():
-  data = request.get_json()
+    data = request.get_json() or {} # to protect against NoneType error if no json is sent
 
-  email = data.get("email")
-  password = data.get("password")
+    email = data.get("email")
+    password = data.get("password")
   
-  #TODO: query db to see if this user exists
+    # query db to see if this user exists
+    query = db.text("SELECT id, password_hash FROM Users WHERE email = :email LIMIT 1")
+    with engine.connect() as connection:
+        user = connection.execute(query, {"email": email}).fetchone()
 
-  # TODO: add this in when the db exists and we can query it
-  # if not user:
-  #   return jsonify({"error": "Invalid email or password"}), 401
+    # add this in when the db exists and we can query it
+    if not user:
+        return jsonify({"error": "Invalid email or password"}), 401
 
-  # if not check_password_hash(user["password_hash"], password):
-  #   return jsonify({"error": "Invalid email or password"}), 401
+    user_id, user_password_hash = user[0], user[1]
 
-  # otherwise, user should exist and password should be correct. TODO: set current session user to this one
-  
-  return jsonify({"success": True, "message": "Logged in."}), 201
+    if not check_password_hash(user_password_hash, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    # otherwise, user should exist and password should be correct.
+    #set current session user to this one
+    session['user_id'] = user_id
+    
+    return jsonify({"success": True, "message": "Logged in."}), 201
+
+
+@app.route("/api/get_current_user", methods=['GET'])
+def get_current_user():
+    uid = session.get('user_id')
+
+    if uid:
+      return jsonify({"user_id": uid})
+    else:
+      return jsonify({"error": "Not logged in"}), 401
