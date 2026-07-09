@@ -179,7 +179,7 @@ add redis support, updated sql support
 
 @app.route("/api/register", methods=['POST'])
 def register():
-  data = request.get_json()
+  data = request.get_json() or {}
 
   email = data.get("email")
   password = data.get("password")
@@ -194,23 +194,18 @@ def register():
   with engine.connect() as connection:
     try:
         # check if user exists
-        existing_user = connection.execute("""SELECT EXISTS(
-            SELECT 1 
-            FROM users 
-            WHERE email = 'user@example.com'
-            ) AS user_exists;""", {"email": email}).fetchone()
+        check_query = db.text("SELECT 1 FROM Users WHERE email = :email LIMIT 1")
+        existing_user = connection.execute(check_query, {"email": email}).fetchone()
         
-        if existing_user[0]:
+        if existing_user:
             return jsonify({"error": "User already exists"}), 400
         
         # add user to db
         connection.execute(db.text(
-            "INSERT INTO Users (id, email, password) VALUES (:email, :password_hash)"
+            "INSERT INTO Users (id, email, password_hash) VALUES (:id, :email, :password_hash)"
         ), {"id": generated_id, "email": email, "password_hash": password_hash})
         connection.commit()
 
-        #set current session user to this one
-        session['user_id'] = generated_id
 
         return jsonify({"success": True, "message": "Account created."}), 201
 
@@ -221,20 +216,27 @@ def register():
 
 @app.route("/api/login", methods=['POST'])
 def login():
-  data = request.get_json()
+    data = request.get_json() or {} # to protect against NoneType error if no json is sent
 
-  email = data.get("email")
-  password = data.get("password")
+    email = data.get("email")
+    password = data.get("password")
   
-  #TODO: query db to see if this user exists
+    # query db to see if this user exists
+    query = db.text("SELECT id, password_hash FROM Users WHERE email = :email LIMIT 1")
+    with engine.connect() as connection:
+        user = connection.execute(query, {"email": email}).fetchone()
 
-  # TODO: add this in when the db exists and we can query it
-  # if not user:
-  #   return jsonify({"error": "Invalid email or password"}), 401
+    # add this in when the db exists and we can query it
+    if not user:
+        return jsonify({"error": "Invalid email or password"}), 401
 
-  # if not check_password_hash(user["password_hash"], password):
-  #   return jsonify({"error": "Invalid email or password"}), 401
+    user_id, user_password_hash = user[0], user[1]
 
-  # otherwise, user should exist and password should be correct. TODO: set current session user to this one
-  
-  return jsonify({"success": True, "message": "Logged in."}), 201
+    if not check_password_hash(user_password_hash, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    # otherwise, user should exist and password should be correct.
+    #set current session user to this one
+    session['user_id'] = user_id
+    
+    return jsonify({"success": True, "message": "Logged in."}), 201
