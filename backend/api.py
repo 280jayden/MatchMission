@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify # creates web server, lets you read json data frontend sends, converts Python dicts into JSON
+from flask import Flask, request, jsonify, session # creates web server, lets you read json data frontend sends, converts Python dicts into JSON, tracks session
 from flask_cors import CORS # lets frontend talk to flask
 import os # needed for os.getenv()
 import sqlalchemy as db # talks to sqlite database
@@ -9,13 +9,14 @@ from scoring import generate_user_profile
 from werkzeug.security import generate_password_hash, check_password_hash
 # from questions import get_quiz_data
 from redis_cache import *
-
+import uuid # for user id
 import time
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'production_12347asy39nowzxuyexoiwokx982j3947mpz8vnt4ikde86h7878tgehas')
 
 engine = db.create_engine('sqlite:///MatchMission.db')
 
@@ -34,6 +35,14 @@ with engine.connect() as connection:
             favorited BOOL
         );
     """))
+    connection.execute(db.text("""
+        CREATE TABLE IF NOT EXISTS Users (
+            id TEXT PRIMARY KEY,
+            email TEXT,
+            password_hash TEXT,
+            profile TEXT
+        );
+    """)) # TODO: add CHECK (json_valid(profile))
 
 @app.route('/api/questions', methods=['GET']) # this will give the frontend quiz questions, GET bc react is asking for the data
 def get_questions():
@@ -170,7 +179,7 @@ add redis support, updated sql support
 
 @app.route("/api/register", methods=['POST'])
 def register():
-  data = request.get_json()
+  data = request.get_json() or {}
 
   email = data.get("email")
   password = data.get("password")
@@ -179,29 +188,55 @@ def register():
     return jsonify({"error": "Missing fields"}), 400
 
   password_hash = generate_password_hash(password) #instead of putting password in directly, do this hash
-  
-  #TODO: connect to db - add user to db 
-  #TODO: set current session user to this one
-  
-  return jsonify({"success": True, "message": "Account created."}), 201
+  generated_id = str(uuid.uuid4()) # generates id from uuid
 
+  # connect to db - add user to db
+  with engine.connect() as connection:
+    try:
+        # check if user exists
+        check_query = db.text("SELECT 1 FROM Users WHERE email = :email LIMIT 1")
+        existing_user = connection.execute(check_query, {"email": email}).fetchone()
+        
+        if existing_user:
+            return jsonify({"error": "User already exists"}), 400
+        
+        # add user to db
+        connection.execute(db.text(
+            "INSERT INTO Users (id, email, password_hash) VALUES (:id, :email, :password_hash)"
+        ), {"id": generated_id, "email": email, "password_hash": password_hash})
+        connection.commit()
+
+
+        return jsonify({"success": True, "message": "Account created."}), 201
+
+    except Exception as e:
+        connection.rollback()
+        return jsonify({"error": str(e)}), 500
+  
 
 @app.route("/api/login", methods=['POST'])
 def login():
-  data = request.get_json()
+    data = request.get_json() or {} # to protect against NoneType error if no json is sent
 
-  email = data.get("email")
-  password = data.get("password")
+    email = data.get("email")
+    password = data.get("password")
   
-  #TODO: query db to see if this user exists
+    # query db to see if this user exists
+    query = db.text("SELECT id, password_hash FROM Users WHERE email = :email LIMIT 1")
+    with engine.connect() as connection:
+        user = connection.execute(query, {"email": email}).fetchone()
 
-  # TODO: add this in when the db exists and we can query it
-  # if not user:
-  #   return jsonify({"error": "Invalid email or password"}), 401
+    # add this in when the db exists and we can query it
+    if not user:
+        return jsonify({"error": "Invalid email or password"}), 401
 
-  # if not check_password_hash(user["password_hash"], password):
-  #   return jsonify({"error": "Invalid email or password"}), 401
+    user_id, user_password_hash = user[0], user[1]
 
-  # otherwise, user should exist and password should be correct. TODO: set current session user to this one
-  
-  return jsonify({"success": True, "message": "Logged in."}), 201
+    if not check_password_hash(user_password_hash, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    # otherwise, user should exist and password should be correct.
+    #set current session user to this one
+    session['user_id'] = user_id
+    
+    return jsonify({"success": True, "message": "Logged in."}), 201
