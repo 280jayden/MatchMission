@@ -11,6 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from redis_cache import *
 import uuid # for user id
 import time
+import json # for json.dumps when adding to Users table
 
 load_dotenv()
 
@@ -69,7 +70,7 @@ def get_questions():
 #     #nonprofits
 
 def submit_quiz():
-    data = request.get_json()
+    data = request.get_json() or {}
     # name = data.get('name', 'User')
     responses = data.get('responses')
     
@@ -77,29 +78,20 @@ def submit_quiz():
         return jsonify({'error': 'missing quiz responses'}), 400
     user_profile = generate_user_profile("placeholder name", responses)
 
-    used_id = session.get('user_id')  # Use session user_id if available
+    user_id = session.get('user_id')  # Use session user_id if available
     if not user_id:
         return jsonify({'error': 'User not logged in'}), 401
-
-    # saving user weights that openai scoring generated in redis under the user id
-    save_user_weights(user_id, user_profile['causes']) # saving the specific user cause weights
- 
-
 
     if not user_profile:
         return jsonify({'error': 'failed to generate the profile'})
 
-    #to_fetch
-    """
-    for cause in user_profile['tags_list_to_fetch']:
-        fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
-    """
-    #nonprofits
+    # saving user weights that openai scoring generated in redis under the user id
+    save_user_weights(user_id, user_profile['causes']) # saving the specific user cause weights
 
     with engine.connect() as connection:
         connection.execute(db.text(
             "UPDATE Users SET has_taken_quiz = TRUE, profile = :profile WHERE id = :user_id"
-        ), {"profile": jsonify(user_profile).get_data(as_text=True), "user_id": user_id})
+        ), {"profile": json.dumps(user_profile), "user_id": user_id})
         connection.commit()
 
     return jsonify({
@@ -254,8 +246,20 @@ def login():
 @app.route("/api/get_current_user", methods=['GET'])
 def get_current_user():
     uid = session.get('user_id')
-
-    if uid:
-      return jsonify({"user_id": uid})
-    else:
+    if not uid:
       return jsonify({"error": "Not logged in"}), 401
+      
+    with engine.connect() as connection:
+        query = db.text("SELECT has_taken_quiz FROM Users WHERE id = :user_id LIMIT 1")
+        has_taken_quiz = connection.execute(query, {"user_id": uid}).fetchone()
+        connection.commit()
+    
+    if not has_taken_quiz: # could not find user_id
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({"user_id": uid, "has_taken_quiz": has_taken_quiz[0]})
+
+@app.route("/api/logout", methods=['POST'])
+def logout():
+    session.pop('user_id', None)
+    return jsonify({"success": True, "message": "Logged out."}), 200
