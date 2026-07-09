@@ -190,7 +190,7 @@ def register():
   password_hash = generate_password_hash(password) #instead of putting password in directly, do this hash
   generated_id = str(uuid.uuid4()) # generates id from uuid
 
-  #TODO: connect to db - add user to db
+  # connect to db - add user to db
   with engine.connect() as connection:
     try:
         # check if user exists
