@@ -51,6 +51,7 @@ def submit_quiz():
     if not user_profile:
         return jsonify({'error': 'failed to generate the profile'})
 
+    return jsonify({'success': 'user profile generated successfully'})
     #to_fetch
     """
     for cause in user_profile['tags_list_to_fetch']:
@@ -105,7 +106,7 @@ def favorite_org():
 
 @app.route('/api/unfavorite', methods=['POST']) # records when a user un-favorites an org
 # post bc react is sending the data
-def favorite_org():
+def unfavorite_org():
     # get the json body
     data = request.get_json()
     profile_url = data['profileUrl']
