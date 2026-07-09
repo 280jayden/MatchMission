@@ -41,16 +41,16 @@ function OrgCard({ org }) {
       </div>
 
       <div className="org-bot">
-        <button
-          onClick={() => window.open(org.websiteUrl, "_blank")}
-          className="norm-button"
-        >
+        <button onClick={() => console.log("button pressed")} className="norm-button">
           PROFILE
         </button>
-
-        <button onClick={() => console.log("button pressed")} className="norm-button">
+        
+        <button
+          onClick={() => window.open(org.websiteUrl, "_blank")} //TODO: fix url
+          className="norm-button"
+        >
           THEIR WEBSITE
-         </button>
+        </button>
 
         <StarButton profileUrl="placeholder.com"/> 
         {/* lowkey im not really sure what jayden wants for profileurl?? user profile? i put a placeholder.
