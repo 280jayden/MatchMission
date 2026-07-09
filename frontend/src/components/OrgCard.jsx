@@ -1,8 +1,10 @@
 import "./OrgCard.css"
 import StarButton from "./StarButton";
 import logo from "../assets/mm_logo.png";
+import { useNavigate } from "react-router-dom";
 
 function OrgCard({ org }) { 
+  const navigate = useNavigate();
 
   function resizeImg(url) {
     if (!url) {
@@ -41,7 +43,7 @@ function OrgCard({ org }) {
       </div>
 
       <div className="org-bot">
-        <button onClick={() => console.log("button pressed")} className="norm-button">
+        <button onClick={() => navigate(`/org/${org.ein}`)} className="norm-button">
           PROFILE
         </button>
         

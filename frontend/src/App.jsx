@@ -8,6 +8,7 @@ import Profile from "./pages/Profile"
 import Quiz from "./pages/Quiz"
 import Register from "./pages/Register"
 import Result from "./pages/Result"
+import OrgProfile from "./pages/OrgProfile"
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/register" element={<Register />} />
             <Route path="/result" element={<Result />} />
+            <Route path="/org/:ein" element={<OrgProfile />} />
           </Routes>
         </div>
       </BrowserRouter>
