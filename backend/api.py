@@ -1,3 +1,5 @@
+import json
+from flask import Flask, request, jsonify # creates web server, lets you read json data frontend sends, converts Python dicts into JSON
 
 from flask import Flask, request, jsonify, session # creates web server, lets you read json data frontend sends, converts Python dicts into JSON, tracks session
 from flask_cors import CORS # lets frontend talk to flask
@@ -135,6 +137,80 @@ def get_org(ein):
   """
   return fetch_org(ein, engine)
     
+@app.route('/api/score_orgs', methods=['POST'])
+def score_orgs():
+    # preps user nonprofit recs
+    # checks saved user weights, fetches any missing tag
+    # builds nonprofit list in redis
+
+    user_id = '123456789' # TODO: replace with auth
+
+    user_tags, user_wts = get_user_weights(user_id)
+
+    if not user_wts:
+        return jsonify({
+            "success": False,
+            "error": "No user weights found. submit quiz first."
+        }), 400
+
+    tags_to_fetch = [tag for tag in user_tags if not is_cached(tag)]
+    fetched_tags = []
+
+    for tag in tags_to_fetch:
+        np_eins, nonprofits_info = fetch_orgs(user_wts, tag, 100, engine)
+        cache_tags(tag, np_eins)
+        load_nonprofits_json(nonprofits_info)
+        fetched_tags.append(tag)
+
+    # rank nonprofits using the user's weights and the cached tag sets
+    # it also removes orgs already marked as shown
+    scored_batch = get_next_batch(user_id, user_wts, 100)
+
+    # return metadata about the scoring step
+    # the frontend might not render this directly
+    # it can call /api/get_batch afterward to get full nonprofit cards
+    return jsonify({
+        "success": True, 
+        "tags":, user_tags,
+        "fetchedTags": fetched_tags,
+        "scoredCount": len(scored_batch)
+    })
+
+@app.route('/api/get_batch', methods=['GET'])
+def get_batch():
+    # returns the next batch of nonprofit cards for the frontend
+    # this assumes score_orgs has already prepped/cached the orgs
+    user_id = '123456789' # TODO: replace with auth
+
+    batch_size = int(request.args.get('limit', 20))
+    user_tags, user_wts = get_user_weights(user_id)
+
+    # if not wts exist, the user may not have submitted
+    if not user_wts:
+        return jsonify({
+            'success': False,
+            'error': 'No user weights found. submit quiz first.'
+        }), 400
+    
+    nonprofits = get_next_batch(user_id, user_wts, batch_size)
+
+    # pull out the ein for each nonprofit in the returned batch
+    nonprofit_eins = [
+        nonprofit.get('ein')
+        for nonprofit in nonprofits
+        if nonprofit.get('ein')
+    ]
+
+    # mark these nonprofits as shown so they do not keep appearing in future batches
+    if nonprofit_eins:
+        mark_shown(user_id, nonprofit_eins)
+    
+    # send the frontend a consistent response shape
+    # result.jsx can read data.nonprofits from this
+    return jsonify({
+        'success': True,
+        'nonprofits': nonprofits
+    })
 
 @app.route('/api/favorite', methods=['POST']) # records when a user favorites an org
 # post bc react is sending the data
@@ -174,6 +250,18 @@ add redis support, updated sql support
 
 
 """
+
+# endpoint toget all saved orgs
+@app.route('/api/favorites', methods=['GET'])
+def get_favorites():
+    with engine.connect() as connection:
+        result = connection.execute(db.text(
+            "SELECT * FROM NonProfits WHERE favorited = TRUE"
+        ))
+        rows = result.mappings().all()
+
+    return jsonify([dict(row) for row in rows])
+    # return a plain array of org objects
 
 
 # AUTH ENDPOINTS
