@@ -171,7 +171,7 @@ def score_orgs():
     # it can call /api/get_batch afterward to get full nonprofit cards
     return jsonify({
         "success": True, 
-        "tags":, user_tags,
+        "tags": user_tags,
         "fetchedTags": fetched_tags,
         "scoredCount": len(scored_batch)
     })
@@ -212,56 +212,53 @@ def get_batch():
         'nonprofits': nonprofits
     })
 
-@app.route('/api/favorite', methods=['POST']) # records when a user favorites an org
-# post bc react is sending the data
+
+# records when a user favorites an org
+@app.route('/api/favorite', methods=['POST'])
 def favorite_org():
     # get the json body
-    data = request.get_json()
-    profile_url = data['profileUrl']
+    data = request.get_json() or {}
+    np_ein = data['ein']
+    user_id = session.get('user_id', None)
 
-    # flip favorited to true in the database
-    with engine.connect() as connection:
-        connection.execute(db.text(
-            "UPDATE NonProfits SET favorited = TRUE WHERE profileUrl = :url"
-        ), {"url": profile_url})
-        connection.commit()
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+
+    # add np_ein to favorited set in redis
+    mark_favorited(user_id, np_ein)
+
     return jsonify({"success": True})
 
 
-@app.route('/api/unfavorite', methods=['POST']) # records when a user un-favorites an org
-# post bc react is sending the data
+# records when a user un-favorites an org
+@app.route('/api/unfavorite', methods=['POST']) 
 def unfavorite_org():
     # get the json body
-    data = request.get_json()
-    profile_url = data['profileUrl']
+    data = request.get_json() or {}
+    np_ein = data['ein']
+    user_id = session.get('user_id', None)
 
-    # flip favorited to true in the database
-    with engine.connect() as connection:
-        connection.execute(db.text(
-            "UPDATE NonProfits SET favorited = FALSE WHERE profileUrl = :url"
-        ), {"url": profile_url})
-        connection.commit()
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+
+    # remove np_ein from favorited set in redis
+    unmark_favorited(user_id, np_ein)
+
     return jsonify({"success": True})
 
-"""
-endpoints to add
 
-add redis support, updated sql support
-
-
-"""
-
-# endpoint toget all saved orgs
+# endpoint to get all favorited orgs
 @app.route('/api/favorites', methods=['GET'])
 def get_favorites():
-    with engine.connect() as connection:
-        result = connection.execute(db.text(
-            "SELECT * FROM NonProfits WHERE favorited = TRUE"
-        ))
-        rows = result.mappings().all()
+    user_id = session.get('user_id', None)
 
-    return jsonify([dict(row) for row in rows])
-    # return a plain array of org objects
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+    
+    user_favorites = get_favorites_redis(user_id)
+
+    return user_favorites
+    # returns a plain array of org objects
 
 
 # AUTH ENDPOINTS

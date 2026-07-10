@@ -142,4 +142,22 @@ def mark_shown(user_id, nonprofit_eins: list[str]):
     
     # TODO: INSERT INTO DB UserInteractions table
 
+def mark_favorited(user_id, nonprofit_ein: str):
+    # updates redis when user favorites a np
+    key = f'user:{user_id}:favorites'
 
+    # adds to set user:user_id:favorites
+    r.sadd(key, nonprofit_ein)
+
+def get_favorites_redis(user_id):
+    key = f'user:{user_id}:favorites'
+    stored_favorites = r.smembers(key)
+
+    if not stored_favorites:
+        return []
+    return stored_favorites
+
+def unmark_favorited(user_id, nonprofit_ein: str):
+    # temoves a non-profit from the user's redis favorites set
+    key = f'user:{user_id}:favorites'
+    r.srem(key, nonprofit_ein)
