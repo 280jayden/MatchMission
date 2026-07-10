@@ -1,11 +1,14 @@
-import json
-from flask import Flask, request, jsonify # creates web server, lets you read json data frontend sends, converts Python dicts into JSON
+# I ORDERED THIS WEIRDLY BC PYTHONANYWHERE IS PARTICULAR
 
+import json
 from flask import Flask, request, jsonify, session # creates web server, lets you read json data frontend sends, converts Python dicts into JSON, tracks session
 from flask_cors import CORS # lets frontend talk to flask
 import os # needed for os.getenv()
-import sqlalchemy as db # talks to sqlite database
 from dotenv import load_dotenv # loads env file
+
+load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+
+import sqlalchemy as db # talks to sqlite database
 from fetch_orgs import fetch_orgs, select_orgs, fetch_org
 from scoring import generate_user_profile
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,7 +18,12 @@ import uuid # for user id
 import time
 import json # for json.dumps when adding to Users table
 
-load_dotenv()
+import os
+from flask import send_from_directory
+
+# I ORDERED THIS WEIRDLY BC PYTHONANYWHERE IS PARTICULAR
+
+# load_dotenv()
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -48,9 +56,9 @@ with engine.connect() as connection:
         );
     """))
 
-@app.route('/api/questions', methods=['GET']) # this will give the frontend quiz questions, GET bc react is asking for the data
-def get_questions():
-    return jsonify(get_quiz_data())
+# @app.route('/api/questions', methods=['GET']) # this will give the frontend quiz questions, GET bc react is asking for the data
+# def get_questions():
+#     return jsonify(get_quiz_data())
 
 @app.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
 
@@ -171,7 +179,7 @@ def score_orgs():
     # it can call /api/get_batch afterward to get full nonprofit cards
     return jsonify({
         "success": True, 
-        "tags":, user_tags,
+        "tags": user_tags,
         "fetchedTags": fetched_tags,
         "scoredCount": len(scored_batch)
     })
@@ -250,19 +258,6 @@ add redis support, updated sql support
 
 
 """
-
-# endpoint toget all saved orgs
-@app.route('/api/favorites', methods=['GET'])
-def get_favorites():
-    with engine.connect() as connection:
-        result = connection.execute(db.text(
-            "SELECT * FROM NonProfits WHERE favorited = TRUE"
-        ))
-        rows = result.mappings().all()
-
-    return jsonify([dict(row) for row in rows])
-    # return a plain array of org objects
-
 
 # endpoint toget all saved orgs
 @app.route('/api/favorites', methods=['GET'])
@@ -364,3 +359,19 @@ def get_current_user():
 def logout():
     session.pop('user_id', None)
     return jsonify({"success": True, "message": "Logged out."}), 200
+
+
+# I ADDED THIS FUNCTION SO THAT PYTHONANYWHERE WOULD LOAD STUFF DIFFERENTLY
+
+if os.getenv("SERVE_FRONTEND") == "true":
+    FRONTEND_BUILD = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def serve_frontend(path):
+        full_path = os.path.join(FRONTEND_BUILD, path)
+        if path and os.path.exists(full_path):
+            return send_from_directory(FRONTEND_BUILD, path)
+        return send_from_directory(FRONTEND_BUILD, "index.html")
+
+# I ADDED THIS FUNCTION SO THAT PYTHONANYWHERE WOULD LOAD STUFF DIFFERENTLY
