@@ -1,6 +1,4 @@
 import json
-from flask import Flask, request, jsonify # creates web server, lets you read json data frontend sends, converts Python dicts into JSON
-
 from flask import Flask, request, jsonify, session # creates web server, lets you read json data frontend sends, converts Python dicts into JSON, tracks session
 from flask_cors import CORS # lets frontend talk to flask
 import os # needed for os.getenv()
@@ -9,11 +7,9 @@ from dotenv import load_dotenv # loads env file
 from fetch_orgs import fetch_orgs, select_orgs, fetch_org
 from scoring import generate_user_profile
 from werkzeug.security import generate_password_hash, check_password_hash
-# from questions import get_quiz_data
 from redis_cache import *
 import uuid # for user id
 import time
-import json # for json.dumps when adding to Users table
 
 load_dotenv()
 
@@ -53,24 +49,6 @@ def get_questions():
     return jsonify(get_quiz_data())
 
 @app.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
-
-# def submit_quiz():
-#     data = request.get_json()
-#     # name = data['name']
-#     responses = data['responses']
-
-#     user_profile = generate_user_profile(name, responses)
-
-#     if not user_profile:
-#         return jsonify({'error': 'failed to generate the profile'})
-
-#     #to_fetch
-#     """
-#     for cause in user_profile['tags_list_to_fetch']:
-#         fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
-#     """
-#     #nonprofits
-
 def submit_quiz():
     data = request.get_json() or {}
     # name = data.get('name', 'User')
@@ -105,8 +83,11 @@ def submit_quiz():
 @app.route('/api/refresh_orgs', methods=['GET']) # gets the orgs needed
 # get bc react is asking for the org data
 def get_orgs():
-    # migrate to redis
-    user_id = '123456789' # TODO: configure with auth
+
+    user_id = session.get('user_id')
+    if not user_id:
+      return jsonify({"error": "Not logged in"}), 401
+    
     user_tags, user_wts = get_user_weights(user_id)
 
     tags_to_fetch = [tag for tag in user_tags if not is_cached(tag)]
@@ -125,7 +106,6 @@ def get_orgs():
 
     
     next_batch = get_next_batch(user_id, user_wts, 10)
-    # TODO: add shown logic for the sent batch
 
     return jsonify(next_batch)
     # sends to react as json
@@ -143,7 +123,9 @@ def score_orgs():
     # checks saved user weights, fetches any missing tag
     # builds nonprofit list in redis
 
-    user_id = '123456789' # TODO: replace with auth
+    user_id = session.get('user_id')
+    if not user_id:
+      return jsonify({"error": "Not logged in"}), 401
 
     user_tags, user_wts = get_user_weights(user_id)
 
@@ -180,7 +162,9 @@ def score_orgs():
 def get_batch():
     # returns the next batch of nonprofit cards for the frontend
     # this assumes score_orgs has already prepped/cached the orgs
-    user_id = '123456789' # TODO: replace with auth
+    user_id = session.get('user_id')
+    if not user_id:
+      return jsonify({"error": "Not logged in"}), 401
 
     batch_size = int(request.args.get('limit', 20))
     user_tags, user_wts = get_user_weights(user_id)
@@ -263,7 +247,7 @@ def get_favorites():
     # returns a plain array of org objects
 
 
-# AUTH ENDPOINTS
+# ---------------------------------------------- AUTH ENDPOINTS  ----------------------------------------------
 
 @app.route("/api/register", methods=['POST'])
 def register():
