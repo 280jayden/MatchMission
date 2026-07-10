@@ -1,8 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css"
 import { useState } from "react";
+import { useAuth } from "../components/AuthProvider.jsx";
 
 function LogIn() {
+  const { refreshUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ function LogIn() {
 
     if (response.ok) {
       console.log("logged in")
+      await refreshUser();
       navigate("/");
     } else {
       console.log(data.error)

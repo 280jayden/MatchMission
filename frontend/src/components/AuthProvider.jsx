@@ -6,8 +6,7 @@ function AuthProvider({ children }){
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadUser() {
+  async function refreshUser() {
 
       try{
         const response = await fetch("/api/get_current_user", {
@@ -31,7 +30,10 @@ function AuthProvider({ children }){
       }
     
     }
-    loadUser();
+
+
+  useEffect(() => {
+    refreshUser();
   }, []);
 
   function hasTakenQuiz(){
@@ -39,7 +41,7 @@ function AuthProvider({ children }){
   }
 
   return(
-    <AuthContext.Provider value={{ user, setUser, loading, hasTakenQuiz }}>
+    <AuthContext.Provider value={{ user, setUser, loading, hasTakenQuiz, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

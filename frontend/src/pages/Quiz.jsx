@@ -40,7 +40,7 @@ function Quiz() {
     setLoading(true)
 
     try {
-      const response = await fetch("/api/quiz", {
+      const quizResponse = await fetch("/api/quiz", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,15 +49,33 @@ function Quiz() {
         body: JSON.stringify({ responses: formattedAnswers })
       });
 
-      const data = await response.json();
+      const quizData = await quizResponse.json();
 
-      if (response.ok) {
-        console.log("successfully sent answers to db")
-        navigate("/result");
-      } else {
+      if (!quizResponse.ok) {
+        // console.log("successfully sent answers to db")
+        // navigate("/result");
         console.log(data.error)
         setLoading(false)
+        return;
       }
+
+      console.log("successfully sent answers to db")
+
+      const scoreResponse = await fetch("/api/score_orgs", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const scoreData = await scoreResponse.json();
+
+      if (!scoreResponse.ok) {
+        console.log(data.error)
+        setLoading(false)
+        return;
+      }
+
+      navigate("/result");
+
     } catch (err) {
       console.log(err)
       setLoading(false)

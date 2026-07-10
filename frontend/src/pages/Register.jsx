@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css"
+import { useAuth } from "../components/AuthProvider.jsx";
 
 function Register() {
+  const { refreshUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,6 +29,7 @@ function Register() {
 
     if (response.ok) {
       console.log("logged in")
+      await refreshUser();
       navigate("/");
     } else {
       console.log(data.error)

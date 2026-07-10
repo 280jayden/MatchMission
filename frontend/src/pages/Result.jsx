@@ -6,7 +6,7 @@ function Result() {
 
   const getResults = async () => {
 
-    const response = await fetch("/api/refresh_orgs", {
+    const response = await fetch("/api/get_batch", {
       method: "GET",
       credentials: "include"
     });
@@ -15,7 +15,9 @@ function Result() {
 
     if (response.ok) {
       console.log("yuh")
-      setOrgs(data)
+      setOrgs(data.nonprofits)
+
+      console.log(data.nonprofits)
     } else {
       console.log(data.error)
     }

@@ -16,6 +16,8 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'production_12347asy39nowzxuyexoiwokx982j3947mpz8vnt4ikde86h7878tgehas')
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True
 
 engine = db.create_engine('sqlite:///MatchMission.db')
 
@@ -274,6 +276,8 @@ def register():
             "INSERT INTO Users (id, email, password_hash) VALUES (:id, :email, :password_hash)"
         ), {"id": generated_id, "email": email, "password_hash": password_hash})
         connection.commit()
+
+        session['user_id'] = generated_id
 
 
         return jsonify({"success": True, "message": "Account created."}), 201

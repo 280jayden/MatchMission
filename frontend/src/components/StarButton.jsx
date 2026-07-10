@@ -3,20 +3,20 @@ import fullStar from "../assets/full_star.png";
 import emptyStar from "../assets/empty_star.png";
 import "./OrgCard.css"
 
-function StarButton({ein}) { 
-  const [starred, setStarred] = useState(false);
+function StarButton({ein, initialStarred = false}) { 
+  const [starred, setStarred] = useState(initialStarred);
 
   async function handleStar() {
     const api_url = (!starred ? "/api/favorite" : "/api/unfavorite"); //change the unfavorite url to what they make the endpoint
 
     const response = await fetch(api_url, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        credentials: "include"
       },
       body: JSON.stringify({
-        profileUrl: ein, // ein: the identification number of the org to be favorited
+        ein: ein, // ein: the identification number of the org to be favorited
       }),
     });
 
