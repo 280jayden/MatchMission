@@ -28,10 +28,7 @@ with engine.connect() as connection:
             profileUrl TEXT PRIMARY KEY,
             websiteUrl TEXT,
             location TEXT,
-            tags TEXT,
-            score REAL,
-            shown BOOL,
-            favorited BOOL
+            tags TEXT
         );
     """))
     connection.execute(db.text("""
