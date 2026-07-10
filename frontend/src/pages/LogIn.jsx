@@ -21,6 +21,7 @@ function LogIn() {
 
     if (response.ok) {
       console.log("logged in")
+      // await refreshUser();
       navigate("/");
     } else {
       console.log(data.error)
