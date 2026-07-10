@@ -8,6 +8,7 @@ function Result() {
 
     const response = await fetch("/api/refresh_orgs", {
       method: "GET",
+      credentials: "include"
     });
 
     const data = await response.json();

@@ -45,6 +45,7 @@ function Quiz() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ responses: formattedAnswers })
       });
 

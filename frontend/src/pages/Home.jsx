@@ -3,13 +3,16 @@ import "./Home.css"
 import logo from "../assets/mm_logo.png";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAuth } from "../components/AuthProvider";
 
 function Home() {
+  const { hasTakenQuiz } = useAuth();
   const navigate = useNavigate();
 
   const getUser = async () => {
     const response = await fetch("/api/get_current_user", { 
       method: "GET",
+      credentials: "include"
     });
 
     const data = await response.json();
@@ -31,7 +34,18 @@ function Home() {
       <div>
         <img src={logo} alt="MatchMission logo" className="logo"/>
         <p>MatchMission helps you discover nonprofits that fit your passions through a personalized quiz and smart recommendations, making it easier to support causes that matter to you.</p>
-        <button onClick={()=> navigate("/quiz")}>TAKE QUIZ</button>
+          <button onClick={()=> navigate("/quiz")}>TAKE QUIZ</button>
+
+
+          {/* later to make it adaptive uncomment this
+          { hasTakenQuiz ? ( 
+              <button onClick={()=> navigate("/result")}>VIEW RESULTS</button>
+            ) : ( 
+              <button onClick={()=> navigate("/quiz")}>TAKE QUIZ</button>
+            )
+          }
+          */}
+          
       </div>
 
       <div>

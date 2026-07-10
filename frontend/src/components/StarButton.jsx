@@ -13,6 +13,7 @@ function StarButton({ein}) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        credentials: "include"
       },
       body: JSON.stringify({
         profileUrl: ein, // ein: the identification number of the org to be favorited
