@@ -136,12 +136,24 @@ def score_orgs():
 
     tags_to_fetch = [tag for tag in user_tags if not is_cached(tag)]
     fetched_tags = []
-
+    failed_tags = []
+    
     for tag in tags_to_fetch:
-        np_eins, nonprofits_info = fetch_orgs(user_wts, tag, 100, engine)
-        cache_tags(tag, np_eins)
-        load_nonprofits_json(nonprofits_info)
-        fetched_tags.append(tag)
+      try:
+          np_eins, nonprofits_info = fetch_orgs(user_wts, tag, 100, engine)
+
+          if not np_eins:
+              failed_tags.append(tag)
+              continue
+
+          cache_tags(tag, np_eins)
+          load_nonprofits_json(nonprofits_info)
+          fetched_tags.append(tag)
+
+      except Exception as e:
+          print(f"Failed to fetch/cache tag '{tag}': {e}")
+          failed_tags.append(tag)
+          continue
 
     # rank nonprofits using the user's weights and the cached tag sets
     # it also removes orgs already marked as shown

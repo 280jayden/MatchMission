@@ -37,7 +37,7 @@ function Navbar() {
         <div className="nav-links">
           <Link to="/">Home</Link>
 
-          { hasTakenQuiz ? (
+          { hasTakenQuiz() ? (
               <Link to="/result">Recommendations</Link>
             ) : (
               <Link to="/quiz">Quiz</Link>
