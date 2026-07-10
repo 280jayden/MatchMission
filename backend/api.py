@@ -171,7 +171,7 @@ def score_orgs():
     # it can call /api/get_batch afterward to get full nonprofit cards
     return jsonify({
         "success": True, 
-        "tags":, user_tags,
+        "tags": user_tags,
         "fetchedTags": fetched_tags,
         "scoredCount": len(scored_batch)
     })
@@ -264,19 +264,6 @@ def get_favorites():
     # return a plain array of org objects
 
 
-# endpoint toget all saved orgs
-@app.route('/api/favorites', methods=['GET'])
-def get_favorites():
-    with engine.connect() as connection:
-        result = connection.execute(db.text(
-            "SELECT * FROM NonProfits WHERE favorited = TRUE"
-        ))
-        rows = result.mappings().all()
-
-    return jsonify([dict(row) for row in rows])
-    # return a plain array of org objects
-
-
 # AUTH ENDPOINTS
 
 @app.route("/api/register", methods=['POST'])
@@ -307,6 +294,8 @@ def register():
             "INSERT INTO Users (id, email, password_hash) VALUES (:id, :email, :password_hash)"
         ), {"id": generated_id, "email": email, "password_hash": password_hash})
         connection.commit()
+
+        session['user_id'] = generated_id
 
 
         return jsonify({"success": True, "message": "Account created."}), 201
