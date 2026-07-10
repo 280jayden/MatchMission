@@ -3,7 +3,7 @@ import StarButton from "./StarButton";
 import logo from "../assets/mm_logo.png";
 import { useNavigate } from "react-router-dom";
 
-function OrgCard({ org }) { 
+function OrgCard({ org, forceStarred = false }) { 
   const navigate = useNavigate();
 
   function resizeImg(url) {
@@ -58,7 +58,7 @@ function OrgCard({ org }) {
           {org.websiteUrl ? "THEIR WEBSITE" : "NO WEBSITE"}
         </button>
 
-        <StarButton ein={org.ein}/> 
+        <StarButton ein={org.ein} initialStarred={forceStarred}/> 
       </div>
     </div>
   )

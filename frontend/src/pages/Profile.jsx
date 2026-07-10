@@ -16,7 +16,7 @@ function Profile() {
 
     if (response.ok) {
       console.log("yuh")
-      setOrgs(data)
+      setOrgs(data.favorites)
     } else {
       console.log(data.error)
     }
@@ -33,18 +33,22 @@ function Profile() {
 
       <h2 style={{textAlign:"center"}}>Your Saved Organizations</h2>
       <div className="card-container">
-        {orgs ? (
+        {orgs.length > 0 ? (
           orgs.map((org) => (
           <OrgCard 
             key={org.ein} 
-            nonprofit={org}
+            org={org}
+            forceStarred={true}
           />
         ))
         ):(
-          <p>No saved organizations</p>
+          orgs ? (
+            <p style={{textAlign:"center"}}>No saved organizations</p>
+          ):(
+            <p style={{textAlign:"center"}}>Error fetching saved organizations</p>
+          )
         )}
       </div>
-      <p style={{textAlign:"center"}}>This feature is currently a work in progress.</p>
     </div>
   )
 }
