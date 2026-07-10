@@ -257,7 +257,9 @@ def get_favorites():
     
     user_favorites = get_favorites_redis(user_id)
 
-    return user_favorites
+    favorites_np_data = get_nonprofits(user_favorites)
+
+    return jsonify({"success": True, "favorites": favorites_np_data})
     # returns a plain array of org objects
 
 
