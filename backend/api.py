@@ -1,6 +1,4 @@
 import json
-from flask import Flask, request, jsonify # creates web server, lets you read json data frontend sends, converts Python dicts into JSON
-
 from flask import Flask, request, jsonify, session # creates web server, lets you read json data frontend sends, converts Python dicts into JSON, tracks session
 from flask_cors import CORS # lets frontend talk to flask
 import os # needed for os.getenv()
@@ -9,11 +7,9 @@ from dotenv import load_dotenv # loads env file
 from fetch_orgs import fetch_orgs, select_orgs, fetch_org
 from scoring import generate_user_profile
 from werkzeug.security import generate_password_hash, check_password_hash
-# from questions import get_quiz_data
 from redis_cache import *
 import uuid # for user id
 import time
-import json # for json.dumps when adding to Users table
 
 load_dotenv()
 
@@ -34,10 +30,7 @@ with engine.connect() as connection:
             profileUrl TEXT PRIMARY KEY,
             websiteUrl TEXT,
             location TEXT,
-            tags TEXT,
-            score REAL,
-            shown BOOL,
-            favorited BOOL
+            tags TEXT
         );
     """))
     connection.execute(db.text("""
@@ -55,24 +48,6 @@ def get_questions():
     return jsonify(get_quiz_data())
 
 @app.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
-
-# def submit_quiz():
-#     data = request.get_json()
-#     # name = data['name']
-#     responses = data['responses']
-
-#     user_profile = generate_user_profile(name, responses)
-
-#     if not user_profile:
-#         return jsonify({'error': 'failed to generate the profile'})
-
-#     #to_fetch
-#     """
-#     for cause in user_profile['tags_list_to_fetch']:
-#         fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
-#     """
-#     #nonprofits
-
 def submit_quiz():
     data = request.get_json() or {}
     # name = data.get('name', 'User')
@@ -107,8 +82,11 @@ def submit_quiz():
 @app.route('/api/refresh_orgs', methods=['GET']) # gets the orgs needed
 # get bc react is asking for the org data
 def get_orgs():
-    # migrate to redis
-    user_id = '123456789' # TODO: configure with auth
+
+    user_id = session.get('user_id')
+    if not user_id:
+      return jsonify({"error": "Not logged in"}), 401
+    
     user_tags, user_wts = get_user_weights(user_id)
 
     tags_to_fetch = [tag for tag in user_tags if not is_cached(tag)]
@@ -127,7 +105,6 @@ def get_orgs():
 
     
     next_batch = get_next_batch(user_id, user_wts, 10)
-    # TODO: add shown logic for the sent batch
 
     return jsonify(next_batch)
     # sends to react as json
@@ -145,7 +122,9 @@ def score_orgs():
     # checks saved user weights, fetches any missing tag
     # builds nonprofit list in redis
 
-    user_id = '123456789' # TODO: replace with auth
+    user_id = session.get('user_id')
+    if not user_id:
+      return jsonify({"error": "Not logged in"}), 401
 
     user_tags, user_wts = get_user_weights(user_id)
 
@@ -182,7 +161,9 @@ def score_orgs():
 def get_batch():
     # returns the next batch of nonprofit cards for the frontend
     # this assumes score_orgs has already prepped/cached the orgs
-    user_id = '123456789' # TODO: replace with auth
+    user_id = session.get('user_id')
+    if not user_id:
+      return jsonify({"error": "Not logged in"}), 401
 
     batch_size = int(request.args.get('limit', 20))
     user_tags, user_wts = get_user_weights(user_id)
@@ -214,59 +195,58 @@ def get_batch():
         'nonprofits': nonprofits
     })
 
-@app.route('/api/favorite', methods=['POST']) # records when a user favorites an org
-# post bc react is sending the data
+
+# records when a user favorites an org
+@app.route('/api/favorite', methods=['POST'])
 def favorite_org():
     # get the json body
-    data = request.get_json()
-    profile_url = data['profileUrl']
+    data = request.get_json() or {}
+    np_ein = data['ein']
+    user_id = session.get('user_id', None)
 
-    # flip favorited to true in the database
-    with engine.connect() as connection:
-        connection.execute(db.text(
-            "UPDATE NonProfits SET favorited = TRUE WHERE profileUrl = :url"
-        ), {"url": profile_url})
-        connection.commit()
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+
+    # add np_ein to favorited set in redis
+    mark_favorited(user_id, np_ein)
+
     return jsonify({"success": True})
 
 
-@app.route('/api/unfavorite', methods=['POST']) # records when a user un-favorites an org
-# post bc react is sending the data
+# records when a user un-favorites an org
+@app.route('/api/unfavorite', methods=['POST']) 
 def unfavorite_org():
     # get the json body
-    data = request.get_json()
-    profile_url = data['profileUrl']
+    data = request.get_json() or {}
+    np_ein = data['ein']
+    user_id = session.get('user_id', None)
 
-    # flip favorited to true in the database
-    with engine.connect() as connection:
-        connection.execute(db.text(
-            "UPDATE NonProfits SET favorited = FALSE WHERE profileUrl = :url"
-        ), {"url": profile_url})
-        connection.commit()
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+
+    # remove np_ein from favorited set in redis
+    unmark_favorited(user_id, np_ein)
+
     return jsonify({"success": True})
 
-"""
-endpoints to add
 
-add redis support, updated sql support
-
-
-"""
-
-# endpoint toget all saved orgs
+# endpoint to get all favorited orgs
 @app.route('/api/favorites', methods=['GET'])
 def get_favorites():
-    with engine.connect() as connection:
-        result = connection.execute(db.text(
-            "SELECT * FROM NonProfits WHERE favorited = TRUE"
-        ))
-        rows = result.mappings().all()
+    user_id = session.get('user_id', None)
 
-    return jsonify([dict(row) for row in rows])
-    # return a plain array of org objects
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+    
+    user_favorites = get_favorites_redis(user_id)
+
+    favorites_np_data = get_nonprofits(user_favorites)
+
+    return jsonify({"success": True, "favorites": favorites_np_data})
+    # returns a plain array of org objects
 
 
-# AUTH ENDPOINTS
+# ---------------------------------------------- AUTH ENDPOINTS  ----------------------------------------------
 
 @app.route("/api/register", methods=['POST'])
 def register():
