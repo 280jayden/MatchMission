@@ -1,4 +1,5 @@
-import "./OrgCard.css"
+
+import "../styles/OrgCard.css";
 import StarButton from "./StarButton";
 import logo from "../assets/mm_logo.png";
 import { useNavigate } from "react-router-dom";

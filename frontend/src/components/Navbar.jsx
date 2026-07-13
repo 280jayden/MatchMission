@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/mm_logo.png";
-import "./Navbar.css"
+import "../styles/Navbar.css";
 import { useAuth } from "./AuthProvider";
 
 function Navbar() {

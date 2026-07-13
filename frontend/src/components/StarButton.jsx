@@ -1,7 +1,7 @@
 import { useState } from "react";
 import fullStar from "../assets/full_star.png";
 import emptyStar from "../assets/empty_star.png";
-import "./OrgCard.css"
+import "../styles/OrgCard.css";
 
 function StarButton({ein, initialStarred = false}) { 
   const [starred, setStarred] = useState(initialStarred);

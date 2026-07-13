@@ -1,4 +1,4 @@
-import "./QuestionCard.css"
+import "../styles/QuestionCard.css";
 
 function QuestionCard({qid, question, type, options, value, onChange}) {
   return (
