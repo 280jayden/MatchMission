@@ -3,11 +3,20 @@ import fullStar from "../assets/full_star.png";
 import emptyStar from "../assets/empty_star.png";
 import "../styles/OrgCard.css";
 
+/**
+ * Toggle button for adding or removing an organization
+ * from the user's favorites.
+ * 
+ *  * Props:
+ * - ein: Employer Identification Number of the organization.
+ * - initialStarred: Whether the organization starts in the favorited state. Optional
+ */
+
 function StarButton({ein, initialStarred = false}) { 
   const [starred, setStarred] = useState(initialStarred);
 
   async function handleStar() {
-    const api_url = (!starred ? "/api/favorite" : "/api/unfavorite"); //change the unfavorite url to what they make the endpoint
+    const api_url = (!starred ? "/api/favorite" : "/api/unfavorite"); 
 
     const response = await fetch(api_url, {
       method: "POST",
@@ -16,7 +25,7 @@ function StarButton({ein, initialStarred = false}) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ein: ein, // ein: the identification number of the org to be favorited
+        ein: ein,
       }),
     });
 

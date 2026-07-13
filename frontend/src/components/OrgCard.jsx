@@ -4,6 +4,14 @@ import StarButton from "./StarButton";
 import logo from "../assets/mm_logo.png";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Displays a nonprofit organization summary card.
+ *
+ * Props:
+ * - org: Organization object containing display information.
+ * - forceStarred: Initial favorite state for the star button.
+ */
+
 function OrgCard({ org, forceStarred = false }) { 
   const navigate = useNavigate();
 

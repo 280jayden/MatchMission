@@ -14,15 +14,13 @@ function Home() {
       <div>
         <img src={logo} alt="MatchMission logo" className="logo"/>
         <p>MatchMission helps you discover nonprofits that fit your passions through a personalized quiz and smart recommendations, making it easier to support causes that matter to you.</p>
-          {/* <button onClick={()=> navigate("/quiz")}>TAKE QUIZ</button> */}
-
-
-          { hasTakenQuiz() ? ( 
-              <button onClick={()=> navigate("/result")}>VIEW RESULTS</button>
-            ) : ( 
-              <button onClick={()=> navigate("/quiz")}>TAKE QUIZ</button>
-            )
-          }
+        
+        { hasTakenQuiz() ? ( 
+            <button onClick={()=> navigate("/result")}>VIEW RESULTS</button>
+          ) : ( 
+            <button onClick={()=> navigate("/quiz")}>TAKE QUIZ</button>
+          )
+        }
          
           
       </div>
