@@ -2,18 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/mm_logo.png";
 import "../styles/Navbar.css";
 import { useAuth } from "./AuthProvider";
+import { LogoutResponse } from "../types/api"
 
 /**
  * Main navigation bar for the application.
  * Displays navigation links based on authentication
  * and whether the user has completed the quiz.
  */
-
-type LogoutResponse = {
-  success?: boolean;
-  message?: string;
-  error?: string;
-};
 
 function Navbar() {
   const navigate = useNavigate();

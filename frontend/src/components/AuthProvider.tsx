@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, Dispatch, SetStateAction } from "react";
 import type { User } from "../types/user";
+import type { CurrentUserResponse } from "../types/api";
 
 /**
  * Provides global authentication state for the application.
@@ -12,15 +13,10 @@ import type { User } from "../types/user";
 
 type AuthContextType = {
   user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setUser: Dispatch<React.SetStateAction<User | null>>;
   loading: boolean;
   hasTakenQuiz: () => boolean;
   refreshUser: () => Promise<void>;
-};
-
-type CurrentUserResponse = {
-  user_id: string;
-  has_taken_quiz: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
