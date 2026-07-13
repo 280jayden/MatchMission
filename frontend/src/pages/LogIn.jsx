@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import "./Auth.css"
+import "../styles/Auth.css";
 import { useState } from "react";
 import { useAuth } from "../components/AuthProvider.jsx";
 

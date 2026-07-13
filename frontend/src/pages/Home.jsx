@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar"
-import "./Home.css"
+import "../styles/Home.css";
 import logo from "../assets/mm_logo.png";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";

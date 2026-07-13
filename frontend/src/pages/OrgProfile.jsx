@@ -1,4 +1,4 @@
-import "./OrgProfile.css"
+import "../styles/OrgProfile.css";
 import logo from "../assets/mm_logo.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
