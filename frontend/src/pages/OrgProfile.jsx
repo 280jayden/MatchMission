@@ -10,23 +10,6 @@ function OrgProfile() {
   const [loading, setLoading] = useState(true) 
   const navigate = useNavigate();
 
-  function resizeImg(url) {
-    // Every.org stores logo images on Cloudinary. Replace the default
-    // thumbnail transformations with a larger square image.
-    // Original Example https://res.cloudinary.com/everydotorg/image/upload/c_lfill,w_24,h_24,dpr_2/c_crop,ar_24:24/q_auto,f_auto,fl_progressive/profile_pics/xumk7i0itod4uilqg9vt
-    if (!url) {
-      return ""
-    }
-
-    const parts = url.split("/");
-
-    // Replace the default thumbnail transformations with a larger square image.
-    parts[6] = 'c_lfill,w_600,h_600,dpr_2';
-    parts[7] = 'c_crop,ar_600:600';
-
-    return parts.join("/");
-  }
-
   useEffect(() => {
     // Fetch organization details when the profile page loads
     // or when the EIN in the URL changes.
@@ -82,7 +65,7 @@ function OrgProfile() {
           <button onClick={() => navigate("/result")}>Back</button>
 
           <img
-            src={resizeImg(org.logoUrl) || logo}
+            src={org.logoUrl || logo}
             alt="organization logo"
             className="org-img"
           />

@@ -15,25 +15,10 @@ import { useNavigate } from "react-router-dom";
 function OrgCard({ org, forceStarred = false }) { 
   const navigate = useNavigate();
 
-  function resizeImg(url) {
-    if (!url) {
-      return ""
-    }
-
-    const parts = url.split("/");
-
-    parts[6] = 'c_lfill,w_600,h_600,dpr_2';
-    parts[7] = 'c_crop,ar_600:600';
-
-    // original ex https://res.cloudinary.com/everydotorg/image/upload/c_lfill,w_24,h_24,dpr_2/c_crop,ar_24:24/q_auto,f_auto,fl_progressive/profile_pics/xumk7i0itod4uilqg9vt
-
-    return parts.join("/");
-  }
-
   return (
     <div className="item-card org-card">
       <div className="org-top">
-        <img src={resizeImg(org.logoUrl) || logo} alt="organization logo" className="org-img"/>
+        <img src={resizeImg || logo} alt="organization logo" className="org-img"/>
 
         <div>
           <h2>{org.name}</h2>
