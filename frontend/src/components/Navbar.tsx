@@ -9,6 +9,12 @@ import { useAuth } from "./AuthProvider";
  * and whether the user has completed the quiz.
  */
 
+type LogoutResponse = {
+  success?: boolean;
+  message?: string;
+  error?: string;
+};
+
 function Navbar() {
   const navigate = useNavigate();
   const { user, setUser, hasTakenQuiz } = useAuth();
@@ -26,7 +32,7 @@ function Navbar() {
       credentials: "include",
     });
 
-    const data = await response.json();
+    const data: LogoutResponse = await response.json();
 
     if (response.ok) {
       console.log("logged out")
