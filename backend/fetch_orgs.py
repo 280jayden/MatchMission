@@ -75,7 +75,7 @@ cause_list = {
     "youth",
 }
 
-def resizeImg(url):
+def resize_image(url):
     """
     Converts an Every.org Cloudinary logo URL into a larger square image.
 
@@ -123,7 +123,7 @@ def fetch_orgs(user_causes, cause, num_of_results, engine):
 
     df = df.replace({np.nan: None})
 
-    df["logoUrl"] = df["logoUrl"].apply(resizeImg)
+    df["logoUrl"] = df["logoUrl"].apply(resize_image)
     
     # np_eins = df['ein'].tolist()
     # np_info_dicts = df.to_dict('records')
@@ -214,6 +214,6 @@ def fetch_org(ein):
     nonprofit = result.get("data", {})
 
     if nonprofit.get("logoUrl"):
-        nonprofit["logoUrl"] = resizeImg(nonprofit["logoUrl"])
+        nonprofit["logoUrl"] = resize_image(nonprofit["logoUrl"])
 
     return nonprofit
