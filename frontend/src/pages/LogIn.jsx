@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import "./Auth.css"
+import "../styles/Auth.css";
 import { useState } from "react";
 import { useAuth } from "../components/AuthProvider.jsx";
 
@@ -22,6 +22,8 @@ function LogIn() {
     const data = await response.json();
 
     if (response.ok) {
+      // Refresh the global auth state so the navbar and protected routes
+      // immediately reflect the logged-in user.
       console.log("logged in")
       await refreshUser();
       navigate("/");
