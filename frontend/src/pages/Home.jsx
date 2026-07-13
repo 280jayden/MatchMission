@@ -9,26 +9,6 @@ function Home() {
   const { hasTakenQuiz } = useAuth();
   const navigate = useNavigate();
 
-  const getUser = async () => {
-    const response = await fetch("/api/get_current_user", { 
-      method: "GET",
-      credentials: "include"
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      console.log("response ok")
-      console.log(data)
-    } else {
-      console.log(data.error)
-    }
-  }
-
-  useEffect(() => { //so we can get results when it starts
-    getUser();
-  }, []);
-  
   return (
     <div className="home-container">
       <div>
