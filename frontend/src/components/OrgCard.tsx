@@ -1,4 +1,5 @@
-import "./OrgCard.css"
+
+import "../styles/OrgCard.css";
 import StarButton from "./StarButton";
 import logo from "../assets/mm_logo.png";
 import { useNavigate } from "react-router-dom";
@@ -10,12 +11,20 @@ type OrgCardProps = {
 };
 
 function OrgCard({ org, forceStarred = false }: OrgCardProps) {
+/**
+ * Displays a nonprofit organization summary card.
+ *
+ * Props:
+ * - org: Organization object containing display information.
+ * - forceStarred: Initial favorite state for the star button.
+ */
+
   const navigate = useNavigate();
 
   return (
     <div className="item-card org-card">
       <div className="org-top">
-        <img src={resizeImg(org.logoUrl) || logo} alt="organization logo" className="org-img"/>
+        <img src={org.logoUrl || logo} alt="organization logo" className="org-img"/>
 
         <div>
           <h2>{org.name}</h2>
