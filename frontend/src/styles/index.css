@@ -25,8 +25,7 @@ h1 {
   font-family: "DM Sans";
   font-size: 60px;
   font-style: normal;
-  font-weight: 700;
-  line-height: 24px;
+  line-height: 1.6;
   letter-spacing: 0.15px;
   margin-top: 0;
 }
@@ -37,7 +36,7 @@ h2 {
   font-size: 35px;
   font-style: normal;
   font-weight: 700;
-  line-height: 24px;
+  line-height: 1;
   letter-spacing: 0.15px;
   margin-top: 0;
 }
@@ -61,6 +60,25 @@ button {
   border-radius: 30px;
   border: 5px solid #778D67;
   background: #AECCAA;
+  width: 301px;
+  height: 66px;
+
+  /* for the text */
+  color: #000;
+  text-align: center;
+  font-family: "DM Sans";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+}
+
+button:disabled {
+  /* for the button */
+  border-radius: 30px;
+  border: 5px solid #8d908b;
+  background: #cfd6ce;
   width: 301px;
   height: 66px;
 

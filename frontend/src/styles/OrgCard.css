@@ -1,0 +1,57 @@
+.org-card {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.org-top {
+  display: flex;
+  gap: 60px;
+}
+
+.org-bot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(20px, 3vw, 150px);
+}
+
+.org-img {
+  width: clamp(150px, 40%, 500px); 
+  height: clamp(150px, 40%, 500px);
+  border-radius: 30px;
+}
+
+.star-button {
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 0px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.org-card .norm-button {
+  height: clamp(70px, 5vw, 150px);
+  width: clamp(70px, 25vw, 1000px);
+  font-size: clamp(1rem, 1.5vw, 2rem);
+}
+
+.tag {
+  display: inline-block;
+  background-color: var(--secondary2);
+  color: white;
+  padding: 15px;
+  border-radius: 20px;
+}
+
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}

@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./Auth.css"
+import "../styles/Auth.css";
+
+import { useAuth } from "../components/AuthProvider.jsx";
 
 function Register() {
+  const { refreshUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,18 +17,22 @@ function Register() {
       return;
     }
 
-    const response = await fetch("http://localhost:5000/api/register", {
+    const response = await fetch("/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({email, password})
     });
 
     const data = await response.json();
 
     if (response.ok) {
+      // Refresh the global auth state so the navbar and protected routes
+      // immediately reflect the logged-in user.
       console.log("logged in")
+      await refreshUser();
       navigate("/");
     } else {
       console.log(data.error)

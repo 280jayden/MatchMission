@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import sqlalchemy as db
 import json
+import numpy as np
 
 
 cause_list = {
@@ -74,6 +75,31 @@ cause_list = {
     "youth",
 }
 
+def resize_image(url):
+    """
+    Converts an Every.org Cloudinary logo URL into a larger square image.
+
+    Every.org stores organization logos using Cloudinary transformations.
+    This function replaces the default thumbnail transformations with a
+    higher-resolution 600x600 version suitable for display.
+
+    Args:
+        url (str): Original Cloudinary image URL.
+
+    Returns:
+        str: Updated image URL with larger dimensions, or an empty string
+        if no URL is provided.
+    """
+    if not url:
+      return ""
+
+    parts = url.split("/")
+
+    # Replace the default thumbnail transformations with a larger square image.
+    parts[6] = 'c_lfill,w_600,h_600,dpr_2'
+    parts[7] = 'c_crop,ar_600:600'
+
+    return "/".join(parts)
 
 def fetch_orgs(user_causes, cause, num_of_results, engine):
     myEveryorgApiKey = os.getenv('EVERYORG_KEY')
@@ -96,9 +122,14 @@ def fetch_orgs(user_causes, cause, num_of_results, engine):
     'websiteUrl', 'donationUrl', 'logoUrl', 'coverImageUrl', 'slug', 'location', 'tags'])
 
     df = df.replace({np.nan: None})
+
+    df["logoUrl"] = df["logoUrl"].apply(resize_image)
     
-    np_eins = df['ein'].tolist()
-    np_info_dicts = df.to_dict('records')
+    # np_eins = df['ein'].tolist()
+    # np_info_dicts = df.to_dict('records')
+
+    np_eins = [ein for ein in df['ein'].tolist() if ein is not None]  # clean list, only for redis
+    np_info_dicts = df.to_dict('records')  # untouched, still has None for missing eins, safe for JSON
 
     return np_eins, np_info_dicts
 
@@ -159,3 +190,30 @@ def display_orgs(nonprofits):
         print("Website URL: ", nonprofit.websiteUrl)
         print()
 
+
+def fetch_org(ein):
+    """
+    Fetches a single nonprofit organization from the Every.org API.
+
+    Retrieves nonprofit information using the organization's EIN and
+    formats the logo URL into a larger display image if available.
+
+    Args:
+        ein (str): Employer Identification Number of the nonprofit.
+
+    Returns:
+        dict: Nonprofit information returned from the Every.org API.
+              Returns an empty dictionary if no data is found.
+    """
+    apiKey = os.getenv('EVERYORG_KEY')
+
+    # GET request
+    response = requests.get(f"https://partners.every.org/v0.2/nonprofit/{ein}?apiKey={apiKey}")
+    result = response.json()
+
+    nonprofit = result.get("data", {})
+
+    if nonprofit.get("logoUrl"):
+        nonprofit["logoUrl"] = resize_image(nonprofit["logoUrl"])
+
+    return nonprofit

@@ -1,14 +1,28 @@
 import Navbar from "../components/Navbar"
-import "./Home.css"
+import "../styles/Home.css";
 import logo from "../assets/mm_logo.png";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuth } from "../components/AuthProvider";
 
 function Home() {
+  const { hasTakenQuiz } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <div className="home-container">
       <div>
         <img src={logo} alt="MatchMission logo" className="logo"/>
         <p>MatchMission helps you discover nonprofits that fit your passions through a personalized quiz and smart recommendations, making it easier to support causes that matter to you.</p>
-        <button>TAKE QUIZ</button>
+        
+        { hasTakenQuiz() ? ( 
+            <button onClick={()=> navigate("/result")}>VIEW RESULTS</button>
+          ) : ( 
+            <button onClick={()=> navigate("/quiz")}>TAKE QUIZ</button>
+          )
+        }
+         
+          
       </div>
 
       <div>

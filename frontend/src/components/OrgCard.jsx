@@ -1,11 +1,24 @@
-import "./OrgCard.css"
-import StarButton from "./StarButton";
 
-function OrgCard({ org }) { // would pass in a json later but for now....
+import "../styles/OrgCard.css";
+import StarButton from "./StarButton";
+import logo from "../assets/mm_logo.png";
+import { useNavigate } from "react-router-dom";
+
+/**
+ * Displays a nonprofit organization summary card.
+ *
+ * Props:
+ * - org: Organization object containing display information.
+ * - forceStarred: Initial favorite state for the star button.
+ */
+
+function OrgCard({ org, forceStarred = false }) { 
+  const navigate = useNavigate();
+
   return (
     <div className="item-card org-card">
       <div className="org-top">
-        <img src={org.logoUrl} alt="organization logo" className="org-img"/>
+        <img src={resizeImg || logo} alt="organization logo" className="org-img"/>
 
         <div>
           <h2>{org.name}</h2>
@@ -13,7 +26,7 @@ function OrgCard({ org }) { // would pass in a json later but for now....
           <p style={{marginBottom: "50px"}}>{org.description}</p>
 
           <h3>Tags:</h3>
-          <div>
+          <div className="tag-container">
             {org.tags.map((tag, index) => (
               <span key={index} className="tag">
                 {tag}
@@ -24,21 +37,22 @@ function OrgCard({ org }) { // would pass in a json later but for now....
       </div>
 
       <div className="org-bot">
-        <button
-          onClick={() => window.open(org.websiteUrl, "_blank")}
-          className="norm-button"
-        >
+        <button onClick={() => navigate(`/org/${org.ein}`)} className="norm-button">
           PROFILE
         </button>
+        
+        <button
+          onClick={() => {
+            const url = org.websiteUrl.startsWith("http") ? org.websiteUrl : `https://${org.websiteUrl}`;
+            window.open(url, "_blank");
+          }}
+          className="norm-button"
+          disabled={!org.websiteUrl}
+        >
+          {org.websiteUrl ? "THEIR WEBSITE" : "NO WEBSITE"}
+        </button>
 
-        <button onClick={() => console.log("button pressed")} className="norm-button">
-          THEIR WEBSITE
-         </button>
-
-        <StarButton profileUrl="placeholder.com"/> 
-        {/* lowkey im not really sure what jayden wants for profileurl?? user profile? i put a placeholder.
-        we don't have that because i thought we were storing user session in db so am confused. 
-        anyways if it's for user profile then we would also need to pass in some identifier for the org/nonprofit we're trying to favorite*/}
+        <StarButton ein={org.ein} initialStarred={forceStarred}/> 
       </div>
     </div>
   )
