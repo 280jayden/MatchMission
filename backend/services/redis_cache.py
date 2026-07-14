@@ -32,7 +32,6 @@ def save_user_weights(user_id, causes: dict):
 ## 
 
 def get_user_weights(user_id): # -> dict {'tag': weight}
-    # TODO: calculates top 5 tags to fetch via sort, 
     
     # this should get the user's saved weights from Redis
     key = f'user:{user_id}:weights'
@@ -53,6 +52,16 @@ def get_user_weights(user_id): # -> dict {'tag': weight}
     )[:5] # gets top 5
 
     return tags_to_fetch, user_wts
+
+    # return ['animals', 'culture', 'immigrants', 'housing', 'youth'], {
+    #   'animals' : 0.98,
+    #   'culture' : 0.67,
+    #   'immigrants' : 0.65,
+    #   'housing' : 0.58,
+    #   'youth' : 0.55,
+    #   'music' : 0.44,
+    #   'health' : 0.32,
+    #   'freepress' : 0.21}
 
 # update_user_weights(user_id, tags: list)
 ## after a user favorites a np, or unfavorites
@@ -133,4 +142,22 @@ def mark_shown(user_id, nonprofit_eins: list[str]):
     
     # TODO: INSERT INTO DB UserInteractions table
 
+def mark_favorited(user_id, nonprofit_ein: str):
+    # updates redis when user favorites a np
+    key = f'user:{user_id}:favorites'
 
+    # adds to set user:user_id:favorites
+    r.sadd(key, nonprofit_ein)
+
+def get_favorites_redis(user_id):
+    key = f'user:{user_id}:favorites'
+    stored_favorites = r.smembers(key)
+
+    if not stored_favorites:
+        return []
+    return stored_favorites
+
+def unmark_favorited(user_id, nonprofit_ein: str):
+    # temoves a non-profit from the user's redis favorites set
+    key = f'user:{user_id}:favorites'
+    r.srem(key, nonprofit_ein)

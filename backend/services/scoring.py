@@ -118,4 +118,3 @@ def generate_user_profile(name, user_responses):
 
 
   
-

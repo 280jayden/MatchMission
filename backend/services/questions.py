@@ -129,6 +129,10 @@ quiz_data = [
     }
 ]
 
+def get_quiz_data():
+    # Returns all quiz data to the frontend
+    return quiz_data
+
 
 
 def run_quiz():
@@ -201,3 +205,4 @@ def is_valid_choice(choice, current_options):
         
     choice_num = int(choice)
     return 1 <= choice_num <= len(current_options)
+
