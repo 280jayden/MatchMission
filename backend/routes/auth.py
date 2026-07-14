@@ -78,6 +78,12 @@ def get_current_user():
     
     if not has_taken_quiz: # could not find user_id
         return jsonify({"error": "User not found"}), 404
+    
+    # Success
+    return jsonify({
+      "user_id": uid,
+      "has_taken_quiz": has_taken_quiz[0]
+    })
 
 
 
