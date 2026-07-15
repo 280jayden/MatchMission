@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/mm_logo.png";
 import "../styles/Navbar.css";
 import { useAuth } from "./AuthProvider";
+import { LogoutResponse } from "../types/api"
 
 /**
  * Main navigation bar for the application.
@@ -26,7 +27,7 @@ function Navbar() {
       credentials: "include",
     });
 
-    const data = await response.json();
+    const data: LogoutResponse = await response.json();
 
     if (response.ok) {
       console.log("logged out")

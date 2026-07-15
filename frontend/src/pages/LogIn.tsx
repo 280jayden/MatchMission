@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Auth.css";
-import { useState } from "react";
-import { useAuth } from "../components/AuthProvider.jsx";
+import { useState, FormEvent, ChangeEvent } from "react";
+import { useAuth } from "../components/AuthProvider";
+import { LoginResponse } from "../types/api"
 
 function LogIn() {
   const { refreshUser } = useAuth();
@@ -19,7 +20,7 @@ function LogIn() {
       body: JSON.stringify({email, password})
     });
 
-    const data = await response.json();
+    const data: LoginResponse = await response.json();
 
     if (response.ok) {
       // Refresh the global auth state so the navbar and protected routes
@@ -27,13 +28,13 @@ function LogIn() {
       console.log("logged in")
       await refreshUser();
       navigate("/");
-    } else {
+    } else if ("error" in data) {
       console.log(data.error)
     }
   }
 
   return (
-    <form className="auth-form" onSubmit={(e) => {
+    <form className="auth-form" onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       handleLogin();
     }}>
@@ -45,7 +46,7 @@ function LogIn() {
             type="email"
             className="auth-field"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           />
       </div>
       
@@ -55,7 +56,7 @@ function LogIn() {
             type="password"
             className="auth-field"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           />
       </div>
 
