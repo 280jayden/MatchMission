@@ -2,7 +2,7 @@
 def get_questions():
     return jsonify(get_quiz_data())
 
-@app.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
+# @app.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
 
 # def submit_quiz():
 #     data = request.get_json()

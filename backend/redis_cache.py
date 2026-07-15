@@ -78,6 +78,9 @@ def cache_tags(tag: str, np_eins: list):
     # np_eins called from API, dict.keys()
     # z(set) is a sorted set allowing for scores
 
+    if not np_eins:
+    # nothing to cache — avoid ZADD requires at least one element/score pair
+        return
 
     # initialize with base score of 1
     r.zadd(f"tag:{tag}", {ein: 1 for ein in np_eins})
