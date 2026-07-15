@@ -114,7 +114,7 @@ def get_org(ein):
   """
   Gets one org by the ein
   """
-  return fetch_org(ein, engine)
+  return fetch_org(ein)
     
 @app.route('/api/score_orgs', methods=['POST'])
 def score_orgs():
