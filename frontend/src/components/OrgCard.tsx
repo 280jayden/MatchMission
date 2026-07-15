@@ -8,9 +8,10 @@ import { Organization } from "../types/organization";
 type OrgCardProps = {
   org: Organization;
   forceStarred?: boolean;
+  isBestMatch: boolean;
 };
 
-function OrgCard({ org, forceStarred = false }: OrgCardProps) {
+function OrgCard({ org, forceStarred = false, isBestMatch }: OrgCardProps) {
 /**
  * Displays a nonprofit organization summary card.
  *
@@ -27,6 +28,7 @@ function OrgCard({ org, forceStarred = false }: OrgCardProps) {
         <img src={org.logoUrl || logo} alt="organization logo" className="org-img"/>
 
         <div>
+          { isBestMatch && <h2>BEST MATCH!</h2>}
           <h2>{org.name}</h2>
           <h3>Based in {org.location}</h3>
           <p style={{marginBottom: "50px"}}>{org.description}</p>

@@ -33,10 +33,11 @@ function Result() {
       <p style={{textAlign:"center", marginBottom:"70px"}}>Based on your quiz responses, here are some organizations that might fit your preferences.</p>
       
       <div className="card-container">
-        {orgs.map((org) => (
+        {orgs.map((org, index) => (
           <OrgCard 
             key={org.ein} 
             org={org}
+            isBestMatch={index < 3}
           />
         ))}
       </div>
