@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import OrgCard from "../components/OrgCard";
 import { useAuth } from "../components/AuthProvider";
+import type { Organization } from "../types/organization";
+import { FavoritesResponse } from "../types/api"
 
 function Profile() {
-  const [orgs, setOrgs] = useState([]);
+  const [orgs, setOrgs] = useState<Organization[]>([]);
   const { user } = useAuth();
 
   const getResults = async () => {
@@ -12,12 +14,12 @@ function Profile() {
       credentials: "include"
     });
 
-    const data = await response.json();
+    const data: FavoritesResponse = await response.json();
 
-    if (response.ok) {
+    if (response.ok && "favorites" in data) {
       console.log("yuh")
-      setOrgs(data)
-    } else {
+      setOrgs(data.favorites)
+    } else if ("error" in data) {
       console.log(data.error)
     }
   }
@@ -33,18 +35,22 @@ function Profile() {
 
       <h2 style={{textAlign:"center"}}>Your Saved Organizations</h2>
       <div className="card-container">
-        {orgs ? (
+        {orgs.length > 0 ? (
           orgs.map((org) => (
           <OrgCard 
             key={org.ein} 
-            nonprofit={org}
+            org={org}
+            forceStarred={true}
           />
         ))
         ):(
-          <p>No saved organizations</p>
+          orgs ? (
+            <p style={{textAlign:"center"}}>No saved organizations</p>
+          ):(
+            <p style={{textAlign:"center"}}>Error fetching saved organizations</p>
+          )
         )}
       </div>
-      <p style={{textAlign:"center"}}>This feature is currently a work in progress.</p>
     </div>
   )
 }

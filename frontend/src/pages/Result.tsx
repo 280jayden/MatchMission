@@ -1,27 +1,28 @@
 import { useState, useEffect } from "react";
 import OrgCard from "../components/OrgCard";
+import type { Organization } from "../types/organization";
+import { GetBatchResponse } from "../types/api"
 
 function Result() {
-  const [orgs, setOrgs] = useState([]);
+  const [orgs, setOrgs] = useState<Organization[]>([]);
 
+  // Fetch the user's matched organizations from the backend.
   const getResults = async () => {
-
-    const response = await fetch("/api/refresh_orgs", {
+    const response = await fetch("/api/get_batch", {
       method: "GET",
       credentials: "include"
     });
 
-    const data = await response.json();
+    const data: GetBatchResponse = await response.json();
 
-    if (response.ok) {
-      console.log("yuh")
-      setOrgs(data)
-    } else {
+    if (response.ok && "nonprofits" in data) {
+      setOrgs(data.nonprofits)
+    } else if ("error" in data) {
       console.log(data.error)
     }
   }
 
-  useEffect(() => { //so we can get results when it starts
+  useEffect(() => {
     getResults();
   }, []);
 

@@ -1,0 +1,93 @@
+@app.route("/api/register", methods=['POST'])
+def register():
+  data = request.get_json() or {}
+
+  email = data.get("email")
+  password = data.get("password")
+  
+  if not email or not password:
+    return jsonify({"error": "Missing fields"}), 400
+
+  password_hash = generate_password_hash(password) #instead of putting password in directly, do this hash
+  generated_id = str(uuid.uuid4()) # generates id from uuid
+
+  # connect to db - add user to db
+  with engine.connect() as connection:
+    try:
+        # check if user exists
+        check_query = db.text("SELECT 1 FROM Users WHERE email = :email LIMIT 1")
+        existing_user = connection.execute(check_query, {"email": email}).fetchone()
+        
+        if existing_user:
+            return jsonify({"error": "User already exists"}), 400
+        
+        # add user to db
+        connection.execute(db.text(
+            "INSERT INTO Users (id, email, password_hash) VALUES (:id, :email, :password_hash)"
+        ), {"id": generated_id, "email": email, "password_hash": password_hash})
+        connection.commit()
+
+        session['user_id'] = generated_id
+
+
+        return jsonify({"success": True, "message": "Account created."}), 201
+
+    except Exception as e:
+        connection.rollback()
+        return jsonify({"error": str(e)}), 500
+  
+
+
+@app.route("/api/login", methods=['POST'])
+def login():
+    data = request.get_json() or {} # to protect against NoneType error if no json is sent
+
+    email = data.get("email")
+    password = data.get("password")
+  
+    # query db to see if this user exists
+    query = db.text("SELECT id, password_hash FROM Users WHERE email = :email LIMIT 1")
+    with engine.connect() as connection:
+        user = connection.execute(query, {"email": email}).fetchone()
+
+    # add this in when the db exists and we can query it
+    if not user:
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    user_id, user_password_hash = user[0], user[1]
+
+    if not check_password_hash(user_password_hash, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    # otherwise, user should exist and password should be correct.
+    #set current session user to this one
+    session['user_id'] = user_id
+    
+    return jsonify({"success": True, "message": "Logged in."}), 201
+
+@app.route("/api/get_current_user", methods=['GET'])
+def get_current_user():
+    uid = session.get('user_id')
+    if not uid:
+      return jsonify({"error": "Not logged in"}), 401
+      
+    with engine.connect() as connection:
+        query = db.text("SELECT has_taken_quiz FROM Users WHERE id = :user_id LIMIT 1")
+        has_taken_quiz = connection.execute(query, {"user_id": uid}).fetchone()
+        connection.commit()
+    
+    if not has_taken_quiz: # could not find user_id
+        return jsonify({"error": "User not found"}), 404
+    
+    # Success
+    return jsonify({
+      "user_id": uid,
+      "has_taken_quiz": has_taken_quiz[0]
+    })
+
+
+
+@app.route("/api/logout", methods=['POST'])
+def logout():
+    session.pop('user_id', None)
+    return jsonify({"success": True, "message": "Logged out."}), 200
