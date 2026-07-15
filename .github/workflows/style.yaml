@@ -12,7 +12,7 @@ jobs:
       - name: Run Ruff Linter
         uses: astral-sh/ruff-action@v4.0.0
         with:
-          work-dir: "backend"
+          src: "backend"
 
       - name: Set up Node
         uses: actions/setup-node@v4
