@@ -1,4 +1,4 @@
-import type { Organization } from "./organization"
+import type { Organization } from './organization';
 
 export type CurrentUserResponse = {
   user_id: string;
@@ -13,13 +13,11 @@ export type LogoutResponse = {
 
 export type LoginResponse = { success: true } | { error: string };
 
-export type OrgProfileResponse = 
-  | { nonprofit: Organization}
-  | { error: string };
+export type OrgProfileResponse =
+  { nonprofit: Organization } | { error: string };
 
-export type FavoritesResponse = 
-  | { favorites: Organization[] }
-  | { error: string };
+export type FavoritesResponse =
+  { favorites: Organization[] } | { error: string };
 
 export type QuizResponse = {
   questionId: number;
@@ -29,5 +27,4 @@ export type QuizResponse = {
 export type RegisterResponse = { success: true } | { error: string };
 
 export type GetBatchResponse =
-  | { nonprofits: Organization[] }
-  | { error: string };
+  { nonprofits: Organization[] } | { error: string };

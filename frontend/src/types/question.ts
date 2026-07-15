@@ -3,7 +3,7 @@ export type QuestionOption = {
   option: string;
 };
 
-export type QuestionType = "radio" | "checkbox" | "text";
+export type QuestionType = 'radio' | 'checkbox' | 'text';
 
 export type Question = {
   id: number;

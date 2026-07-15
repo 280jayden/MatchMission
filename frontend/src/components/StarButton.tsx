@@ -1,12 +1,12 @@
-import { useState } from "react";
-import fullStar from "../assets/full_star.png";
-import emptyStar from "../assets/empty_star.png";
-import "../styles/OrgCard.css";
+import { useState } from 'react';
+import fullStar from '../assets/full_star.png';
+import emptyStar from '../assets/empty_star.png';
+import '../styles/OrgCard.css';
 
 /**
  * Toggle button for adding or removing an organization
  * from the user's favorites.
- * 
+ *
  *  * Props:
  * - ein: Employer Identification Number of the organization.
  * - initialStarred: Whether the organization starts in the favorited state. Optional
@@ -21,13 +21,13 @@ function StarButton({ ein, initialStarred = false }: StarButtonProps) {
   const [starred, setStarred] = useState(initialStarred);
 
   async function handleStar() {
-    const api_url = (!starred ? "/api/favorite" : "/api/unfavorite"); 
+    const api_url = !starred ? '/api/favorite' : '/api/unfavorite';
 
     const response = await fetch(api_url, {
-      method: "POST",
-      credentials: "include",
+      method: 'POST',
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         ein: ein,
@@ -45,14 +45,13 @@ function StarButton({ ein, initialStarred = false }: StarButtonProps) {
 
   return (
     <button onClick={handleStar} className="star-button">
-      {starred? 
+      {starred ? (
         <img src={fullStar} alt="full star"></img>
-      :
+      ) : (
         <img src={emptyStar} alt="empty star"></img>
-      }
-      
+      )}
     </button>
-  )
+  );
 }
 
-export default StarButton
+export default StarButton;

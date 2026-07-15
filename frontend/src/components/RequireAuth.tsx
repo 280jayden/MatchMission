@@ -1,6 +1,6 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "./AuthProvider.jsx";
-import type { ReactNode } from "react";
+import { Navigate } from 'react-router-dom';
+import { useAuth } from './AuthProvider.jsx';
+import type { ReactNode } from 'react';
 
 /**
  * Route guard that only renders protected pages for authenticated users.

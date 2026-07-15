@@ -7,4 +7,4 @@ export type Organization = {
   profileUrl: string;
   location: string;
   tags: string[];
-}
+};

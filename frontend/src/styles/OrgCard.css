@@ -17,7 +17,7 @@
 }
 
 .org-img {
-  width: clamp(150px, 40%, 500px); 
+  width: clamp(150px, 40%, 500px);
   height: clamp(150px, 40%, 500px);
   border-radius: 30px;
 }
