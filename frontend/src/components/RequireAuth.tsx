@@ -1,12 +1,17 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider.jsx";
+import type { ReactNode } from "react";
 
 /**
  * Route guard that only renders protected pages for authenticated users.
  * Redirects unauthenticated users to the login page.
  */
 
-function RequireAuth({ children }) {
+type RequireAuthProps = {
+  children: ReactNode;
+};
+
+function RequireAuth({ children }: RequireAuthProps) {
   const { user, loading } = useAuth();
 
   if (loading) {
