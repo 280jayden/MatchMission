@@ -58,6 +58,18 @@ function OrgCard({ org, forceStarred = false }: OrgCardProps) {
           {org.websiteUrl ? "THEIR WEBSITE" : "NO WEBSITE"}
         </button>
 
+        <button
+          onClick={() => {
+            const url = org.profileUrl.startsWith("http") ? `${org.profileUrl}/donate` : `https://${org.profileUrl}/donate`;
+            window.open(url, "_blank");
+          }}
+          className="norm-button"
+          disabled={!org.profileUrl}
+        >
+          {org.profileUrl ? "DONATE HERE" : "NO DONATION LINK"}
+        </button>
+
+
         <StarButton ein={org.ein} initialStarred={forceStarred}/> 
       </div>
     </div>
