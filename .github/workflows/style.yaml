@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Ruff Linter
-        uses: astral-sh/ruff-action@v4
+        uses: astral-sh/ruff-action@v4.0.0
         with:
           work-dir: "backend"
 
