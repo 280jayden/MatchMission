@@ -1,4 +1,15 @@
-@app.route('/api/refresh_orgs', methods=['GET']) # gets the orgs needed
+from flask import Blueprint, request, jsonify, session
+from extensions import engine
+from services.fetch_orgs import fetch_orgs, fetch_org
+from services.redis_cache import (
+    get_user_weights, is_cached, cache_tags, load_nonprofits_json,
+    get_next_batch, mark_shown, mark_favorited, unmark_favorited,
+    get_favorites_redis, get_nonprofits,
+)
+
+orgs_bp = Blueprint('orgs', __name__)
+
+@orgs_bp.route('/api/refresh_orgs', methods=['GET']) # gets the orgs needed
 # get bc react is asking for the org data
 def get_orgs():
 
@@ -28,14 +39,14 @@ def get_orgs():
     return jsonify(next_batch)
     # sends to react as json
 
-@app.route('/api/org/<ein>', methods=['GET'])
+@orgs_bp.route('/api/org/<ein>', methods=['GET'])
 def get_org(ein):
   """
   Gets one org by the ein
   """
-  return fetch_org(ein, engine)
+  return fetch_org(ein)
 
-@app.route('/api/score_orgs', methods=['POST'])
+@orgs_bp.route('/api/score_orgs', methods=['POST'])
 def score_orgs():
     # preps user nonprofit recs
     # checks saved user weights, fetches any missing tag
@@ -76,7 +87,7 @@ def score_orgs():
         "scoredCount": len(scored_batch)
     })
 
-@app.route('/api/get_batch', methods=['GET'])
+@orgs_bp.route('/api/get_batch', methods=['GET'])
 def get_batch():
     # returns the next batch of nonprofit cards for the frontend
     # this assumes score_orgs has already prepped/cached the orgs
@@ -114,7 +125,7 @@ def get_batch():
         'nonprofits': nonprofits
     })
 
-@app.route('/api/favorite', methods=['POST'])
+@orgs_bp.route('/api/favorite', methods=['POST'])
 def favorite_org():
     # get the json body
     data = request.get_json() or {}
@@ -129,7 +140,7 @@ def favorite_org():
 
     return jsonify({"success": True})
 
-@app.route('/api/unfavorite', methods=['POST']) 
+@orgs_bp.route('/api/unfavorite', methods=['POST']) 
 def unfavorite_org():
     # get the json body
     data = request.get_json() or {}
@@ -144,7 +155,7 @@ def unfavorite_org():
 
     return jsonify({"success": True})
 
-@app.route('/api/favorites', methods=['GET'])
+@orgs_bp.route('/api/favorites', methods=['GET'])
 def get_favorites():
     user_id = session.get('user_id', None)
 

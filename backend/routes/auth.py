@@ -1,4 +1,12 @@
-@app.route("/api/register", methods=['POST'])
+import uuid
+import sqlalchemy as db
+from flask import Blueprint, request, jsonify, session
+from werkzeug.security import generate_password_hash, check_password_hash
+from extensions import engine
+
+auth_bp = Blueprint('auth', __name__)
+
+@auth_bp.route("/api/register", methods=['POST'])
 def register():
   data = request.get_json() or {}
 
@@ -38,7 +46,7 @@ def register():
   
 
 
-@app.route("/api/login", methods=['POST'])
+@auth_bp.route("/api/login", methods=['POST'])
 def login():
     data = request.get_json() or {} # to protect against NoneType error if no json is sent
 
@@ -65,7 +73,7 @@ def login():
     
     return jsonify({"success": True, "message": "Logged in."}), 201
 
-@app.route("/api/get_current_user", methods=['GET'])
+@auth_bp.route("/api/get_current_user", methods=['GET'])
 def get_current_user():
     uid = session.get('user_id')
     if not uid:
@@ -87,7 +95,7 @@ def get_current_user():
 
 
 
-@app.route("/api/logout", methods=['POST'])
+@auth_bp.route("/api/logout", methods=['POST'])
 def logout():
     session.pop('user_id', None)
     return jsonify({"success": True, "message": "Logged out."}), 200
