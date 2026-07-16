@@ -61,8 +61,8 @@ html {
 button {
   /* for the button */
   border-radius: 30px;
-  border: 5px solid #778d67;
-  background: #aeccaa;
+  border: 5px solid var(--secondary2);
+  background: var(--secondary1);
   width: 301px;
   height: 66px;
 

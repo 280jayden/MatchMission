@@ -39,6 +39,10 @@ function OrgCard({ org, forceStarred = false, isBestMatch }: OrgCardProps) {
 
         <div className="org-icons">
           <StarButton ein={org.ein} initialStarred={forceStarred} />
+          <div className="info-tooltip">
+            <span className="info-icon">ⓘ</span>
+            <span className="tooltip-text">This organization has been verified.</span>
+          </div>
         </div>
       </div>
 

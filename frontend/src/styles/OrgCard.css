@@ -22,7 +22,6 @@
   min-width: 0;
   min-height: 0;
   border-radius: 30px;
-  background-color: #d9d9d9;
   object-fit: cover;
 }
 
@@ -36,9 +35,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* position: absolute; */
-  /* top: 18%; */
-  /* right: 5%; */
 }
 
 .org-icons {
@@ -77,4 +73,40 @@
   justify-content: flex-start;
   align-items: center;
   gap: 20px;
+}
+
+.info-tooltip {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.info-icon {
+  font-size: 3rem;
+  color: var(--secondary1);
+  line-height: 1;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: max-content;
+  max-width: 200px;
+  background-color: var(--secondary2);
+  color: white;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+.info-tooltip:hover .tooltip-text,
+.info-tooltip:focus-within .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
