@@ -1,0 +1,30 @@
+.tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 160px;
+  height: 64px;
+  padding: 0 14px;
+  background-color: var(--tag-bg);
+  border-radius: 900px;
+  flex-shrink: 0;
+}
+
+.tag-img {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.tag-text {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  overflow-wrap: break-word;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.15;
+}

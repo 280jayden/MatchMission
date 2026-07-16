@@ -9,6 +9,7 @@ html {
   --secondary2: #778d67; /* corresp border */
   --tertiary1: #e8f1e7;
   --tertiary2: #ccd8c4;
+  --tag-bg: #DCF4DB;
   --card-bg: #f7fff5; /* no border because it uses secondary1 as a border */
 }
 
@@ -139,4 +140,14 @@ button:disabled {
   flex-direction: column;
   gap: 30px;
   align-items: center;
+}
+
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin: 20px;
 }

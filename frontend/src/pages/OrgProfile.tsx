@@ -2,8 +2,9 @@ import '../styles/OrgProfile.css';
 import logo from '../assets/mm_logo.png';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import type { Organization } from '../types/organization';
+import type { Organization, Tag } from '../types/organization';
 import { OrgProfileResponse } from '../types/api';
+import AttributeTag from "../components/AttributeTag"
 
 // type Tag = {
 //   tagImageUrl: string;
@@ -13,7 +14,7 @@ import { OrgProfileResponse } from '../types/api';
 function OrgProfile() {
   const { ein } = useParams<{ ein: string }>();
   const [org, setOrg] = useState<Organization | null>(null);
-  // const [tags, setTags] = useState<Tag[] | null>(null);
+  const [tags, setTags] = useState<Tag[] | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ function OrgProfile() {
 
         if (response.ok && 'nonprofit' in data) {
           setOrg(data.nonprofit);
-          // setTags(data.nonprofitTags)
+          setTags(data.nonprofitTags)
         } else if ('error' in data) {
           console.log(data.error);
         }
@@ -56,11 +57,9 @@ function OrgProfile() {
           <p>{org.description}</p>
           <h3>Tags:</h3>
           <div className="tag-container">
-            {org.tags.map((tag, index) => (
-              <span key={index} className="tag">
-                {tag}
-              </span>
-            ))}
+            {tags?.map((tag) => (
+                <AttributeTag key={tag.title} title={tag.title} tagImageUrl={tag.tagImageUrl} />
+              ))}
           </div>
           
           <button

@@ -1,4 +1,4 @@
-import type { Organization } from './organization';
+import type { Organization, Tag } from './organization';
 
 export type CurrentUserResponse = {
   user_id: string;
@@ -14,7 +14,7 @@ export type LogoutResponse = {
 export type LoginResponse = { success: true } | { error: string };
 
 export type OrgProfileResponse =
-  { nonprofit: Organization } | { error: string };
+  { nonprofit: Organization, nonprofitTags: Tag[] } | { error: string };
 
 export type FavoritesResponse =
   { favorites: Organization[] } | { error: string };

@@ -6,5 +6,9 @@ export type Organization = {
   websiteUrl: string;
   profileUrl: string;
   location: string;
-  tags: string[];
 };
+
+export type Tag = {
+  tagImageUrl: string;
+  title: string;
+}

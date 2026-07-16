@@ -2,11 +2,12 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 15rem;
+  gap: 3rem;
 }
 
 .profile-info {
   flex: 1;
+  gap: 20px;
 }
 
 .profile-side {
@@ -22,8 +23,8 @@
 }
 
 .orgprof-img {
-  width: clamp(150px, 25rem, 500px);
-  height: clamp(150px, 25rem, 500px);
+  width: clamp(150px, 20rem, 500px);
+  height: clamp(150px, 20rem, 500px);
   border-radius: 30px;
   object-fit: contain;
 }
