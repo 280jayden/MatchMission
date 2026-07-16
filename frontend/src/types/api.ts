@@ -14,7 +14,7 @@ export type LogoutResponse = {
 export type LoginResponse = { success: true } | { error: string };
 
 export type OrgProfileResponse =
-  { nonprofit: Organization, nonprofitTags: Tag[] } | { error: string };
+  { nonprofit: Organization; nonprofitTags: Tag[] } | { error: string };
 
 export type FavoritesResponse =
   { favorites: Organization[] } | { error: string };

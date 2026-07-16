@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import type { Organization, Tag } from '../types/organization';
 import { OrgProfileResponse } from '../types/api';
-import AttributeTag from "../components/AttributeTag"
+import AttributeTag from '../components/AttributeTag';
 import DonateButton from '../components/DonateButton';
 
 function OrgProfile() {
@@ -28,7 +28,7 @@ function OrgProfile() {
 
         if (response.ok && 'nonprofit' in data) {
           setOrg(data.nonprofit);
-          setTags(data.nonprofitTags)
+          setTags(data.nonprofitTags);
         } else if ('error' in data) {
           console.log(data.error);
         }
@@ -54,10 +54,14 @@ function OrgProfile() {
           <h3>Tags:</h3>
           <div className="tag-container">
             {tags?.map((tag) => (
-                <AttributeTag key={tag.title} title={tag.title} tagImageUrl={tag.tagImageUrl} />
-              ))}
+              <AttributeTag
+                key={tag.title}
+                title={tag.title}
+                tagImageUrl={tag.tagImageUrl}
+              />
+            ))}
           </div>
-          
+
           <div className="profile-bottom">
             <button
               onClick={() => {
@@ -74,7 +78,6 @@ function OrgProfile() {
 
             <DonateButton slug={org.primarySlug}></DonateButton>
           </div>
-
         </div>
 
         <div className="profile-side">

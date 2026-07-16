@@ -3,7 +3,7 @@ import StarButton from './StarButton';
 import logo from '../assets/mm_logo.png';
 import { useNavigate } from 'react-router-dom';
 import { Organization } from '../types/organization';
-import DonateButton from './DonateButton'
+import DonateButton from './DonateButton';
 
 type OrgCardProps = {
   org: Organization;
@@ -11,7 +11,11 @@ type OrgCardProps = {
   isBestMatch?: boolean;
 };
 
-function OrgCard({ org, forceStarred = false, isBestMatch = false }: OrgCardProps) {
+function OrgCard({
+  org,
+  forceStarred = false,
+  isBestMatch = false,
+}: OrgCardProps) {
   /**
    * Displays a nonprofit organization summary card.
    *
@@ -35,14 +39,16 @@ function OrgCard({ org, forceStarred = false, isBestMatch = false }: OrgCardProp
           {isBestMatch && <h2>BEST MATCH!</h2>}
           <h2>{org.name}</h2>
           <h3>Based in {org.location}</h3>
-          <p style={{marginBottom: "50px"}}>{org.description}</p>
+          <p style={{ marginBottom: '50px' }}>{org.description}</p>
         </div>
 
         <div className="org-icons">
           <StarButton ein={org.ein} initialStarred={forceStarred} />
           <div className="info-tooltip">
             <span className="info-icon">ⓘ</span>
-            <span className="tooltip-text">This organization has been verified.</span>
+            <span className="tooltip-text">
+              This organization has been verified.
+            </span>
           </div>
         </div>
       </div>
@@ -82,7 +88,6 @@ function OrgCard({ org, forceStarred = false, isBestMatch = false }: OrgCardProp
         </button> */}
 
         <DonateButton slug={org.slug}></DonateButton>
-
       </div>
     </div>
   );

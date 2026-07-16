@@ -9,7 +9,7 @@ html {
   --secondary2: #778d67; /* corresp border */
   --tertiary1: #e8f1e7;
   --tertiary2: #ccd8c4;
-  --tag-bg: #DCF4DB;
+  --tag-bg: #dcf4db;
   --card-bg: #f7fff5; /* no border because it uses secondary1 as a border */
 }
 

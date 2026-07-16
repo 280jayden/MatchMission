@@ -13,4 +13,4 @@ export type Organization = {
 export type Tag = {
   tagImageUrl: string;
   title: string;
-}
+};
