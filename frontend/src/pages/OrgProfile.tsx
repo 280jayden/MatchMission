@@ -5,11 +5,7 @@ import { useState, useEffect } from 'react';
 import type { Organization, Tag } from '../types/organization';
 import { OrgProfileResponse } from '../types/api';
 import AttributeTag from "../components/AttributeTag"
-
-// type Tag = {
-//   tagImageUrl: string;
-//   title: string;
-// };
+import DonateButton from '../components/DonateButton';
 
 function OrgProfile() {
   const { ein } = useParams<{ ein: string }>();
@@ -62,31 +58,23 @@ function OrgProfile() {
               ))}
           </div>
           
-          <button
-            onClick={() => {
-              const url = org.websiteUrl.startsWith('http')
-                ? org.websiteUrl
-                : `https://${org.websiteUrl}`;
-              window.open(url, '_blank');
-            }}
-            className="norm-button"
-            disabled={!org.websiteUrl}
-          >
-            {org.websiteUrl ? 'THEIR WEBSITE' : 'NO WEBSITE'}
-          </button>
+          <div className="profile-bottom">
+            <button
+              onClick={() => {
+                const url = org.websiteUrl.startsWith('http')
+                  ? org.websiteUrl
+                  : `https://${org.websiteUrl}`;
+                window.open(url, '_blank');
+              }}
+              className="norm-button"
+              disabled={!org.websiteUrl}
+            >
+              {org.websiteUrl ? 'THEIR WEBSITE' : 'NO WEBSITE'}
+            </button>
 
-          <button
-            onClick={() => {
-              const url = org.profileUrl.startsWith('http')
-                ? `${org.profileUrl}/donate`
-                : `https://${org.profileUrl}/donate`;
-              window.open(url, '_blank');
-            }}
-            className="norm-button"
-            disabled={!org.profileUrl}
-          >
-            {org.profileUrl ? 'DONATE HERE' : 'NO DONATION LINK'}
-          </button>
+            <DonateButton slug={org.primarySlug}></DonateButton>
+          </div>
+
         </div>
 
         <div className="profile-side">
@@ -99,16 +87,6 @@ function OrgProfile() {
           />
         </div>
       </div>
-
-      {/* 
-      {/* primary tag 
-      <img src={tags[0].tagImageUrl} alt="tag image"></img>
-      <h3>{tags[0].title}</h3>
-
-      {/* secondary tag 
-      <img src={tags[1].tagImageUrl} alt="tag image"></img>
-      <h3>{tags[1].title}</h3>
-       */}
     </div>
   );
 }

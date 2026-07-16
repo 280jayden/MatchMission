@@ -3,14 +3,15 @@ import StarButton from './StarButton';
 import logo from '../assets/mm_logo.png';
 import { useNavigate } from 'react-router-dom';
 import { Organization } from '../types/organization';
+import DonateButton from './DonateButton'
 
 type OrgCardProps = {
   org: Organization;
   forceStarred?: boolean;
-  isBestMatch: boolean;
+  isBestMatch?: boolean;
 };
 
-function OrgCard({ org, forceStarred = false, isBestMatch }: OrgCardProps) {
+function OrgCard({ org, forceStarred = false, isBestMatch = false }: OrgCardProps) {
   /**
    * Displays a nonprofit organization summary card.
    *
@@ -67,7 +68,7 @@ function OrgCard({ org, forceStarred = false, isBestMatch }: OrgCardProps) {
           {org.websiteUrl ? 'THEIR WEBSITE' : 'NO WEBSITE'}
         </button>
 
-        <button
+        {/* <button
           onClick={() => {
             const url = org.profileUrl.startsWith('http')
               ? `${org.profileUrl}/donate`
@@ -78,7 +79,9 @@ function OrgCard({ org, forceStarred = false, isBestMatch }: OrgCardProps) {
           disabled={!org.profileUrl}
         >
           {org.profileUrl ? 'DONATE HERE' : 'NO DONATION LINK'}
-        </button>
+        </button> */}
+
+        <DonateButton slug={org.slug}></DonateButton>
 
       </div>
     </div>
