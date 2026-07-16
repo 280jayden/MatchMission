@@ -3,6 +3,7 @@ import OrgCard from '../components/OrgCard';
 import { useAuth } from '../components/AuthProvider';
 import type { Organization } from '../types/organization';
 import { FavoritesResponse } from '../types/api';
+import WeightsRadarChart from "../components/WeightsRadarChart"
 
 function Profile() {
   const [orgs, setOrgs] = useState<Organization[]>([]);
@@ -32,6 +33,8 @@ function Profile() {
   return (
     <div>
       <h1 style={{ textAlign: 'center' }}>Profile</h1>
+      <WeightsRadarChart />
+
       {/* <p style={{textAlign:"center", marginBottom:"50px"}}>This is a profile page placeholder</p> */}
 
       <h2 style={{ textAlign: 'center' }}>Your Saved Organizations</h2>
