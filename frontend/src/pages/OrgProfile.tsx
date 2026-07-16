@@ -54,9 +54,15 @@ function OrgProfile() {
           <h2>{org.name}</h2>
           <h3>Based in {org.location}</h3>
           <p>{org.description}</p>
-          <h3>Why We Matched You</h3>
-          <p>Analysis feature coming soon</p>
-
+          <h3>Tags:</h3>
+          <div className="tag-container">
+            {org.tags.map((tag, index) => (
+              <span key={index} className="tag">
+                {tag}
+              </span>
+            ))}
+          </div>
+          
           <button
             onClick={() => {
               const url = org.websiteUrl.startsWith('http')
@@ -90,7 +96,7 @@ function OrgProfile() {
           <img
             src={org.logoUrl || logo}
             alt="organization logo"
-            className="org-img"
+            className="orgprof-img"
           />
         </div>
       </div>

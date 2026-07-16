@@ -21,7 +21,7 @@
   width: 200px;
 }
 
-.org-img {
+.orgprof-img {
   width: clamp(150px, 25rem, 500px);
   height: clamp(150px, 25rem, 500px);
   border-radius: 30px;

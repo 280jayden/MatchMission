@@ -34,16 +34,11 @@ function OrgCard({ org, forceStarred = false, isBestMatch }: OrgCardProps) {
           {isBestMatch && <h2>BEST MATCH!</h2>}
           <h2>{org.name}</h2>
           <h3>Based in {org.location}</h3>
-          <p style={{ marginBottom: '50px' }}>{org.description}</p>
+          <p style={{marginBottom: "50px"}}>{org.description}</p>
+        </div>
 
-          <h3>Tags:</h3>
-          <div className="tag-container">
-            {org.tags.map((tag, index) => (
-              <span key={index} className="tag">
-                {tag}
-              </span>
-            ))}
-          </div>
+        <div className="org-icons">
+          <StarButton ein={org.ein} initialStarred={forceStarred} />
         </div>
       </div>
 
@@ -81,7 +76,6 @@ function OrgCard({ org, forceStarred = false, isBestMatch }: OrgCardProps) {
           {org.profileUrl ? 'DONATE HERE' : 'NO DONATION LINK'}
         </button>
 
-        <StarButton ein={org.ein} initialStarred={forceStarred} />
       </div>
     </div>
   );
