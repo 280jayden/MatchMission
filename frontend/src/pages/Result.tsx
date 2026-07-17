@@ -45,7 +45,8 @@ function Result() {
               </>
               )} */}
             {/* DEBUG, DELETE LATER */}
-            <ProfileResult /> &&{' '}
+            
+            <ProfileResult /> 
             <h2 id="results-list">Recommended Organizations</h2>
             {/* DEBUG, DELETE LATER */}
             <div className="card-container">
