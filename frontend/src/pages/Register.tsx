@@ -7,6 +7,7 @@ import { RegisterResponse } from '../types/api';
 function Register() {
     const { refreshUser } = useAuth();
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ function Register() {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ name, email, password }),
         });
 
         const data: RegisterResponse = await response.json();
@@ -48,6 +49,18 @@ function Register() {
             }}
         >
             <h1>Register</h1>
+            
+            <div className="auth-input-pair">
+                <h3>Name</h3>
+                <input
+                    type="name"
+                    className="auth-field"
+                    value={name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setName(e.target.value)
+                    }
+                />
+            </div>
 
             <div className="auth-input-pair">
                 <h3>Email</h3>

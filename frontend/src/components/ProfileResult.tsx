@@ -3,6 +3,7 @@ import OrgCard from '../components/OrgCard';
 // import { useAuth } from '../components/AuthProvider';
 import type { Organization } from '../types/organization';
 import WeightsRadarChart from '../components/WeightsRadarChart';
+import "../styles/ProfileResult.css";
 
 function ProfileResult() {
     // const { user } = useAuth();
@@ -14,33 +15,40 @@ function ProfileResult() {
     useEffect(() => {}, []);
 
     return (
-        <div>
-            <h3 style={{ textAlign: 'center', marginBottom: '70px' }}>
-                Based on your quiz responses, this is how we scored your
-                preferences.
-            </h3>
-            <p>AI generated paragraph here</p>
-            <button onClick={scrollToResults}>SHOW ME MY MATCHES</button>
+        <>
+        <h3 style={{ textAlign: 'center', marginBottom: '70px' }}>
+                    Based on your quiz responses, this is how we scored your
+                    preferences.
+                </h3>
+        <div className="profile-result-container">
+            <div className="profile-result-left">
+                <p>AI generated paragraph here</p>
+                <button onClick={scrollToResults}
+                    className="result-button"
+                >SHOW ME<br/>MY MATCHES</button>
+                
+                    {/* <div className="tag-container">
+                {tags?.map((tag) => (
+                    <AttributeTag
+                    key={tag.title}
+                    title={tag.title}
+                    tagImageUrl={tag.tagImageUrl}
+                    />
+                ))}
+                </div> */}
+            </div>
 
-            {/* <div className="tag-container">
-        {tags?.map((tag) => (
-            <AttributeTag
-            key={tag.title}
-            title={tag.title}
-            tagImageUrl={tag.tagImageUrl}
-            />
-        ))}
-        </div> */}
-
-            <div>
+            <div className="result-weight-chart">
                 <WeightsRadarChart />
-                <div>
+                <div className="cat-description-container">
                     <p>some descriptions</p>
                     <p>some descriptions</p>
                     <p>some descriptions</p>
+                    {/* map: for the weights, we want to pull their Name and their description in a paragraph element */}
                 </div>
             </div>
         </div>
+        </>
     );
 }
 

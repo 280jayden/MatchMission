@@ -33,3 +33,14 @@
     display: flex;
     gap: 30px;
 }
+
+.result-button {
+    width: clamp(220px, 40vw, 450px);
+    padding: 60px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    line-height: 40px;
+}

@@ -41,20 +41,26 @@ const data = [
     },
 ];
 
+interface WeightsRadarChartProps {
+  width?: number;
+  height?: number;
+}
+
 // got this from the recharts api
 // later, make data be a thing passed in as a prop instead
-const WeightsRadarChart = () => {
+const WeightsRadarChart = ({ width = 400, height = 400}: WeightsRadarChartProps) => {
     return (
         <RadarChart
-            style={{ width: '50%', height: '50%', aspectRatio: 1.2 }}
             responsive
-            outerRadius="80%"
+            outerRadius="75%"
+            width={width}
+            height={height}
             data={data}
             margin={{
                 top: 20,
-                left: 20,
+                left: 60,
                 right: 20,
-                bottom: 20,
+                bottom: 60,
             }}
         >
             <PolarGrid />
