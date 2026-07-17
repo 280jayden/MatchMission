@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Auth.css';
 import { useAuth } from '../components/AuthProvider';
 import { RegisterResponse } from '../types/api';
+import { API_URL } from '../config';
 
 function Register() {
     const { refreshUser } = useAuth();
@@ -18,7 +19,7 @@ function Register() {
             return;
         }
 
-        const response = await fetch('/api/user/register', {
+        const response = await fetch(`${API_URL}/api/user/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

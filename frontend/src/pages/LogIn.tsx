@@ -3,6 +3,7 @@ import '../styles/Auth.css';
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { useAuth } from '../components/AuthProvider';
 import { LoginResponse } from '../types/api';
+import { API_URL } from '../config';
 
 function LogIn() {
     const { refreshUser } = useAuth();
@@ -11,7 +12,7 @@ function LogIn() {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-        const response = await fetch('/api/user/login', {
+        const response = await fetch(`${API_URL}/api/user/login`, {
             method: 'POST',
             credentials: 'include',
             headers: {

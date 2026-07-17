@@ -4,6 +4,7 @@ import type { Organization } from '../types/organization';
 import { GetBatchResponse } from '../types/api';
 import { useLocation } from 'react-router-dom';
 import ProfileResult from '../components/ProfileResult';
+import { API_URL } from '../config';
 
 function Result() {
     const [orgs, setOrgs] = useState<Organization[]>([]);
@@ -12,7 +13,7 @@ function Result() {
 
     // Fetch the user's matched organizations from the backend.
     const getResults = async () => {
-        const response = await fetch('/api/get_batch', {
+        const response = await fetch(`${API_URL}/api/get_batch`, {
             method: 'GET',
             credentials: 'include',
         });

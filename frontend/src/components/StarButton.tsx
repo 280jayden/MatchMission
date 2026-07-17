@@ -2,6 +2,7 @@ import { useState } from 'react';
 import fullStar from '../assets/full_star.png';
 import emptyStar from '../assets/empty_star.png';
 import '../styles/OrgCard.css';
+import { API_URL } from '../config';
 
 /**
  * Toggle button for adding or removing an organization
@@ -21,9 +22,9 @@ function StarButton({ ein, initialStarred = false }: StarButtonProps) {
     const [starred, setStarred] = useState(initialStarred);
 
     async function handleStar() {
-        const api_url = !starred ? '/api/favorite' : '/api/unfavorite';
+        const url = !starred ? `${API_URL}/api/favorite` : `${API_URL}/api/unfavorite`;
 
-        const response = await fetch(api_url, {
+        const response = await fetch(url, {
             method: 'POST',
             credentials: 'include',
             headers: {
