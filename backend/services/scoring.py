@@ -115,17 +115,20 @@ def generate_user_profile(name, user_responses):
 
 def generate_weights_explanation(causes, user_responses):
   prompt = f"""
-  You are explaining a donor's philanthropic profile for MatchMission.
+    You are explaining, on behalf of MatchMission, why the app matched this donor to their weighted causes.
 
     The user answered a 10-question quiz. Here are their responses:
     {json.dumps(user_responses)}
 
-    Based on those responses, here is their resulting weighted cause profile:
+    Based on those responses, here is the weighted cause profile we matched them to:
     {json.dumps(causes)}
 
-    In exactly 1-2 sentences, explain to the user why these are their weighted causes,
-    referencing specific things they said in their answers. Speak directly to them ("you"),
-    be warm and specific, not generic. Return ONLY the explanation text, no preamble.
+    In exactly 2-3 sentences, explain to the user why WE matched them to these causes.
+    Speak as MatchMission using "we" (e.g. "we matched you with...", "we noticed you..."),
+    not as if the user consciously chose or ranked these causes themselves — you are
+    explaining our analysis of their answers, not describing their own self-awareness.
+    Reference specific things they said in their answers. Be warm and specific, not generic.
+    Return ONLY the explanation text, no preamble.
     """
   
   try:
