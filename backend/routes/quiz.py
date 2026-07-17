@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, request, jsonify, session
 import sqlalchemy as db
 from extensions import engine
-from services.scoring import generate_user_profile
+from services.scoring import generate_user_profile, generate_weights_explanation
 from services.questions import get_quiz_data
 from services.redis_cache import save_user_weights
 
@@ -47,6 +47,8 @@ def submit_quiz():
 
     if not user_profile:
         return jsonify({'error': 'failed to generate the profile'})
+    
+    user_profile['weights_explanation'] = generate_weights_explanation(user_profile['causes'], responses)
 
     # saving user weights that openai scoring generated in redis under the user id
     save_user_weights(user_id, user_profile['causes']) # saving the specific user cause weights
@@ -61,3 +63,5 @@ def submit_quiz():
         'success': True,
         'profile': user_profile
     })
+
+
