@@ -6,7 +6,7 @@ export type CurrentUserResponse = {
 };
 
 export type UserWeightsResponse =
-    | { success: true; weights: Record<string, number> }
+    | { success: true; weights: Record<string, number>, explanation: string | null }
     | { error: string };
 
 export type LogoutResponse = {

@@ -9,7 +9,7 @@ import { getCategoriesFromWeights } from '../utils/getCategoriesFromWeights';
 import AttributeTag from './AttributeTag';
 
 function ProfileResult() {
-    const { weights } = useAuth();
+    const { weights, explanation } = useAuth();
     const userCategories = getCategoriesFromWeights(weights);
 
     function scrollToResults() {
@@ -26,7 +26,12 @@ function ProfileResult() {
         </h3>
         <div className="profile-result-container">
             <div className="profile-result-left">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin scelerisque, lectus pellentesque sagittis blandit, ipsum sem condimentum quam, eu pellentesque diam dolor id magna. Cras tellus tortor, euismod eget imperdiet vitae, sollicitudin nec elit. Praesent sit amet sagittis dolor. In eu vehicula urna. Maecenas eget venenatis ex. Pellentesque nec hendrerit purus, sit amet volutpat justo. Praesent in hendrerit enim, at aliquet risus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas sed velit a est rutrum malesuada. Etiam id erat pretium, mollis purus eu, mollis lectus.</p>
+                { explanation ? (
+                    <p>{explanation}</p>
+                ):(
+                    <p>No description generated for user.</p>
+                )}
+                
 
                 <button onClick={scrollToResults}
                     className="result-button"

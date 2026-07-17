@@ -15,6 +15,7 @@ type AuthContextType = {
     user: User | null;
     // setUser: Dispatch<React.SetStateAction<User | null>>;
     weights: UserWeights | null;
+    explanation: string | null;
     loading: boolean;
     hasTakenQuiz: () => boolean;
     refreshUser: () => Promise<void>;
@@ -32,6 +33,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [weights, setWeights] = useState<UserWeights | null>(null);
+    const [explanation, setExplanation] = useState<string | null>(null);
 
     async function logout(): Promise<void> {
         // Ends the user's session on the backend and clears
@@ -52,6 +54,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                 console.log('logged out');
                 setUser(null);
                 setWeights(null);
+                setExplanation(null);
             } else {
                 throw new Error('Logout failed');
             }
@@ -73,8 +76,10 @@ function AuthProvider({ children }: AuthProviderProps) {
 
             if (response.ok && 'weights' in data) {
                 setWeights(data.weights);
+                setExplanation(data.explanation ?? null);
             } else {
                 setWeights(null);
+                setExplanation(null);
             }
         } catch (err) {
             console.error(err);
@@ -103,6 +108,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                     await refreshWeights();
                 } else {
                     setWeights(null);
+                    setExplanation(null);
                 }
             } else {
                 setUser(null);
@@ -125,7 +131,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     return (
         <AuthContext.Provider
-            value={{ user, weights, loading, hasTakenQuiz, refreshUser, refreshWeights, logout }}
+            value={{ user, weights, explanation, loading, hasTakenQuiz, refreshUser, refreshWeights, logout }}
         >
             {children}
         </AuthContext.Provider>
