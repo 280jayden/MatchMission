@@ -99,3 +99,20 @@ def get_current_user():
 def logout():
     session.pop('user_id', None)
     return jsonify({"success": True, "message": "Logged out."}), 200
+
+@auth_bp.route("/api/user/weights", methods=['GET'])
+def get_user_weights_endpoint():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+    
+    with engine.connect() as connection:
+        query = db.text('SELECT profile FROM "Users" WHERE id = :user_id LIMIT 1' )
+        result = connection.execute(query, {"user_id": user_id}).fetchone()
+
+    if not result or not result[0]:
+        return jsonify({"error": "No profile found. Submit the quiz first."}), 404
+    
+    profile = result[0]
+    return jsonify({"success": True, "weights": profile.get("causes", {})})
+    
