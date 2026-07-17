@@ -1,0 +1,31 @@
+
+.profile-result-container {
+    display: flex;
+    gap: 15px;
+}
+
+.result-weight-chart {
+    flex: 1;
+    background-color: var(--tag-bg);
+    padding: 27px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 30px;
+    align-items: center;
+}
+
+.profile-result-left {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.cat-description-container {
+    padding: 20px;
+    font-size: 16px;
+    background-color: #FBFAF6;
+    border-radius: 30px;
+    align-self: stretch;
+}
