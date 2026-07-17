@@ -37,7 +37,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         // Ends the user's session on the backend and clears
         // the user state in the frontend.
         try {
-            console.log("api url" + API_URL);
+            // console.log("api url" + API_URL);
             const response = await fetch(`${API_URL}/api/user/logout`, {
                 method: 'POST',
                 headers: {

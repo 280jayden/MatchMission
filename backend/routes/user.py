@@ -3,6 +3,7 @@ import sqlalchemy as db
 from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import engine
+import json
 
 user_bp = Blueprint('user', __name__)
 
@@ -114,5 +115,9 @@ def get_user_weights_endpoint():
         return jsonify({"error": "No profile found. Submit the quiz first."}), 404
     
     profile = result[0]
+
+    if isinstance(profile, str):
+      profile = json.loads(profile)
+
     return jsonify({"success": True, "weights": profile.get("causes", {})})
     

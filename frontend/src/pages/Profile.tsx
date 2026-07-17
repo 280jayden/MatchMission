@@ -8,7 +8,7 @@ import { API_URL } from '../config';
 
 function Profile() {
     const [orgs, setOrgs] = useState<Organization[]>([]);
-    const { user } = useAuth();
+    const { user, weights } = useAuth();
 
     const getResults = async () => {
         const response = await fetch(`${API_URL}/api/favorites`, {
@@ -34,7 +34,7 @@ function Profile() {
     return (
         <div>
             <h1 style={{ textAlign: 'center' }}>Profile</h1>
-            <WeightsRadarChart />
+            <WeightsRadarChart weights={weights} />
 
             {/* <p style={{textAlign:"center", marginBottom:"50px"}}>This is a profile page placeholder</p> */}
 

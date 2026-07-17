@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import OrgCard from '../components/OrgCard';
-// import { useAuth } from '../components/AuthProvider';
+import { useAuth } from '../components/AuthProvider';
 import type { Organization } from '../types/organization';
 import WeightsRadarChart from '../components/WeightsRadarChart';
 import "../styles/ProfileResult.css";
 
 function ProfileResult() {
-    // const { user } = useAuth();
+    const { weights } = useAuth();
 
     function scrollToResults() {
         document.getElementById('results-list')?.scrollIntoView();
@@ -26,7 +26,7 @@ function ProfileResult() {
                 <button onClick={scrollToResults}
                     className="result-button"
                 >SHOW ME<br/>MY MATCHES</button>
-                
+
                     {/* <div className="tag-container">
                 {tags?.map((tag) => (
                     <AttributeTag
@@ -39,7 +39,7 @@ function ProfileResult() {
             </div>
 
             <div className="result-weight-chart">
-                <WeightsRadarChart />
+                <WeightsRadarChart weights={weights} />
                 <div className="cat-description-container">
                     <p>some descriptions</p>
                     <p>some descriptions</p>
