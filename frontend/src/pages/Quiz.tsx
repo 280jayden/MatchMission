@@ -4,12 +4,15 @@ import questions from '../data/questions.json';
 import { useNavigate } from 'react-router-dom';
 import type { Question } from '../types/question';
 import { QuizResponse } from '../types/api';
+import { useAuth } from '../components/AuthProvider';
+
 
 type Answers = {
     [questionId: number]: string | string[];
 };
 
 function Quiz() {
+    const { refreshUser } = useAuth();
     const [answers, setAnswers] = useState<Answers>({});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -160,6 +163,7 @@ function Quiz() {
                 return;
             }
 
+            await refreshUser();
             navigate('/result', { state: { justCompleted: true } });
         } catch (err) {
             console.log(err);
