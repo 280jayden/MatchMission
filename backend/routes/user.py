@@ -128,6 +128,9 @@ def get_user_results():
         return jsonify({"error": "No weights found. Submit the quiz first"}), 404
     
     matches = get_next_batch(user_id, user_wts, 20)
+    if not matches:
+        return jsonify ({"error": "No matching orgs found yet. Try submitting the quiz again."}), 404
+
     mark_shown(user_id, [org.get('ein') for org in matches if org.get('ein')])
 
     profile["matches"] = matches
