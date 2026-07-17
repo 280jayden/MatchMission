@@ -4,13 +4,14 @@ import { useAuth } from '../components/AuthProvider';
 import type { Organization } from '../types/organization';
 import { FavoritesResponse } from '../types/api';
 import WeightsRadarChart from '../components/WeightsRadarChart';
+import { API_URL } from '../config';
 
 function Profile() {
     const [orgs, setOrgs] = useState<Organization[]>([]);
     const { user } = useAuth();
 
     const getResults = async () => {
-        const response = await fetch('/api/favorites', {
+        const response = await fetch(`${API_URL}/api/favorites`, {
             method: 'GET',
             credentials: 'include',
         });

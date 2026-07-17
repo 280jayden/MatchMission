@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Question } from '../types/question';
 import { QuizResponse } from '../types/api';
 import { useAuth } from '../components/AuthProvider';
+import { API_URL } from '../config';
 
 
 type Answers = {
@@ -51,7 +52,7 @@ function Quiz() {
         setLoading(true);
 
         try {
-            const quizResponse = await fetch('/api/quiz', {
+            const quizResponse = await fetch(`${API_URL}/api/quiz`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ function Quiz() {
 
             console.log('successfully sent answers to db');
 
-            const scoreResponse = await fetch('/api/score_orgs', {
+            const scoreResponse = await fetch(`${API_URL}/api/score_orgs`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -129,7 +130,7 @@ function Quiz() {
         setLoading(true);
 
         try {
-            const quizResponse = await fetch('/api/quiz', {
+            const quizResponse = await fetch(`${API_URL}/api/quiz`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

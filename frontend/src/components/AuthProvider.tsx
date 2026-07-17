@@ -3,6 +3,7 @@ import { useState, useEffect, createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
 import type { User, UserWeights } from '../types/user';
 import type { CurrentUserResponse, UserWeightsResponse, LogoutResponse } from '../types/api';
+import { API_URL } from '../config';
 
 /**
  * Provides global authentication state for the application.
@@ -36,7 +37,8 @@ function AuthProvider({ children }: AuthProviderProps) {
         // Ends the user's session on the backend and clears
         // the user state in the frontend.
         try {
-            const response = await fetch('/api/user/logout', {
+            console.log("api url" + API_URL);
+            const response = await fetch(`${API_URL}/api/user/logout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,7 +65,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         // Fetch the currently authenticated user's weights from the backend
         // and update the global weights state.
         try {
-            const response = await fetch('/api/user/weights', {
+            const response = await fetch(`${API_URL}/api/user/weights`, {
                 credentials: 'include',
             });
 
@@ -85,7 +87,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         // Fetch the currently authenticated user from the backend
         // and update the global auth state.
         try {
-            const response = await fetch('/api/user/info', {
+            const response = await fetch(`${API_URL}/api/user/info`, {
                 credentials: 'include',
             });
 
