@@ -111,10 +111,33 @@ def generate_user_profile(name, user_responses):
     return None
   
 
-#TODO: put this in main
-#print(f"\nEvaluating {name}'s interests...")
 
 
+def generate_weights_explanation(causes, user_responses):
+  prompt = f"""
+  You are explaining a donor's philanthropic profile for MatchMission.
+
+    The user answered a 10-question quiz. Here are their responses:
+    {json.dumps(user_responses)}
+
+    Based on those responses, here is their resulting weighted cause profile:
+    {json.dumps(causes)}
+
+    In exactly 1-2 sentences, explain to the user why these are their weighted causes,
+    referencing specific things they said in their answers. Speak directly to them ("you"),
+    be warm and specific, not generic. Return ONLY the explanation text, no preamble.
+    """
+  
+  try:
+    response = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[{'role': 'user', 'content': prompt}],
+    )
+
+    return response.choices[0].message.content.strip()
+  except Exception as e:
+    print(f"Error generating weights explanation: {e}")
+    return ""
 
 
   
