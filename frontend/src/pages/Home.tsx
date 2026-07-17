@@ -2,7 +2,6 @@ import Navbar from "../components/Navbar"
 import "../styles/Home.css";
 import logo from "../assets/mm_logo.png";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthProvider";
 
 function Home() {

@@ -105,7 +105,8 @@ def fetch_orgs(user_causes, cause, num_of_results, engine):
     myEveryorgApiKey = os.getenv('EVERYORG_KEY')
     
     if cause not in cause_list:
-        return [], []
+        #raise Exception("Invalid cause for every.org api search.")
+        return [], [] 
     
     my_params = {
     'apiKey': myEveryorgApiKey,

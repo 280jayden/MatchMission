@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import OrgCard from "../components/OrgCard";
+import type { Organization } from "../types/organization";
+import { GetBatchResponse } from "../types/api"
 
 function Result() {
-  const [orgs, setOrgs] = useState([]);
+  const [orgs, setOrgs] = useState<Organization[]>([]);
 
   // Fetch the user's matched organizations from the backend.
   const getResults = async () => {
@@ -11,11 +13,11 @@ function Result() {
       credentials: "include"
     });
 
-    const data = await response.json();
+    const data: GetBatchResponse = await response.json();
 
-    if (response.ok) {
+    if (response.ok && "nonprofits" in data) {
       setOrgs(data.nonprofits)
-    } else {
+    } else if ("error" in data) {
       console.log(data.error)
     }
   }

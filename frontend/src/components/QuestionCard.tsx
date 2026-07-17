@@ -1,4 +1,5 @@
 import "../styles/QuestionCard.css";
+import type { QuestionOption, QuestionType } from "../types/question";
 
 /**
  * Displays a single quiz question and handles user input.
@@ -12,7 +13,23 @@ import "../styles/QuestionCard.css";
  * - onChange: Callback to update the answer state.
  */
 
-function QuestionCard({qid, question, type, options, value, onChange}) {
+type QuestionCardProps = {
+  qid: number;
+  question: string;
+  type: QuestionType;
+  options: QuestionOption[];
+  value: string | string[];
+  onChange: (answer: string | string[]) => void;
+};
+
+function QuestionCard({
+    qid,
+    question,
+    type,
+    options,
+    value,
+    onChange
+  }: QuestionCardProps) {
   return (
     <div className="item-card">
       <h3>Question {qid}:</h3>
@@ -44,14 +61,24 @@ function QuestionCard({qid, question, type, options, value, onChange}) {
                 type="checkbox"
                 name={question}
                 value={option.value}
-                checked={value.includes(option.value)} 
+                checked={
+                      Array.isArray(value) && value.includes(option.value)
+                    }
                 onChange={(e) => {
                   if (e.target.checked) {
-                      onChange([...value, option.value]);
-                    } else {
-                      onChange(value.filter(v => v !== option.value));
-                    }
-                }} 
+                    onChange(
+                      Array.isArray(value)
+                        ? [...value, option.value]
+                        : [option.value]
+                    );
+                  } else {
+                    onChange(
+                      Array.isArray(value)
+                        ? value.filter(v => v !== option.value)
+                        : []
+                    );
+                  }
+                }}
                 />
               {option.option}
             </label>  
@@ -62,7 +89,7 @@ function QuestionCard({qid, question, type, options, value, onChange}) {
       {/* ------------ Textbox Question  ------------ */}
       {type === "text" && (
         <textarea 
-          value={value}
+          value={typeof value === "string" ? value : ""}
           className="question-textarea"
           onChange={(e) => onChange(e.target.value)}
         />

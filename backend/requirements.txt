@@ -7,5 +7,6 @@ openai
 flask
 flask-cors
 redis
+ruff
 gunicorn
 psycopg2-binary

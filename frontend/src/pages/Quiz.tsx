@@ -1,15 +1,24 @@
 import { useState } from "react"
 import QuestionCard from "../components/QuestionCard"
-import Navbar from "../components/Navbar"
 import questions from "../data/questions.json"
 import { useNavigate } from "react-router-dom";
+import type { Question } from "../types/question";
+import { QuizResponse } from "../types/api"
+
+type Answers = {
+  [questionId: number]: string | string[];
+}
 
 function Quiz() {
-  const [answers, setAnswers] = useState({})
+  const [answers, setAnswers] = useState<Answers>({})
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
+  const quizQuestions = questions as Question[];
 
-  function handleAnswer(qid, answer) {
+  function handleAnswer(
+    qid: number,
+    answer: string | string[]
+  ) {
     setAnswers(prev => ({
       ...prev,
       [qid]: answer
@@ -18,8 +27,8 @@ function Quiz() {
 
   const handleSubmit = async () => {
     let filled = true;
-    
-    questions.forEach((q) => {
+
+    quizQuestions.forEach((q) => {
       const answer = answers[q.id]
 
       if (!answer || (q.type === "checkbox" && answer.length ===0)){
@@ -32,7 +41,8 @@ function Quiz() {
       return;
     }
 
-    const formattedAnswers = Object.entries(answers).map(([questionId, answer]) => ({
+    const formattedAnswers:QuizResponse[] =
+      Object.entries(answers).map(([questionId, answer]) => ({
       questionId: Number(questionId),
       answer
     }));
@@ -54,7 +64,7 @@ function Quiz() {
       if (!quizResponse.ok) {
         // console.log("successfully sent answers to db")
         // navigate("/result");
-        console.log(data.error)
+        console.log(quizData.error)
         setLoading(false)
         return;
       }
@@ -69,7 +79,7 @@ function Quiz() {
       const scoreData = await scoreResponse.json();
 
       if (!scoreResponse.ok) {
-        console.log(data.error)
+        console.log(scoreData.error)
         setLoading(false)
         return;
       }
@@ -100,7 +110,7 @@ function Quiz() {
 
       <div className="card-container">
 
-        {questions.map((q) => (
+        {quizQuestions.map((q) => (
           <QuestionCard
             key={q.id}
             qid={q.id}
@@ -114,7 +124,7 @@ function Quiz() {
 
       </div>
 
-      <button onClick={handleSubmit}disabled={loading}>
+      <button onClick={handleSubmit} disabled={loading}>
         {loading ? "MATCHING YOU..." : "SUBMIT QUIZ" }
         </button>
     </div>

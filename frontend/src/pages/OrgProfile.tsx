@@ -2,28 +2,37 @@ import "../styles/OrgProfile.css";
 import logo from "../assets/mm_logo.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import type { Organization } from "../types/organization";
+import { OrgProfileResponse } from "../types/api"
+
+// type Tag = {
+//   tagImageUrl: string;
+//   title: string;
+// };
 
 function OrgProfile() { 
-  const { ein } = useParams();
-  const [org, setOrg] = useState(null);
-  const [tags, setTags] = useState(null);
+  const { ein } = useParams<{ ein: string }>();
+  const [org, setOrg] = useState<Organization | null>(null);
+  // const [tags, setTags] = useState<Tag[] | null>(null);
   const [loading, setLoading] = useState(true) 
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!ein) return;
+
     // Fetch organization details when the profile page loads
     // or when the EIN in the URL changes.
     const getOrg = async () => {
       try {
         const response = await fetch(`/api/org/${ein}`);
-        const data = await response.json();
+        const data: OrgProfileResponse = await response.json();
         
         console.log("API response:", data);
 
-        if (response.ok){
+        if (response.ok && "nonprofit" in data){
           setOrg(data.nonprofit);
-          setTags(data.nonprofitTags)
-        } else {
+          // setTags(data.nonprofitTags)
+        } else if ("error" in data) {
           console.log(data.error)
         }
       } finally {
@@ -43,7 +52,7 @@ function OrgProfile() {
       <div className="profile-header">
         <div className="profile-info">
           <h2>{org.name}</h2>
-          <h3>Based in {org.locationAddress}</h3>
+          <h3>Based in {org.location}</h3>
           <p>{org.description}</p>
           <h3>Why We Matched You</h3>
           <p>Analysis feature coming soon</p>
@@ -57,6 +66,17 @@ function OrgProfile() {
             disabled={!org.websiteUrl}
           >
             {org.websiteUrl ? "THEIR WEBSITE" : "NO WEBSITE"}
+          </button>
+          
+          <button
+            onClick={() => {
+              const url = org.profileUrl.startsWith("http") ? `${org.profileUrl}/donate` : `https://${org.profileUrl}/donate`;
+              window.open(url, "_blank");
+            }}
+            className="norm-button"
+            disabled={!org.profileUrl}
+          >
+            {org.profileUrl ? "DONATE HERE" : "NO DONATION LINK"}
           </button>
        
         </div>

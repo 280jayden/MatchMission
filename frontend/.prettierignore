@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+coverage
+.next
+out
+*.min.js
+package-lock.json
+*.svg
+public

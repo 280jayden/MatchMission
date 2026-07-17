@@ -12,7 +12,12 @@ import "../styles/OrgCard.css";
  * - initialStarred: Whether the organization starts in the favorited state. Optional
  */
 
-function StarButton({ein, initialStarred = false}) { 
+type StarButtonProps = {
+  ein: string;
+  initialStarred?: boolean;
+};
+
+function StarButton({ ein, initialStarred = false }: StarButtonProps) {
   const [starred, setStarred] = useState(initialStarred);
 
   async function handleStar() {

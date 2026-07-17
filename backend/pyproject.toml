@@ -1,0 +1,15 @@
+
+[tool.ruff]
+# Python version 3.11
+target-version = "py311"
+# Restrict line lengths to standard limits
+line-length = 88
+
+[tool.ruff.lint]
+# Select the rule types you want to enforce
+select = [
+    "E",   # Style errors (pycodestyle)
+    "W",   # Style warnings (pycodestyle)
+    "F",   # Logical bugs and unused items (Pyflakes)
+    "I",   # Disorganized imports (isort)
+]
