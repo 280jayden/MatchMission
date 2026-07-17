@@ -36,7 +36,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         // Ends the user's session on the backend and clears
         // the user state in the frontend.
         try {
-            const response = await fetch('/api/logout', {
+            const response = await fetch('/api/user/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         // Fetch the currently authenticated user from the backend
         // and update the global auth state.
         try {
-            const response = await fetch('/api/get_current_user', {
+            const response = await fetch('/api/user/info', {
                 credentials: 'include',
             });
 

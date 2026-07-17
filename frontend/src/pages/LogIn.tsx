@@ -11,7 +11,7 @@ function LogIn() {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-        const response = await fetch('/api/login', {
+        const response = await fetch('/api/user/login', {
             method: 'POST',
             credentials: 'include',
             headers: {
