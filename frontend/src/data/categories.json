@@ -1,0 +1,332 @@
+[
+    {
+        "tag": "animals",
+        "name": "Animals",
+        "description": "Supports the welfare and protection of animals."
+    },
+    {
+        "tag": "cats",
+        "name": "Cats",
+        "description": "Supports the rescue, care, and welfare of cats."
+    },
+    {
+        "tag": "dogs",
+        "name": "Dogs",
+        "description": "Supports the rescue, care, and welfare of dogs."
+    },
+    {
+        "tag": "wildlife",
+        "name": "Wildlife",
+        "description": "Protects wild animal species and their habitats."
+    },
+    {
+        "tag": "culture",
+        "name": "Culture",
+        "description": "Promotes and preserves arts and cultural heritage."
+    },
+    {
+        "tag": "visual-art",
+        "name": "Visual Art",
+        "description": "Supports painting, sculpture, and other visual art forms."
+    },
+    {
+        "tag": "dance",
+        "name": "Dance",
+        "description": "Promotes dance as a performing art and cultural expression."
+    },
+    {
+        "tag": "film-television",
+        "name": "Film & Television",
+        "description": "Supports film and television production, education, or preservation."
+    },
+    {
+        "tag": "museums",
+        "name": "Museums",
+        "description": "Supports museums that preserve and exhibit cultural and historical artifacts."
+    },
+    {
+        "tag": "music",
+        "name": "Music",
+        "description": "Promotes music education, performance, and preservation."
+    },
+    {
+        "tag": "theater",
+        "name": "Theater",
+        "description": "Supports theatrical performance and production."
+    },
+    {
+        "tag": "education",
+        "name": "Education",
+        "description": "Expands access to learning and knowledge."
+    },
+    {
+        "tag": "libraries",
+        "name": "Libraries",
+        "description": "Supports public access to books, information, and library services."
+    },
+    {
+        "tag": "scholarships-financial-aid",
+        "name": "Scholarships & Financial Aid",
+        "description": "Provides financial support to help students pursue education."
+    },
+    {
+        "tag": "environment",
+        "name": "Environment",
+        "description": "Works to protect and sustain the natural world."
+    },
+    {
+        "tag": "agriculture",
+        "name": "Agriculture",
+        "description": "Promotes sustainable farming and food production practices."
+    },
+    {
+        "tag": "climate-change",
+        "name": "Climate Change",
+        "description": "Works to address and mitigate the effects of climate change."
+    },
+    {
+        "tag": "conservation",
+        "name": "Conservation",
+        "description": "Protects natural habitats and biodiversity."
+    },
+    {
+        "tag": "oceans",
+        "name": "Oceans",
+        "description": "Protects marine ecosystems and ocean health."
+    },
+    {
+        "tag": "parks",
+        "name": "Parks",
+        "description": "Supports the creation and maintenance of public parks and green spaces."
+    },
+    {
+        "tag": "health",
+        "name": "Health",
+        "description": "Addresses physical and mental health needs."
+    },
+    {
+        "tag": "autism-awareness",
+        "name": "Autism Awareness",
+        "description": "Supports individuals with autism and promotes awareness and understanding."
+    },
+    {
+        "tag": "cancer-awareness",
+        "name": "Cancer Awareness",
+        "description": "Funds cancer research, support, and awareness efforts."
+    },
+    {
+        "tag": "disease-prevention",
+        "name": "Disease Prevention",
+        "description": "Works to prevent the spread and impact of disease."
+    },
+    {
+        "tag": "mental-health",
+        "name": "Mental Health",
+        "description": "Supports mental health treatment, awareness, and resources."
+    },
+    {
+        "tag": "womens-health",
+        "name": "Women's Health",
+        "description": "Addresses health issues and access to care specific to women."
+    },
+    {
+        "tag": "humans",
+        "name": "Humans",
+        "description": "Supports people's basic needs and wellbeing."
+    },
+    {
+        "tag": "adoption-foster-care",
+        "name": "Adoption & Foster Care",
+        "description": "Supports children and families in adoption and foster care systems."
+    },
+    {
+        "tag": "entrepreneurship",
+        "name": "Entrepreneurship",
+        "description": "Helps individuals start and grow their own businesses."
+    },
+    {
+        "tag": "food-security",
+        "name": "Food Security",
+        "description": "Works to ensure reliable access to nutritious food."
+    },
+    {
+        "tag": "housing-homelessness",
+        "name": "Housing & Homelessness",
+        "description": "Addresses housing insecurity and supports people experiencing homelessness."
+    },
+    {
+        "tag": "immigrants",
+        "name": "Immigrants",
+        "description": "Supports immigrants with resources, services, and advocacy."
+    },
+    {
+        "tag": "indigenous-peoples",
+        "name": "Indigenous Peoples",
+        "description": "Supports the wellbeing and rights of Indigenous communities."
+    },
+    {
+        "tag": "leadership-development",
+        "name": "Leadership Development",
+        "description": "Builds leadership skills and opportunities for individuals."
+    },
+    {
+        "tag": "poverty-alleviation",
+        "name": "Poverty Alleviation",
+        "description": "Works to reduce poverty and improve economic stability."
+    },
+    {
+        "tag": "refugees",
+        "name": "Refugees",
+        "description": "Supports refugees with resettlement, resources, and advocacy."
+    },
+    {
+        "tag": "seniors",
+        "name": "Seniors",
+        "description": "Supports the wellbeing and care of older adults."
+    },
+    {
+        "tag": "veterans",
+        "name": "Veterans",
+        "description": "Supports the needs and reintegration of military veterans."
+    },
+    {
+        "tag": "water",
+        "name": "Water",
+        "description": "Works to ensure access to clean and safe water."
+    },
+    {
+        "tag": "wildfire-relief",
+        "name": "Wildfire Relief",
+        "description": "Provides relief and recovery support for communities affected by wildfires."
+    },
+    {
+        "tag": "women-girls",
+        "name": "Women & Girls",
+        "description": "Supports the empowerment and wellbeing of women and girls."
+    },
+    {
+        "tag": "youth",
+        "name": "Youth",
+        "description": "Supports the development and wellbeing of children and young people."
+    },
+    {
+        "tag": "justice",
+        "name": "Justice",
+        "description": "Advances equity, rights, and representation."
+    },
+    {
+        "tag": "aapi-led",
+        "name": "AAPI Led",
+        "description": "Led by and serving Asian American and Pacific Islander communities."
+    },
+    {
+        "tag": "black-led",
+        "name": "Black Led",
+        "description": "Led by and serving Black communities."
+    },
+    {
+        "tag": "civic-participation",
+        "name": "Civic Participation",
+        "description": "Encourages engagement in civic and community life."
+    },
+    {
+        "tag": "disabilities",
+        "name": "Disabilities",
+        "description": "Supports the rights and inclusion of people with disabilities."
+    },
+    {
+        "tag": "free-press",
+        "name": "Free Press",
+        "description": "Defends press freedom and independent journalism."
+    },
+    {
+        "tag": "gender-equality",
+        "name": "Gender Equality",
+        "description": "Works toward equal rights and opportunities across genders."
+    },
+    {
+        "tag": "indigenous-led",
+        "name": "Indigenous Led",
+        "description": "Led by and serving Indigenous communities."
+    },
+    {
+        "tag": "latine-led",
+        "name": "Latine Led",
+        "description": "Led by and serving Latine communities."
+    },
+    {
+        "tag": "legal-services",
+        "name": "Legal Services",
+        "description": "Provides legal aid and representation to those in need."
+    },
+    {
+        "tag": "lgbt",
+        "name": "LGBT+",
+        "description": "Supports the rights and wellbeing of LGBT+ communities."
+    },
+    {
+        "tag": "mena-led",
+        "name": "MENA Led",
+        "description": "Led by and serving Middle Eastern and North African communities."
+    },
+    {
+        "tag": "racial-justice",
+        "name": "Racial Justice",
+        "description": "Works to address racial inequity and injustice."
+    },
+    {
+        "tag": "voting-rights",
+        "name": "Voting Rights",
+        "description": "Protects and expands access to voting."
+    },
+    {
+        "tag": "women-led",
+        "name": "Women Led",
+        "description": "Led by and serving women."
+    },
+    {
+        "tag": "religion",
+        "name": "Religion",
+        "description": "Rooted in or serving faith-based communities."
+    },
+    {
+        "tag": "buddhism",
+        "name": "Buddhism",
+        "description": "Serves and supports the Buddhist community and practice."
+    },
+    {
+        "tag": "christianity",
+        "name": "Christianity",
+        "description": "Serves and supports the Christian community and practice."
+    },
+    {
+        "tag": "hinduism",
+        "name": "Hinduism",
+        "description": "Serves and supports the Hindu community and practice."
+    },
+    {
+        "tag": "islam",
+        "name": "Islam",
+        "description": "Serves and supports the Muslim community and practice."
+    },
+    {
+        "tag": "judaism",
+        "name": "Judaism",
+        "description": "Serves and supports the Jewish community and practice."
+    },
+    {
+        "tag": "research",
+        "name": "Research",
+        "description": "Advances scientific and technological knowledge."
+    },
+    {
+        "tag": "science-technology",
+        "name": "Science & Technology",
+        "description": "Supports scientific research and technological innovation."
+    },
+    {
+        "tag": "space",
+        "name": "Space",
+        "description": "Supports research and exploration related to space and astronomy."
+    }
+]

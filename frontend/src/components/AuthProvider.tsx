@@ -10,74 +10,74 @@ import type { CurrentUserResponse } from '../types/api';
  */
 
 type AuthContextType = {
-  user: User | null;
-  setUser: Dispatch<React.SetStateAction<User | null>>;
-  loading: boolean;
-  hasTakenQuiz: () => boolean;
-  refreshUser: () => Promise<void>;
+    user: User | null;
+    setUser: Dispatch<React.SetStateAction<User | null>>;
+    loading: boolean;
+    hasTakenQuiz: () => boolean;
+    refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 type AuthProviderProps = {
-  children: ReactNode;
+    children: ReactNode;
 };
 
 function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
-  async function refreshUser(): Promise<void> {
-    // Fetch the currently authenticated user from the backend
-    // and update the global auth state.
-    try {
-      const response = await fetch('/api/get_current_user', {
-        credentials: 'include',
-      });
+    async function refreshUser(): Promise<void> {
+        // Fetch the currently authenticated user from the backend
+        // and update the global auth state.
+        try {
+            const response = await fetch('/api/get_current_user', {
+                credentials: 'include',
+            });
 
-      const data: CurrentUserResponse = await response.json();
+            const data: CurrentUserResponse = await response.json();
 
-      if (response.ok) {
-        setUser({
-          ...data,
-          has_taken_quiz: Boolean(data.has_taken_quiz),
-        });
-      } else {
-        setUser(null);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+            if (response.ok) {
+                setUser({
+                    ...data,
+                    has_taken_quiz: Boolean(data.has_taken_quiz),
+                });
+            } else {
+                setUser(null);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     }
-  }
 
-  useEffect(() => {
-    // Check for an existing logged-in session when the app loads.
-    refreshUser();
-  }, []);
+    useEffect(() => {
+        // Check for an existing logged-in session when the app loads.
+        refreshUser();
+    }, []);
 
-  function hasTakenQuiz(): boolean {
-    return user?.has_taken_quiz ?? false;
-  }
+    function hasTakenQuiz(): boolean {
+        return user?.has_taken_quiz ?? false;
+    }
 
-  return (
-    <AuthContext.Provider
-      value={{ user, setUser, loading, hasTakenQuiz, refreshUser }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider
+            value={{ user, setUser, loading, hasTakenQuiz, refreshUser }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext);
+    const context = useContext(AuthContext);
 
-  if (!context) {
-    throw new Error('useAuth must be used inside AuthProvider');
-  }
+    if (!context) {
+        throw new Error('useAuth must be used inside AuthProvider');
+    }
 
-  return context;
+    return context;
 }
 
 export default AuthProvider;

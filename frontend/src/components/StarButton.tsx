@@ -13,45 +13,45 @@ import '../styles/OrgCard.css';
  */
 
 type StarButtonProps = {
-  ein: string;
-  initialStarred?: boolean;
+    ein: string;
+    initialStarred?: boolean;
 };
 
 function StarButton({ ein, initialStarred = false }: StarButtonProps) {
-  const [starred, setStarred] = useState(initialStarred);
+    const [starred, setStarred] = useState(initialStarred);
 
-  async function handleStar() {
-    const api_url = !starred ? '/api/favorite' : '/api/unfavorite';
+    async function handleStar() {
+        const api_url = !starred ? '/api/favorite' : '/api/unfavorite';
 
-    const response = await fetch(api_url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ein: ein,
-      }),
-    });
+        const response = await fetch(api_url, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ein: ein,
+            }),
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!response.ok) {
-      console.log(data.error);
-    } else {
-      setStarred(!starred);
+        if (!response.ok) {
+            console.log(data.error);
+        } else {
+            setStarred(!starred);
+        }
     }
-  }
 
-  return (
-    <button onClick={handleStar} className="star-button">
-      {starred ? (
-        <img src={fullStar} alt="full star"></img>
-      ) : (
-        <img src={emptyStar} alt="empty star"></img>
-      )}
-    </button>
-  );
+    return (
+        <button onClick={handleStar} className="star-button">
+            {starred ? (
+                <img src={fullStar} alt="full star"></img>
+            ) : (
+                <img src={emptyStar} alt="empty star"></img>
+            )}
+        </button>
+    );
 }
 
 export default StarButton;

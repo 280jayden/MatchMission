@@ -1,23 +1,23 @@
 .home-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: clamp(20px, 5vw, 80px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: clamp(20px, 5vw, 80px);
 }
 
 .home-container .meow {
-  width: clamp(100px, 30vw, 800px);
-  height: auto;
-  /* aspect-ratio: 389 / 477; */
-  border-radius: 30px;
+    width: clamp(100px, 30vw, 800px);
+    height: auto;
+    /* aspect-ratio: 389 / 477; */
+    border-radius: 30px;
 }
 
 .home-container .logo {
-  width: clamp(180px, 24vw, 5002424px);
-  height: auto;
+    width: clamp(180px, 24vw, 5002424px);
+    height: auto;
 }
 
 .home-container p {
-  margin-right: clamp(0px, 5vw, 90px);
-  max-width: 1000000px;
+    margin-right: clamp(0px, 5vw, 90px);
+    max-width: 1000000px;
 }

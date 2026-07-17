@@ -1,35 +1,35 @@
 .profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
 }
 
 .profile-info {
-  flex: 1;
-  gap: 20px;
+    flex: 1;
+    gap: 20px;
 }
 
 .profile-side {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
 
 .profile-side button {
-  align-self: flex-end;
-  width: 200px;
+    align-self: flex-end;
+    width: 200px;
 }
 
 .orgprof-img {
-  width: clamp(150px, 20rem, 500px);
-  height: clamp(150px, 20rem, 500px);
-  border-radius: 30px;
-  object-fit: contain;
+    width: clamp(150px, 20rem, 500px);
+    height: clamp(150px, 20rem, 500px);
+    border-radius: 30px;
+    object-fit: contain;
 }
 
 .profile-bottom {
-  display: flex;
-  gap: 30px;
+    display: flex;
+    gap: 30px;
 }

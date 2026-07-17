@@ -11,48 +11,48 @@ import OrgProfile from './pages/OrgProfile';
 import RequireAuth from './components/RequireAuth';
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Navbar />
-      <div className="page-background">
-        <Routes>
-          {/* public pages */}
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LogIn />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/org/:ein" element={<OrgProfile />} />
+    return (
+        <BrowserRouter>
+            <Navbar />
+            <div className="page-background">
+                <Routes>
+                    {/* public pages */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<LogIn />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/org/:ein" element={<OrgProfile />} />
 
-          {/* protected pages */}
-          <Route
-            path="/profile"
-            element={
-              <RequireAuth>
-                <Profile />
-              </RequireAuth>
-            }
-          />
+                    {/* protected pages */}
+                    <Route
+                        path="/profile"
+                        element={
+                            <RequireAuth>
+                                <Profile />
+                            </RequireAuth>
+                        }
+                    />
 
-          <Route
-            path="/quiz"
-            element={
-              <RequireAuth>
-                <Quiz />
-              </RequireAuth>
-            }
-          />
+                    <Route
+                        path="/quiz"
+                        element={
+                            <RequireAuth>
+                                <Quiz />
+                            </RequireAuth>
+                        }
+                    />
 
-          <Route
-            path="/result"
-            element={
-              <RequireAuth>
-                <Result />
-              </RequireAuth>
-            }
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
+                    <Route
+                        path="/result"
+                        element={
+                            <RequireAuth>
+                                <Result />
+                            </RequireAuth>
+                        }
+                    />
+                </Routes>
+            </div>
+        </BrowserRouter>
+    );
 }
 
 export default App;

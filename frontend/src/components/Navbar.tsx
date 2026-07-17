@@ -11,58 +11,58 @@ import { LogoutResponse } from '../types/api';
  */
 
 function Navbar() {
-  const navigate = useNavigate();
-  const { user, setUser, hasTakenQuiz } = useAuth();
+    const navigate = useNavigate();
+    const { user, setUser, hasTakenQuiz } = useAuth();
 
-  const handleLogout = async () => {
-    // Ends the user's session on the backend and clears
-    // the user state in the frontend.
+    const handleLogout = async () => {
+        // Ends the user's session on the backend and clears
+        // the user state in the frontend.
 
-    const response = await fetch('/api/logout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
+        const response = await fetch('/api/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
 
-    const data: LogoutResponse = await response.json();
+        const data: LogoutResponse = await response.json();
 
-    if (response.ok) {
-      console.log('logged out');
-      setUser(null);
-      navigate('/');
-    } else {
-      console.log(data.error);
-    }
-  };
+        if (response.ok) {
+            console.log('logged out');
+            setUser(null);
+            navigate('/');
+        } else {
+            console.log(data.error);
+        }
+    };
 
-  return (
-    <div className="navbar">
-      <nav>
-        <img src={logo} alt="MatchMission logo" />
-        <div className="nav-links">
-          <Link to="/">Home</Link>
+    return (
+        <div className="navbar">
+            <nav>
+                <img src={logo} alt="MatchMission logo" />
+                <div className="nav-links">
+                    <Link to="/">Home</Link>
 
-          {hasTakenQuiz() ? (
-            <Link to="/result">Recommendations</Link>
-          ) : (
-            <Link to="/quiz">Quiz</Link>
-          )}
+                    {hasTakenQuiz() ? (
+                        <Link to="/result">Recommendations</Link>
+                    ) : (
+                        <Link to="/quiz">Quiz</Link>
+                    )}
 
-          <Link to="/profile">Profile</Link>
+                    <Link to="/profile">Profile</Link>
 
-          {user ? (
-            <Link to="#" onClick={handleLogout}>
-              Log Out
-            </Link>
-          ) : (
-            <Link to="/register">Register</Link>
-          )}
+                    {user ? (
+                        <Link to="#" onClick={handleLogout}>
+                            Log Out
+                        </Link>
+                    ) : (
+                        <Link to="/register">Register</Link>
+                    )}
+                </div>
+            </nav>
         </div>
-      </nav>
-    </div>
-  );
+    );
 }
 
 export default Navbar;
