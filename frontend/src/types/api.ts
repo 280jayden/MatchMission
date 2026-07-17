@@ -5,6 +5,10 @@ export type CurrentUserResponse = {
     has_taken_quiz: boolean;
 };
 
+export type UserWeightsResponse =
+    | { success: true; weights: Record<string, number> }
+    | { error: string };
+
 export type LogoutResponse = {
     success?: boolean;
     message?: string;

@@ -2,7 +2,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/mm_logo.png';
 import '../styles/Navbar.css';
 import { useAuth } from './AuthProvider';
-import { LogoutResponse } from '../types/api';
 
 /**
  * Main navigation bar for the application.
@@ -12,30 +11,7 @@ import { LogoutResponse } from '../types/api';
 
 function Navbar() {
     const navigate = useNavigate();
-    const { user, setUser, hasTakenQuiz } = useAuth();
-
-    const handleLogout = async () => {
-        // Ends the user's session on the backend and clears
-        // the user state in the frontend.
-
-        const response = await fetch('/api/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-        });
-
-        const data: LogoutResponse = await response.json();
-
-        if (response.ok) {
-            console.log('logged out');
-            setUser(null);
-            navigate('/');
-        } else {
-            console.log(data.error);
-        }
-    };
+    const { user, hasTakenQuiz, logout } = useAuth();
 
     return (
         <div className="navbar">
@@ -53,7 +29,13 @@ function Navbar() {
                     <Link to="/profile">Profile</Link>
 
                     {user ? (
-                        <Link to="#" onClick={handleLogout}>
+                        <Link
+                            to="#"
+                            onClick={async () => {
+                                await logout();
+                                navigate('/');
+                            }}
+                        >
                             Log Out
                         </Link>
                     ) : (
