@@ -48,7 +48,7 @@ function Result() {
             {/* DEBUG, DELETE LATER */}
             
             <ProfileResult /> 
-            <h2 id="results-list">Recommended Organizations</h2>
+            <h2 style={{marginTop: "99px", textAlign: "center"}} id="results-list">Recommended Organizations</h2>
             {/* DEBUG, DELETE LATER */}
             <div className="card-container">
                 {orgs.map((org, index) => (
