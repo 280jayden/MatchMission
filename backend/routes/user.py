@@ -4,9 +4,9 @@ from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import engine
 
-auth_bp = Blueprint('auth', __name__)
+user_bp = Blueprint('user', __name__)
 
-@auth_bp.route("/api/register", methods=['POST'])
+@user_bp.route("/api/user/register", methods=['POST'])
 def register():
   data = request.get_json() or {}
 
@@ -46,7 +46,7 @@ def register():
   
 
 
-@auth_bp.route("/api/login", methods=['POST'])
+@user_bp.route("/api/user/login", methods=['POST'])
 def login():
     data = request.get_json() or {} # to protect against NoneType error if no json is sent
 
@@ -73,7 +73,7 @@ def login():
     
     return jsonify({"success": True, "message": "Logged in."}), 201
 
-@auth_bp.route("/api/get_current_user", methods=['GET'])
+@user_bp.route("/api/user/info", methods=['GET'])
 def get_current_user():
     uid = session.get('user_id')
     if not uid:
@@ -95,12 +95,12 @@ def get_current_user():
 
 
 
-@auth_bp.route("/api/logout", methods=['POST'])
+@user_bp.route("/api/user/logout", methods=['POST'])
 def logout():
     session.pop('user_id', None)
     return jsonify({"success": True, "message": "Logged out."}), 200
 
-@auth_bp.route("/api/user/weights", methods=['GET'])
+@user_bp.route("/api/user/weights", methods=['GET'])
 def get_user_weights_endpoint():
     user_id = session.get('user_id')
     if not user_id:

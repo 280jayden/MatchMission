@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import sqlalchemy as db
 
 from extensions import engine
-from routes.auth import auth_bp
+from routes.user import user_bp
 from routes.orgs import orgs_bp
 from routes.quiz import quiz_bp
 
