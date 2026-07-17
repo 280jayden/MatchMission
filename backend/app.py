@@ -47,7 +47,7 @@ with engine.connect() as connection:
     connection.commit()
 
 
-app.register_blueprint(auth_bp)
+app.register_blueprint(user_bp)
 app.register_blueprint(orgs_bp)
 app.register_blueprint(quiz_bp)
 
