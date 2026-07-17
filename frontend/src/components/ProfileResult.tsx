@@ -4,9 +4,13 @@ import { useAuth } from '../components/AuthProvider';
 import type { Organization } from '../types/organization';
 import WeightsRadarChart from '../components/WeightsRadarChart';
 import "../styles/ProfileResult.css";
+import categories from "../data/categories.json";
+import { getCategoriesFromWeights } from '../utils/getCategoriesFromWeights';
+import AttributeTag from './AttributeTag';
 
 function ProfileResult() {
     const { weights } = useAuth();
+    const userCategories = getCategoriesFromWeights(weights);
 
     function scrollToResults() {
         document.getElementById('results-list')?.scrollIntoView();
@@ -27,24 +31,23 @@ function ProfileResult() {
                     className="result-button"
                 >SHOW ME<br/>MY MATCHES</button>
 
-                    {/* <div className="tag-container">
-                {tags?.map((tag) => (
-                    <AttributeTag
-                    key={tag.title}
-                    title={tag.title}
-                    tagImageUrl={tag.tagImageUrl}
-                    />
-                ))}
-                </div> */}
+                {userCategories.map((category) => (
+                      <AttributeTag
+                      key={category.tag}
+                      title={category.name}
+                      tagImageUrl={category.tagImageUrl}
+                      />
+                    ))}
             </div>
 
             <div className="result-weight-chart">
                 <WeightsRadarChart weights={weights} />
                 <div className="cat-description-container">
-                    <p>some descriptions</p>
-                    <p>some descriptions</p>
-                    <p>some descriptions</p>
-                    {/* map: for the weights, we want to pull their Name and their description in a paragraph element */}
+                    {userCategories.map((category) => (
+                        <p key={category.tag}>
+                        <strong>{category.name}:</strong> {category.description}
+                      </p>
+                    ))}
                 </div>
             </div>
         </div>
