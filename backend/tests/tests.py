@@ -1,7 +1,7 @@
 import pytest
 import sqlalchemy as db
-from fetch_orgs import *
-from questions import is_valid_choice
+from services.fetch_orgs import *
+from services.questions import is_valid_choice
 
 def test_algorithm():
     user_causes = {'animals': 0.99, 'research': 0.85, 'education': 0.65, 'environment': 0.56}

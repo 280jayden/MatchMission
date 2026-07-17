@@ -1,4 +1,12 @@
-@app.route("/api/register", methods=['POST'])
+import uuid
+import sqlalchemy as db
+from flask import Blueprint, request, jsonify, session
+from werkzeug.security import generate_password_hash, check_password_hash
+from extensions import engine
+
+user_bp = Blueprint('user', __name__)
+
+@user_bp.route("/api/user/register", methods=['POST'])
 def register():
   data = request.get_json() or {}
 
@@ -38,7 +46,7 @@ def register():
   
 
 
-@app.route("/api/login", methods=['POST'])
+@user_bp.route("/api/user/login", methods=['POST'])
 def login():
     data = request.get_json() or {} # to protect against NoneType error if no json is sent
 
@@ -65,7 +73,7 @@ def login():
     
     return jsonify({"success": True, "message": "Logged in."}), 201
 
-@app.route("/api/get_current_user", methods=['GET'])
+@user_bp.route("/api/user/info", methods=['GET'])
 def get_current_user():
     uid = session.get('user_id')
     if not uid:
@@ -87,7 +95,24 @@ def get_current_user():
 
 
 
-@app.route("/api/logout", methods=['POST'])
+@user_bp.route("/api/user/logout", methods=['POST'])
 def logout():
     session.pop('user_id', None)
     return jsonify({"success": True, "message": "Logged out."}), 200
+
+@user_bp.route("/api/user/weights", methods=['GET'])
+def get_user_weights_endpoint():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+    
+    with engine.connect() as connection:
+        query = db.text('SELECT profile FROM "Users" WHERE id = :user_id LIMIT 1' )
+        result = connection.execute(query, {"user_id": user_id}).fetchone()
+
+    if not result or not result[0]:
+        return jsonify({"error": "No profile found. Submit the quiz first."}), 404
+    
+    profile = result[0]
+    return jsonify({"success": True, "weights": profile.get("causes", {})})
+    

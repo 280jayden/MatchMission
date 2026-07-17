@@ -1,8 +1,18 @@
-@app.route('/api/questions', methods=['GET']) # this will give the frontend quiz questions, GET bc react is asking for the data
+import json
+from flask import Blueprint, request, jsonify, session
+import sqlalchemy as db
+from extensions import engine
+from services.scoring import generate_user_profile
+from services.questions import get_quiz_data
+from services.redis_cache import save_user_weights
+
+quiz_bp = Blueprint('quiz', __name__)
+
+@quiz_bp.route('/api/questions', methods=['GET']) # this will give the frontend quiz questions, GET bc react is asking for the data
 def get_questions():
     return jsonify(get_quiz_data())
 
-# @app.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
+#@quiz_bp.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
 
 # def submit_quiz():
 #     data = request.get_json()
@@ -21,7 +31,7 @@ def get_questions():
 #     """
 #     #nonprofits
 
-@app.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
+@quiz_bp.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
 def submit_quiz():
     data = request.get_json() or {}
     # name = data.get('name', 'User')
