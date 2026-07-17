@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/mm_logo.png";
-import "../styles/Navbar.css";
-import { useAuth } from "./AuthProvider";
-import { LogoutResponse } from "../types/api"
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/mm_logo.png';
+import '../styles/Navbar.css';
+import { useAuth } from './AuthProvider';
 
 /**
  * Main navigation bar for the application.
@@ -11,60 +10,41 @@ import { LogoutResponse } from "../types/api"
  */
 
 function Navbar() {
-  const navigate = useNavigate();
-  const { user, setUser, hasTakenQuiz } = useAuth();
+    const navigate = useNavigate();
+    const { user, hasTakenQuiz, logout } = useAuth();
 
+    return (
+        <div className="navbar">
+            <nav>
+                <img src={logo} alt="MatchMission logo" />
+                <div className="nav-links">
+                    <Link to="/">Home</Link>
 
-  const handleLogout = async () => {
-    // Ends the user's session on the backend and clears
-    // the user state in the frontend.
+                    {hasTakenQuiz() ? (
+                        <Link to="/result">Recommendations</Link>
+                    ) : (
+                        <Link to="/quiz">Quiz</Link>
+                    )}
 
-    const response = await fetch("/api/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
+                    <Link to="/profile">Profile</Link>
 
-    const data: LogoutResponse = await response.json();
-
-    if (response.ok) {
-      console.log("logged out")
-      setUser(null);
-      navigate("/");
-    } else {
-      console.log(data.error)
-    }
-}
-
-  return (
-    <div className="navbar">
-      <nav> 
-        <img src={logo} alt="MatchMission logo"/>
-        <div className="nav-links">
-          <Link to="/">Home</Link>
-
-          { hasTakenQuiz() ? (
-              <Link to="/result">Recommendations</Link>
-            ) : (
-              <Link to="/quiz">Quiz</Link>
-            )
-          }
-
-           <Link to="/profile">Profile</Link>
-
-          {user ? (
-            <Link to="#" onClick={handleLogout}>Log Out</Link>
-            )
-            : (
-            <Link to="/register">Register</Link>
-            )
-          }
+                    {user ? (
+                        <Link
+                            to="#"
+                            onClick={async () => {
+                                await logout();
+                                navigate('/');
+                            }}
+                        >
+                            Log Out
+                        </Link>
+                    ) : (
+                        <Link to="/register">Register</Link>
+                    )}
+                </div>
+            </nav>
         </div>
-      </nav>
-    </div>
-  )
+    );
 }
 
-export default Navbar
+export default Navbar;

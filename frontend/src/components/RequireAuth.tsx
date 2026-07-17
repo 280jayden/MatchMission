@@ -1,6 +1,6 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "./AuthProvider.jsx";
-import type { ReactNode } from "react";
+import { Navigate } from 'react-router-dom';
+import { useAuth } from './AuthProvider.jsx';
+import type { ReactNode } from 'react';
 
 /**
  * Route guard that only renders protected pages for authenticated users.
@@ -8,21 +8,21 @@ import type { ReactNode } from "react";
  */
 
 type RequireAuthProps = {
-  children: ReactNode;
+    children: ReactNode;
 };
 
 function RequireAuth({ children }: RequireAuthProps) {
-  const { user, loading } = useAuth();
+    const { user, loading } = useAuth();
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+    if (loading) {
+        return <p>Loading...</p>;
+    }
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
 
-  return children;
+    return children;
 }
 
 export default RequireAuth;
