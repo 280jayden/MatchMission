@@ -2,7 +2,7 @@
 #from questions import run_quiz <-- handled by flask now
 from dotenv import load_dotenv
 from openai import OpenAI
-from concurrent.future import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 import os
 import json
