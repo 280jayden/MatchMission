@@ -4,7 +4,7 @@ from services.fetch_orgs import fetch_orgs, fetch_org
 from services.redis_cache import (
     get_user_weights, is_cached, cache_tags, load_nonprofits_json,
     get_next_batch, mark_shown, mark_favorited, unmark_favorited,
-    get_favorites_redis, get_nonprofits,
+    get_favorites_redis, get_nonprofits, get_random_nonprofits
 )
 
 orgs_bp = Blueprint('orgs', __name__)
@@ -172,10 +172,10 @@ def get_favorites():
 @orgs_bp.route('/api/orgs/directory', methods=['GET'])
 def get_directory():
     """
-    Returns a list of all cached nonprofits in the directory.
+    Returns a list of random nonprofits for the directory.
     """
 
-    # get all cached nonprofits
-    all_nonprofits = get_nonprofits()
+    # get 20 cached nonprofits
+    nonprofits = get_random_nonprofits(20)
 
-    return jsonify({"success": True, "directory": all_nonprofits})
+    return jsonify({"success": True, "directory": nonprofits})

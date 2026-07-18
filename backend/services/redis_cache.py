@@ -96,6 +96,7 @@ def load_nonprofits_json(nonprofits: list):
     pipe = r.pipeline()
     
     for np in nonprofits:
+        pipe.sadd("nonprofit_eins", np['ein'])
         pipe.set(f"nonprofit:{np['ein']}", json.dumps(np))
     
     # execute all comands in the pipeline
@@ -108,9 +109,14 @@ def get_nonprofits(np_eins: list):
     raw_data = r.mget(keys)
     return [json.loads(data) for data in raw_data if data]
 
-def get_x_nonprofits(np_eins: list):
-    # retrieves possible candidates of nonprofits
-    keys = [f"nonprofit:{ein}" for ein in np_eins]
+def get_random_nonprofits(amount: int):
+    # retrieves random nonprofits for directory page
+    random_eins = r.srandmember("nonprofit_eins", amount)
+    
+    if not random_eins:
+        return []
+
+    keys = [f"nonprofit:{ein}" for ein in random_eins]
     raw_data = r.mget(keys)
     return [json.loads(data) for data in raw_data if data]
 
