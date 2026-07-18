@@ -13,16 +13,16 @@ function Result() {
 
     // Fetch the user's matched organizations from the backend.
     const getResults = async () => {
-        // const response = await fetch(`${API_URL}/api/get_batch`, {
         const response = await fetch(`${API_URL}/api/user/results`, {
             method: 'GET',
             credentials: 'include',
         });
 
+
         const data: GetBatchResponse = await response.json();
 
-        if (response.ok && 'nonprofits' in data) {
-            setOrgs(data.nonprofits);
+        if (response.ok && 'matches' in data) {
+            setOrgs(data.matches);
         } else if ('error' in data) {
             console.log(data.error);
         }
@@ -55,6 +55,7 @@ function Result() {
                 {orgs.map((org, index) => (
                     <OrgCard key={org.ein} org={org} isBestMatch={index < 3} />
                 ))}
+
             </div>
         </div>
     );
