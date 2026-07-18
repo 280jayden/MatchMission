@@ -2,6 +2,7 @@
 #from questions import run_quiz <-- handled by flask now
 from dotenv import load_dotenv
 from openai import OpenAI
+from concurrent.future import ThreadPoolExecutor
 
 import os
 import json
@@ -96,7 +97,7 @@ def generate_user_profile(name, user_responses):
 
   try:
     response = client.chat.completions.create(
-      model="gpt-4o-mini",
+      model="gpt-5.5",
       messages=[
         {'role': 'user', 'content': prompt}
       ],
@@ -141,6 +142,3 @@ def generate_weights_explanation(causes, user_responses):
   except Exception as e:
     print(f"Error generating weights explanation: {e}")
     return ""
-
-
-  
