@@ -7,6 +7,7 @@ import { OrgProfileResponse } from '../types/api';
 import AttributeTag from '../components/AttributeTag';
 import DonateButton from '../components/DonateButton';
 import { API_URL } from '../config';
+import { resizeImage } from '../utils/resizeImage'
 
 function OrgProfile() {
     const { ein } = useParams<{ ein: string }>();
@@ -85,7 +86,7 @@ function OrgProfile() {
                     <button onClick={() => navigate('/result')}>Back</button>
 
                     <img
-                        src={org.logoUrl || logo}
+                        src={resizeImage({url: org.logoUrl}) || logo}
                         alt="organization logo"
                         className="orgprof-img"
                     />

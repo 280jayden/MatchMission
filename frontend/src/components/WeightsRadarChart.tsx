@@ -5,50 +5,60 @@ import {
     PolarAngleAxis,
     PolarRadiusAxis,
 } from 'recharts';
-const data = [
-    //sample data
-    {
-        tag: 'Animals',
-        weight: 0.7432,
-    },
-    {
-        tag: 'Mental Health',
-        weight: 0.423,
-    },
-    {
-        tag: 'Conservation',
-        weight: 0.52392,
-    },
-    {
-        tag: 'Justice',
-        weight: 0.84758,
-    },
-    {
-        tag: 'Science & Technology',
-        weight: 0.32764892,
-    },
-    {
-        tag: 'Food Security',
-        weight: 0.854739,
-    },
-    {
-        tag: 'Humans',
-        weight: 0.9,
-    },
-    {
-        tag: 'Music',
-        weight: 0.48375,
-    },
-];
+import { UserWeights } from "../types/user"
+
+// const old = [
+//     //sample data
+//     {
+//         tag: 'Animals',
+//         weight: 0.7432,
+//     },
+//     {
+//         tag: 'Mental Health',
+//         weight: 0.423,
+//     },
+//     {
+//         tag: 'Conservation',
+//         weight: 0.52392,
+//     },
+//     {
+//         tag: 'Justice',
+//         weight: 0.84758,
+//     },
+//     {
+//         tag: 'Science & Technology',
+//         weight: 0.32764892,
+//     },
+//     {
+//         tag: 'Food Security',
+//         weight: 0.854739,
+//     },
+//     {
+//         tag: 'Humans',
+//         weight: 0.9,
+//     },
+//     {
+//         tag: 'Music',
+//         weight: 0.48375,
+//     },
+// ];
 
 interface WeightsRadarChartProps {
+  weights: UserWeights | null;
   width?: number;
   height?: number;
 }
 
 // got this from the recharts api
 // later, make data be a thing passed in as a prop instead
-const WeightsRadarChart = ({ width = 400, height = 400}: WeightsRadarChartProps) => {
+const WeightsRadarChart = ({ weights, width = 400, height = 400}: WeightsRadarChartProps) => {
+
+    const data = weights
+        ? Object.entries(weights).map(([tag,weight]) => ({
+            tag,
+            weight,
+        })) : [];
+
     return (
         <RadarChart
             responsive

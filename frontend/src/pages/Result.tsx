@@ -13,7 +13,8 @@ function Result() {
 
     // Fetch the user's matched organizations from the backend.
     const getResults = async () => {
-        const response = await fetch(`${API_URL}/api/get_batch`, {
+        // const response = await fetch(`${API_URL}/api/get_batch`, {
+        const response = await fetch(`${API_URL}/api/user/results`, {
             method: 'GET',
             credentials: 'include',
         });
@@ -48,7 +49,7 @@ function Result() {
             {/* DEBUG, DELETE LATER */}
             
             <ProfileResult /> 
-            <h2 id="results-list">Recommended Organizations</h2>
+            <h2 style={{marginTop: "99px", textAlign: "center"}} id="results-list">Recommended Organizations</h2>
             {/* DEBUG, DELETE LATER */}
             <div className="card-container">
                 {orgs.map((org, index) => (
