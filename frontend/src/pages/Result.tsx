@@ -13,7 +13,8 @@ function Result() {
 
     // Fetch the user's matched organizations from the backend.
     const getResults = async () => {
-        const response = await fetch(`${API_URL}/api/get_batch`, {
+        // const response = await fetch(`${API_URL}/api/get_batch`, {
+        const response = await fetch(`${API_URL}/api/user/results`, {
             method: 'GET',
             credentials: 'include',
         });

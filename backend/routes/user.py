@@ -119,6 +119,14 @@ def get_user_results():
     
     profile = result[0]
 
+    # print(profile)
+    # print(jsonify(profile))
+    if isinstance(profile, str):
+        profile = json.loads(profile)
+
+    print(type(profile))
+    print(profile)
+
     if "matches" in profile and profile["matches"]:
         return jsonify({"success": True, "matches": profile["matches"], "cached": True})
     
@@ -132,6 +140,10 @@ def get_user_results():
         return jsonify ({"error": "No matching orgs found yet. Try submitting the quiz again."}), 404
 
     mark_shown(user_id, [org.get('ein') for org in matches if org.get('ein')])
+
+    # if isinstance(profile, str):
+    #     profile = json.loads(profile)
+
 
     profile["matches"] = matches
     with engine.connect() as connection:
