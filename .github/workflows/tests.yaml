@@ -2,9 +2,9 @@ name: Testing
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -12,12 +12,14 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v5
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v6
       with:
-        python-version: 3.11.3
+        python-version: "3.11"
+        cache: "pip"
+        cache-dependency-path: backend/requirements.txt
 
     - name: Install Dependencies
       run: |
@@ -25,4 +27,5 @@ jobs:
         pip install -r backend/requirements.txt
 
     - name: Run Tests with Pytest
-      run: pytest backend/tests/integration_tests.py
+      working-directory: backend
+      run: pytest tests/integration_tests.py
