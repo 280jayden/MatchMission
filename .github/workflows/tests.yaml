@@ -28,4 +28,4 @@ jobs:
 
     - name: Run Tests with Pytest
       working-directory: backend
-      run: pytest -m tests/integration_tests.py
+      run: python -m pytest tests/integration_tests.py
