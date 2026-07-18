@@ -2,6 +2,7 @@
 #from questions import run_quiz <-- handled by flask now
 from dotenv import load_dotenv
 from openai import OpenAI
+from concurrent.future import ThreadPoolExecutor
 
 import os
 import json
@@ -96,7 +97,7 @@ def generate_user_profile(name, user_responses):
 
   try:
     response = client.chat.completions.create(
-      model="gpt-4o-mini",
+      model="gpt-5.5",
       messages=[
         {'role': 'user', 'content': prompt}
       ],
@@ -111,10 +112,33 @@ def generate_user_profile(name, user_responses):
     return None
   
 
-#TODO: put this in main
-#print(f"\nEvaluating {name}'s interests...")
 
 
+def generate_weights_explanation(causes, user_responses):
+  prompt = f"""
+    You are explaining, on behalf of MatchMission, why the app matched this donor to their weighted causes.
 
+    The user answered a 10-question quiz. Here are their responses:
+    {json.dumps(user_responses)}
 
+    Based on those responses, here is the weighted cause profile we matched them to:
+    {json.dumps(causes)}
+
+    In exactly 2-3 sentences, explain to the user why WE matched them to these causes.
+    Speak as MatchMission using "we" (e.g. "we matched you with...", "we noticed you..."),
+    not as if the user consciously chose or ranked these causes themselves — you are
+    explaining our analysis of their answers, not describing their own self-awareness.
+    Reference specific things they said in their answers. Be warm and specific, not generic.
+    Return ONLY the explanation text, no preamble.
+    """
   
+  try:
+    response = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[{'role': 'user', 'content': prompt}],
+    )
+
+    return response.choices[0].message.content.strip()
+  except Exception as e:
+    print(f"Error generating weights explanation: {e}")
+    return ""

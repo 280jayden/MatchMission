@@ -1,8 +1,10 @@
 import uuid
+import json
 import sqlalchemy as db
 from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import engine
+from services.redis_cache import get_user_weights, get_next_batch, mark_shown
 
 user_bp = Blueprint('user', __name__)
 
@@ -15,6 +17,7 @@ def register():
   
   if not email or not password:
     return jsonify({"error": "Missing fields"}), 400
+
 
   password_hash = generate_password_hash(password) #instead of putting password in directly, do this hash
   generated_id = str(uuid.uuid4()) # generates id from uuid
@@ -100,19 +103,81 @@ def logout():
     session.pop('user_id', None)
     return jsonify({"success": True, "message": "Logged out."}), 200
 
-@user_bp.route("/api/user/weights", methods=['GET'])
-def get_user_weights_endpoint():
+@user_bp.route("/api/user/results", methods=['GET'])
+def get_user_results():
+    # if we have the results
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
     
     with engine.connect() as connection:
-        query = db.text('SELECT profile FROM "Users" WHERE id = :user_id LIMIT 1' )
+        query = db.text('SELECT profile FROM Users WHERE id = :user_id LIMIT 1')
+        result = connection.execute(query, {'user_id': user_id}).fetchone()
+    
+    if not result or not result[0]:
+        return jsonify({"error": "No profile found. Submit the quiz first."}), 404
+    
+    profile = result[0]
+
+    # print(profile)
+    # print(jsonify(profile))
+    if isinstance(profile, str):
+        profile = json.loads(profile)
+
+    print(type(profile))
+    print(profile)
+
+    if "matches" in profile and profile["matches"]:
+        return jsonify({"success": True, "matches": profile["matches"], "cached": True})
+    
+    # If its not generated yet
+    user_tags, user_wts = get_user_weights(user_id)
+    if not user_wts:
+        return jsonify({"error": "No weights found. Submit the quiz first"}), 404
+    
+    matches = get_next_batch(user_id, user_wts, 20)
+    if not matches:
+        return jsonify ({"error": "No matching orgs found yet. Try submitting the quiz again."}), 404
+
+    mark_shown(user_id, [org.get('ein') for org in matches if org.get('ein')])
+
+    # if isinstance(profile, str):
+    #     profile = json.loads(profile)
+
+
+    profile["matches"] = matches
+    with engine.connect() as connection:
+        connection.execute(db.text(
+            'UPDATE Users SET profile = :profile WHERE id = :user_id'
+            ), {"profile": json.dumps(profile), "user_id": user_id}
+        )
+        connection.commit()
+
+    return jsonify({"success": True, "matches": profile["matches"], "cached": False})
+
+
+@user_bp.route("/api/user/weights", methods=['GET'])
+def get_user_weights_endpoint():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+    
+    with engine.connect() as connection:
+        query = db.text('SELECT profile FROM Users WHERE id = :user_id LIMIT 1')
         result = connection.execute(query, {"user_id": user_id}).fetchone()
 
     if not result or not result[0]:
         return jsonify({"error": "No profile found. Submit the quiz first."}), 404
     
     profile = result[0]
-    return jsonify({"success": True, "weights": profile.get("causes", {})})
+
+    if isinstance(profile, str):
+        profile = json.loads(profile)
+
+    return jsonify({
+        "success": True,
+        "weights": profile.get("causes", {}),
+        "explanation": profile.get("weights_explanation")
+    })
     

@@ -85,7 +85,8 @@ function Quiz() {
                 setLoading(false);
                 return;
             }
-
+            
+            await refreshUser();
             navigate('/result');
         } catch (err) {
             console.log(err);

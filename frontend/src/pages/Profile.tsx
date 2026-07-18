@@ -5,10 +5,13 @@ import type { Organization } from '../types/organization';
 import { FavoritesResponse } from '../types/api';
 import WeightsRadarChart from '../components/WeightsRadarChart';
 import { API_URL } from '../config';
+import { getCategoriesFromWeights } from '../utils/getCategoriesFromWeights';
+import AttributeTag from '../components/AttributeTag';
 
 function Profile() {
     const [orgs, setOrgs] = useState<Organization[]>([]);
-    const { user } = useAuth();
+    const { user, weights } = useAuth();
+    const userCategories = getCategoriesFromWeights(weights);
 
     const getResults = async () => {
         const response = await fetch(`${API_URL}/api/favorites`, {
@@ -34,10 +37,24 @@ function Profile() {
     return (
         <div>
             <h1 style={{ textAlign: 'center' }}>Profile</h1>
-            <WeightsRadarChart />
 
-            {/* <p style={{textAlign:"center", marginBottom:"50px"}}>This is a profile page placeholder</p> */}
+            {/* preferences section */}
+            <WeightsRadarChart weights={weights} />
 
+            <div>
+                <h3 style={{ textAlign: 'center' }}>Your Main Categories</h3>
+                <div >
+                    {userCategories.map((category) => (
+                        <AttributeTag
+                        key={category.tag}
+                        title={category.name}
+                        tagImageUrl={category.tagImageUrl}
+                        />
+                        ))}
+                </div>
+            </div>
+
+            {/* saved orgs section */}
             <h2 style={{ textAlign: 'center' }}>Your Saved Organizations</h2>
             <div className="card-container">
                 {orgs.length > 0 ? (
