@@ -161,7 +161,7 @@ def get_favorites():
 
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
-    
+
     user_favorites = get_favorites_redis(user_id)
 
     favorites_np_data = get_nonprofits(user_favorites)
@@ -169,3 +169,13 @@ def get_favorites():
     return jsonify({"success": True, "favorites": favorites_np_data})
     # returns a plain array of org objects
 
+@orgs_bp.route('/api/orgs/directory', methods=['GET'])
+def get_directory():
+    """
+    Returns a list of all cached nonprofits in the directory.
+    """
+
+    # get all cached nonprofits
+    all_nonprofits = get_nonprofits()
+
+    return jsonify({"success": True, "directory": all_nonprofits})

@@ -108,6 +108,12 @@ def get_nonprofits(np_eins: list):
     raw_data = r.mget(keys)
     return [json.loads(data) for data in raw_data if data]
 
+def get_x_nonprofits(np_eins: list):
+    # retrieves possible candidates of nonprofits
+    keys = [f"nonprofit:{ein}" for ein in np_eins]
+    raw_data = r.mget(keys)
+    return [json.loads(data) for data in raw_data if data]
+
 
 def get_next_batch(user_id, user_wts, batch_size:int = 100):
     # filter for tags that actually exist in the cache to prevent Redis errors
