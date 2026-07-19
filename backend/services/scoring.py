@@ -152,9 +152,11 @@ def generate_match_explanation(causes, org):
     Organization description: {org.get('description')}
     Organization tags: {org.get('tags')}
 
-    In exactly 1-2 sentences, explain why WE matched this organization to the user,
+    In 1 concise sentence, explain why WE matched this organization to the user,
     referencing the specific causes that connect them. Speak as MatchMission ("we matched you with..."),
     not as if the user picked this themselves. Be warm and specific, not generic.
+    Do NOT mention any numeric weights or scores (e.g. "0.97", "(0.85)") — refer to
+    causes by name only, in natural language, as if describing a person's genuine interests.
     Return ONLY the explanation text, no preamble.
     """
   try:
