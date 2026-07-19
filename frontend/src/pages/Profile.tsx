@@ -37,7 +37,7 @@ function Profile() {
     return (
         <div>
             <h1 style={{ textAlign: 'center' }}>Profile</h1>
-
+            {user && <p>Welcome, {user.name}</p>}
             {/* preferences section */}
             <WeightsRadarChart weights={weights} />
 

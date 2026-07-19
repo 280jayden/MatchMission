@@ -48,7 +48,7 @@ function OrgCard({
                     <div className="info-tooltip">
                         <span className="info-icon">ⓘ</span>
                         <span className="tooltip-text">
-                            This organization has been verified.
+                            {org.match_explanation}
                         </span>
                     </div>
                 </div>

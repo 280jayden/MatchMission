@@ -8,7 +8,8 @@ export type Organization = {
     location: string;
     primarySlug: string;
     slug: string;
-};
+    match_explanation: string;
+}; // same as matches in api/user/results
 
 export type Tag = {
     tagImageUrl: string;
