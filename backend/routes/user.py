@@ -5,6 +5,7 @@ from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import engine
 from services.redis_cache import get_user_weights, get_next_batch, mark_shown
+from services.scoring import generate_match_explanations
 
 user_bp = Blueprint('user', __name__)
 
@@ -124,8 +125,6 @@ def get_user_results():
     if isinstance(profile, str):
         profile = json.loads(profile)
 
-    print(type(profile))
-    print(profile)
 
     if "matches" in profile and profile["matches"]:
         return jsonify({"success": True, "matches": profile["matches"], "cached": True})
@@ -138,6 +137,8 @@ def get_user_results():
     matches = get_next_batch(user_id, user_wts, 20)
     if not matches:
         return jsonify ({"error": "No matching orgs found yet. Try submitting the quiz again."}), 404
+    
+    matches = generate_match_explanations(profile.get("causes", {}), matches)
 
     mark_shown(user_id, [org.get('ein') for org in matches if org.get('ein')])
 
