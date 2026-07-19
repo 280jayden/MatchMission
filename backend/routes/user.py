@@ -15,6 +15,7 @@ def register():
 
   email = data.get("email")
   password = data.get("password")
+  name = data.get("name")
   
   if not email or not password:
     return jsonify({"error": "Missing fields"}), 400
@@ -35,8 +36,8 @@ def register():
         
         # add user to db
         connection.execute(db.text(
-            "INSERT INTO Users (id, email, password_hash) VALUES (:id, :email, :password_hash)"
-        ), {"id": generated_id, "email": email, "password_hash": password_hash})
+            "INSERT INTO Users (id, email, password_hash, name) VALUES (:id, :email, :password_hash, :name)"
+        ), {"id": generated_id, "email": email, "password_hash": password_hash, "name": name})
         connection.commit()
 
         session['user_id'] = generated_id
@@ -84,7 +85,7 @@ def get_current_user():
       return jsonify({"error": "Not logged in"}), 401
       
     with engine.connect() as connection:
-        query = db.text("SELECT has_taken_quiz FROM Users WHERE id = :user_id LIMIT 1")
+        query = db.text("SELECT has_taken_quiz, name FROM Users WHERE id = :user_id LIMIT 1")
         has_taken_quiz = connection.execute(query, {"user_id": uid}).fetchone()
         connection.commit()
     
@@ -94,7 +95,8 @@ def get_current_user():
     # Success
     return jsonify({
       "user_id": uid,
-      "has_taken_quiz": has_taken_quiz[0]
+      "has_taken_quiz": has_taken_quiz[0],
+      "name": has_taken_quiz[1]
     })
 
 
