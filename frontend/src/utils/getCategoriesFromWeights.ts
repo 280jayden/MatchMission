@@ -9,13 +9,17 @@ export function getCategoriesFromWeights(
 
     const userTags = Object.keys(weights);
 
-    const correspCats = userTags.map((tag) => {
+    return getCategoriesFromTags(userTags);
+}
+
+export function getCategoriesFromTags(tags?: string[] | null): Category[] {
+  if (!tags) return [];
+  const correspCats = tags.map((tag) => {
         return categories.find((category) => category.tag === tag);
     });
 
-    const validCats = correspCats.filter((category): category is Category =>
+  return correspCats.filter((category): category is Category =>
         Boolean(category),
     );
 
-    return validCats;
 }

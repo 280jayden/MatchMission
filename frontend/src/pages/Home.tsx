@@ -9,6 +9,7 @@ function Home() {
     const navigate = useNavigate();
 
     return (
+      <div className="page-background">
         <div className="home-container">
             <div>
                 <img src={logo} alt="MatchMission logo" className="logo" />
@@ -36,6 +37,7 @@ function Home() {
                 />
             </div>
         </div>
+      </div>
     );
 }
 

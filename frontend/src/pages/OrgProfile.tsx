@@ -20,9 +20,12 @@ import {
     BarChart,
     Bar,
     Cell,
+    Pie,
+    PieChart,
 } from 'recharts';
 
 const COLORS = ['#6E9056', '#86A96D', '#BBD5A8', '#DAEBCE'];
+import LoadingText from '../components/LoadingText'
 
 function OrgProfile() {
     const { ein } = useParams<{ ein: string }>();
@@ -59,20 +62,20 @@ function OrgProfile() {
         getOrg();
     }, [ein]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <LoadingText />;
 
     if (!org) return <p>Organization not found.</p>;
 
     const pieData = propub?.latestFiling
         ? [
-              {
-                  name: 'Revenue',
-                  value: propub.latestFiling.totalRevenue ?? 0,
-              },
-              {
-                  name: 'Expenses',
-                  value: propub.latestFiling.totalExpenses ?? 0,
-              },
+              // {
+              //     name: 'Revenue',
+              //     value: propub.latestFiling.totalRevenue ?? 0,
+              // },
+              // {
+              //     name: 'Expenses',
+              //     value: propub.latestFiling.totalExpenses ?? 0,
+              // },
               {
                   name: 'Assets',
                   value: propub.latestFiling.totalAssets ?? 0,
@@ -85,7 +88,7 @@ function OrgProfile() {
         : [];
 
     return (
-        <div>
+        <div className="page-background">
             <div className="profile-header">
                 {/* LEFT COLUMN */}
                 <div className="profile-left">
@@ -151,7 +154,7 @@ function OrgProfile() {
                                     </div>
                                 </div>
 
-                                {propub.historicalRevenue && (
+                                {propub.historicalRevenue (
                                     <>
                                         <p>Total Revenue</p>
                                         <ResponsiveContainer
@@ -204,10 +207,8 @@ function OrgProfile() {
                                                     contentStyle={{
                                                         fontSize: '12px',
                                                     }}
-                                                    formatter={(
-                                                        value: number,
-                                                    ) =>
-                                                        `$${value.toLocaleString()}`
+                                                    formatter={(value) =>
+                                                        value != null ? `$${Number(value).toLocaleString()}` : 'N/A'
                                                     }
                                                 />
                                                 <Area
@@ -255,8 +256,8 @@ function OrgProfile() {
 
                                         <Tooltip
                                             contentStyle={{ fontSize: '10px' }}
-                                            formatter={(value: number) =>
-                                                `$${value.toLocaleString()}`
+                                            formatter={(value) =>
+                                                value != null ? `$${Number(value).toLocaleString()}` : 'N/A'
                                             }
                                         />
                                         <Bar dataKey="value">
@@ -269,6 +270,21 @@ function OrgProfile() {
                                         </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
+
+
+                                <PieChart style={{ width: '100%', maxWidth: '500px', maxHeight: '80vh', aspectRatio: 2 }} responsive>
+                                  <Pie
+                                    dataKey="value"
+                                    startAngle={180}
+                                    endAngle={0}
+                                    data={pieData}
+                                    cx="50%"
+                                    cy="100%"
+                                    outerRadius="120%"
+                                    fill="#8884d8"
+                                    label
+                                  />
+                                </PieChart>
                             </div>
                         </>
                     ) : (

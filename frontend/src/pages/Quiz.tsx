@@ -170,6 +170,7 @@ function Quiz() {
     };
 
     return (
+      <div className="page-background">
         <div className="quiz-container">
             <h1 style={{ textAlign: 'center' }}>Mission Matcher</h1>
             <p style={{ textAlign: 'center', marginTop: '-30px' }}>
@@ -202,6 +203,7 @@ function Quiz() {
             <button onClick={handleSubmit} disabled={loading}>
                 {loading ? 'MATCHING YOU...' : 'SUBMIT QUIZ'}
             </button>
+        </div>
         </div>
     );
 }

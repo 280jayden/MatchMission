@@ -12,6 +12,7 @@ export type Organization = {
     slug: string;
     match_explanation: string;
     propublica: propublicaInfo;
+    tags: string[];
 }; // same as matches in api/user/results
 
 export type propublicaInfo = {
