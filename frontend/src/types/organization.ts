@@ -7,6 +7,7 @@ export type Organization = {
     websiteUrl: string;
     profileUrl: string;
     location: string;
+    locationAddress: string;
     primarySlug: string;
     slug: string;
     match_explanation: string;
@@ -26,15 +27,14 @@ export type propublicaInfo = {
         totalLiabilities: number;
     };
 
-    filing_count: number;
+    filingsCount: number;
     historicalRevenue: HistoricalRevenue[];
 };
-  
+
 export type HistoricalRevenue = {
     year: number;
     revenue: number;
 };
-
 
 export type Tag = {
     tagImageUrl: string;

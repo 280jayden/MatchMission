@@ -2,35 +2,35 @@ import '../styles/OrgProfile.css';
 import logo from '../assets/mm_logo.png';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import type { Organization, Tag } from '../types/organization';
+import type { Organization, Propublica, Tag } from '../types/organization';
 import { OrgProfileResponse } from '../types/api';
 import AttributeTag from '../components/AttributeTag';
 import DonateButton from '../components/DonateButton';
 import { API_URL } from '../config';
 import { resizeImage } from '../utils/resizeImage';
 import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+    AreaChart,
+    Area,
+    CartesianGrid,
+    XAxis,
+    YAxis,
+    BarChart,
+    Bar,
+    Cell,
+} from 'recharts';
 
-const COLORS = ["#4CAF50", "#F44336", "#2196F3", "#FF9800"];
+const COLORS = ['#6E9056', '#86A96D', '#BBD5A8', '#DAEBCE'];
 
 function OrgProfile() {
     const { ein } = useParams<{ ein: string }>();
     const [org, setOrg] = useState<Organization | null>(null);
+    const [propub, setPropub] = useState<Propublica | null>(null);
     const [tags, setTags] = useState<Tag[] | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
 
     useEffect(() => {
         if (!ein) return;
@@ -47,6 +47,7 @@ function OrgProfile() {
                 if (response.ok && 'nonprofit' in data) {
                     setOrg(data.nonprofit);
                     setTags(data.nonprofitTags);
+                    setPropub(data.propublica);
                 } else if ('error' in data) {
                     console.log(data.error);
                 }
@@ -62,36 +63,38 @@ function OrgProfile() {
 
     if (!org) return <p>Organization not found.</p>;
 
-    const pieData = org?.propublica?.latestFiling
-      ? [
-          {
-            name: "Revenue",
-            value: org.propublica.latestFiling.totalRevenue,
-          },
-          {
-            name: "Expenses",
-            value: org.propublica.latestFiling.totalExpenses,
-          },
-          {
-            name: "Assets",
-            value: org.propublica.latestFiling.totalAssets,
-          },
-          {
-            name: "Liabilities",
-            value: org.propublica.latestFiling.totalLiabilities,
-          },
-        ]
-      : [];
+    const pieData = propub.latestFiling
+        ? [
+              {
+                  name: 'Revenue',
+                  value: propub.latestFiling.totalRevenue,
+              },
+              {
+                  name: 'Expenses',
+                  value: propub.latestFiling.totalExpenses,
+              },
+              {
+                  name: 'Assets',
+                  value: propub.latestFiling.totalAssets,
+              },
+              {
+                  name: 'Liabilities',
+                  value: propub.latestFiling.totalLiabilities,
+              },
+          ]
+        : [];
 
     return (
         <div>
             <div className="profile-header">
-                
                 {/* LEFT COLUMN */}
                 <div className="profile-left">
-                    <h1>{org.name}</h1>
+                    <h1 style={{ marginBottom: '0' }}>{org.name}</h1>
                     {/* TAGS */}
-                    <div className="tag-container">
+                    <div
+                        className="exp-tag-container"
+                        style={{ marginBottom: '15px' }}
+                    >
                         {tags?.map((tag) => (
                             <AttributeTag
                                 key={tag.title}
@@ -102,95 +105,175 @@ function OrgProfile() {
                     </div>
 
                     {/* PROPUBLICA INFO */}
-                    <h3>Why trust them?</h3>
-                    <p>
-                      {org.propublica != null ? "Verified Nonprofit Status" : "Not Verified"}
-                    </p>
-                    <p>
-                      {(org.propublica.filing_count > 0) ? "Public IRS Filings Available" : "Public IRS Filings Unavailable"}
-                    </p>
-                    <p>
-                      {org.propublica.latestFiling.totalExpenses != null ? "Transparent Expense Reporting" : "No Transparent Expense Reporting"}
-                    </p>
+                    {propub ? (
+                        <>
+                            <h3 style={{ marginBottom: '0' }}>
+                                Why trust them?
+                            </h3>
+                            <div className="propublica-info">
+                                <div className="propublica-text">
+                                    <div>
+                                        <p>
+                                            {propub != null
+                                                ? '✔ Verified Nonprofit Status'
+                                                : '𐄂 Not Verified'}
+                                        </p>
+                                        <p>
+                                            {propub.filingsCount > 0
+                                                ? '✔ Public IRS Filings Available'
+                                                : '𐄂 Public IRS Filings Unavailable'}
+                                        </p>
+                                        <p>
+                                            {propub.latestFiling
+                                                .totalExpenses != null
+                                                ? '✔ Transparent Expense Reporting'
+                                                : '𐄂 No Transparent Expense Reporting'}
+                                        </p>
+                                    </div>
 
-                    <p>IRS Verified 501(c)({org.propublica.subsectionCode})</p>
+                                    <div>
+                                        <p>
+                                            IRS Verified 501(c)(
+                                            {propub.subsectionCode})
+                                        </p>
 
-                    <p>Founded:</p>
-                    <p>{org.propublica.foundedDate}</p>
-                    <p>Latest IRS Filing:</p>
-                    <p>{org.propublica.latestFiling.year} Form (SOMETHING)</p>
+                                        <p>Founded: {propub.foundedDate}</p>
+                                        <p>
+                                            Latest IRS Filing:{' '}
+                                            {propub.latestFiling.year} Form 990
+                                        </p>
+                                    </div>
+                                </div>
 
-                    <p>Total Revenue</p>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <AreaChart
-                        style={{ width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 }}
-      
-                        data={org.propublica.historicalRevenue}
-                        // margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
-                      >
-                        <defs>
-                          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="year" />
-                        <YAxis 
-                          tickFormatter={(value) =>
-                          `$${(value / 1_000_000_000).toFixed(1)}B`
-                          }
-                        />
-                        <Tooltip
-                          formatter={(value: number) =>
-                          `$${value.toLocaleString()}`
-                        } />
-                        <Area
-                          type="monotone"
-                          dataKey="revenue"
-                          stroke="#8884d8"
-                          fillOpacity={1}
-                          fill="url(#colorUv)"
-                          animationBegin={200}
-                          animationDuration={1300}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
+                                <p>Total Revenue</p>
+                                <ResponsiveContainer width="100%" height={180}>
+                                    <AreaChart
+                                        data={propub.historicalRevenue}
+                                        margin={{
+                                            top: 10,
+                                            right: 20,
+                                            left: 30,
+                                            bottom: 10,
+                                        }}
+                                    >
+                                        <defs>
+                                            <linearGradient
+                                                id="colorUv"
+                                                x1="0"
+                                                y1="0"
+                                                x2="0"
+                                                y2="1"
+                                            >
+                                                <stop
+                                                    offset="5%"
+                                                    stopColor="#8884d8"
+                                                    stopOpacity={0.8}
+                                                />
+                                                <stop
+                                                    offset="95%"
+                                                    stopColor="#86A96D"
+                                                    stopOpacity={0}
+                                                />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis
+                                            dataKey="year"
+                                            tick={{ fontSize: 11 }}
+                                        />
 
-                    <p>Financial Stability</p>
-                    <p>Assets vs. Liabilities</p>
-                    
-                    <ResponsiveContainer width="100%" height={300}>
-                      <PieChart>
-                        <Pie
-                          data={pieData}
-                          dataKey="value"
-                          nameKey="name"
-                          outerRadius={100}
-                          label
-                        >
-                          {pieData.map((_, index) => (
-                            <Cell key={index} fill={COLORS[index]} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
+                                        <YAxis
+                                            width={80}
+                                            tick={{ fontSize: 11 }}
+                                            tickFormatter={(value) =>
+                                                `$${value.toLocaleString()}`
+                                            }
+                                        />
+                                        <Tooltip
+                                            contentStyle={{ fontSize: '12px' }}
+                                            formatter={(value: number) =>
+                                                `$${value.toLocaleString()}`
+                                            }
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="revenue"
+                                            stroke="#86A96D"
+                                            fillOpacity={1}
+                                            fill="url(#colorUv)"
+                                            animationBegin={200}
+                                            animationDuration={1300}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
 
+                                <p>Financial Snapshot of {latestFilingYear}</p>
+
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <BarChart
+                                        data={pieData}
+                                        layout="vertical"
+                                        margin={{
+                                            top: 10,
+                                            right: 30,
+                                            left: 20,
+                                            bottom: 10,
+                                        }}
+                                    >
+                                        <XAxis
+                                            type="number"
+                                            tickFormatter={(value) =>
+                                                `$${value.toLocaleString()}`
+                                            }
+                                            tick={{ fontSize: 11 }}
+                                        />
+                                        <YAxis
+                                            type="category"
+                                            dataKey="name"
+                                            tick={{ fontSize: 11 }}
+                                        />
+
+                                        <Tooltip
+                                            contentStyle={{ fontSize: '10px' }}
+                                            formatter={(value: number) =>
+                                                `$${value.toLocaleString()}`
+                                            }
+                                        />
+                                        <Bar dataKey="value">
+                                            {pieData.map((_, index) => (
+                                                <Cell
+                                                    key={index}
+                                                    fill={COLORS[index]}
+                                                />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </>
+                    ) : (
+                        <p>
+                            Unverified Organization. No tax information found.
+                        </p>
+                    )}
                 </div>
-                
+
                 {/* RIGHT COLUMN */}
                 <div className="profile-right">
-                    <button onClick={() => navigate('/result')}>Back</button>
-                            
+                    <button
+                        className="back-button"
+                        onClick={() => navigate(-1)}
+                    >
+                        BACK
+                    </button>
+
                     {/* COVER IMG */}
                     <img
-                        src={resizeImage({ url: org.coverImageUrl }) || logo}
+                        src={resizeImage({ url: org.logoUrl }) || logo}
                         alt="organization logo"
                         className="orgprof-img"
                     />
-                    
+
                     {/* BUTTONS */}
                     <button
                         onClick={() => {
@@ -199,7 +282,7 @@ function OrgProfile() {
                                 : `https://${org.websiteUrl}`;
                             window.open(url, '_blank');
                         }}
-                        className="norm-button"
+                        className="website-button"
                         disabled={!org.websiteUrl}
                     >
                         {org.websiteUrl ? 'THEIR WEBSITE' : 'NO WEBSITE'}
@@ -209,7 +292,14 @@ function OrgProfile() {
 
                     {/* DESCRIPTION */}
                     <div>
-                        <h3>Based in {org.location}</h3>
+                        {org.location || org.locationAddress ? (
+                            <h3>
+                                Based in {org.location || org.locationAddress}
+                            </h3>
+                        ) : (
+                            <h3>No location listed.</h3>
+                        )}
+
                         <p>{org.description}</p>
                     </div>
 
