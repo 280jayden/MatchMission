@@ -309,3 +309,19 @@ def query_nonprofits_db_by_tags(engine, tags: list[str], exclude_eins: list[str]
         result = connection.execute(db.text(query), params).fetchall()
     
     return [dict(row._mapping) for row in result]
+
+def normalize_tags(tags):
+    """
+    Redis-sourced orgs already have tags as a real list
+    Postgres-sourced orgs have tags as a raw JSON string, since
+    the column is TEXT, not JSONB.
+    This function will normalize both so that the frontend can get a
+    consistent shape between the two
+    """
+
+    if isinstance(tags, str):
+        try:
+            return json.loads(tags)
+        except (json.JSONDecodeError, TypeError):
+            return []
+    return tags or []
