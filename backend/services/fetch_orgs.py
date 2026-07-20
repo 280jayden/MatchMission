@@ -250,5 +250,3 @@ def fetch_propublica_data(ein):
     except requests.RequestException as e:
         print(f"API Request failed: {e}")
         return None
-
-print(fetch_propublica_data(363673599))
