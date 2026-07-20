@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import engine
-from services.fetch_orgs import fetch_orgs, fetch_org, fetch_propublica_data, query_nonprofits_db_by_tags
+from services.fetch_orgs import fetch_orgs, fetch_org, fetch_propublica_data, query_nonprofits_db_by_tags, normalize_tags
 from services.redis_cache import (
     get_user_weights, is_cached, cache_tags, load_nonprofits_json,
     get_next_batch, mark_shown, mark_favorited, unmark_favorited,
@@ -233,6 +233,7 @@ def get_directory():
         'location': org.get('location'),
         'primarySlug': org.get('slug'),
         'slug': org.get('slug'),
+        'tags': normalize_tags(org.get('tags')),
         "match_explanation": "" # not needed for directory
     } for org in combined_orgs[:TARGET_COUNT]]
 
