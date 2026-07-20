@@ -218,3 +218,37 @@ def fetch_org(ein):
         nonprofit["logoUrl"] = resize_image(nonprofit["logoUrl"])
 
     return nonprofit
+
+def fetch_propublica_data(ein):
+    try:
+        resp = requests.get(
+            f"https://projects.propublica.org/nonprofits/api/v2/organizations/{ein}.json",
+            timeout=5
+        )
+        if resp.status_code != 200:
+            return None
+        data = resp.json()
+        
+        if 'organization' not in data:
+            return None
+            
+        filings = data.get('filings_with_data', [])
+        latest = filings[0] if filings else None
+        
+        return {
+            "subsectionCode": data['organization'].get('subsection_code'),
+            "nteeCode": data['organization'].get('ntee_code'),
+            "foundedDate": data['organization'].get('ruling_date', ''),
+            "latestFiling": {
+                "year": latest.get('tax_prd_yr'),
+                "totalRevenue": latest.get('totrevenue'),
+                "totalExpenses": latest.get('totfuncexpns'),
+                "totalAssets": latest.get('totassetsend'),
+                "totalLiabilities": latest.get('totliabend'),
+            } if latest else None,
+        }
+    except requests.RequestException as e:
+        print(f"API Request failed: {e}")
+        return None
+
+print(fetch_propublica_data(363673599))
