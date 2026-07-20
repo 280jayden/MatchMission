@@ -38,6 +38,7 @@ with engine.connect() as connection:
     connection.execute(db.text("""
         CREATE TABLE IF NOT EXISTS Users (
             id TEXT PRIMARY KEY,
+            name TEXT,
             email TEXT,
             password_hash TEXT,
             has_taken_quiz BOOL DEFAULT FALSE,

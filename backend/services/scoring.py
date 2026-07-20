@@ -2,7 +2,7 @@
 #from questions import run_quiz <-- handled by flask now
 from dotenv import load_dotenv
 from openai import OpenAI
-from concurrent.future import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 import os
 import json
@@ -142,3 +142,41 @@ def generate_weights_explanation(causes, user_responses):
   except Exception as e:
     print(f"Error generating weights explanation: {e}")
     return ""
+  
+def generate_match_explanation(causes, org):
+  prompt=f"""
+  You are explaining, on behalf of MatchMission, why we matched this donor with a specific organization.
+
+    User's weighted cause profile: {json.dumps(causes)}
+    Organization name: {org.get('name')}
+    Organization description: {org.get('description')}
+    Organization tags: {org.get('tags')}
+
+    In 1 concise sentence, explain why WE matched this organization to the user,
+    referencing the specific causes that connect them. Speak as MatchMission ("we matched you with..."),
+    not as if the user picked this themselves. Be warm and specific, not generic.
+    Do NOT mention any numeric weights or scores (e.g. "0.97", "(0.85)") — refer to
+    causes by name only, in natural language, as if describing a person's genuine interests.
+    Return ONLY the explanation text, no preamble.
+    """
+  try:
+    response = client.chat.completions.create(
+      model='gpt-4o-mini',
+      messages=[{'role': 'user', 'content': prompt}]
+    )
+    return response.choices[0].message.content.strip()
+  except Exception as e:
+    print(f"Error generating match explanation for {org.get('ein')}: {e}")
+    return ""
+  
+
+# different from the function above -- generates a 'why this matcherd' explanation for each org in parallel
+# returns the same list of org dicts, each with a 'match_explanation' key added
+def generate_match_explanations(causes, orgs):
+  def _generate_for_org(org):
+    org['match_explanation'] = generate_match_explanation(causes, org)
+    return org
+  
+  with ThreadPoolExecutor(max_workers=10) as executor:
+    return list(executor.map(_generate_for_org, orgs))
+  

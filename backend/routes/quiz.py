@@ -12,25 +12,6 @@ quiz_bp = Blueprint('quiz', __name__)
 def get_questions():
     return jsonify(get_quiz_data())
 
-#@quiz_bp.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
-
-# def submit_quiz():
-#     data = request.get_json()
-#     # name = data['name']
-#     responses = data['responses']
-
-#     user_profile = generate_user_profile(name, responses)
-
-#     if not user_profile:
-#         return jsonify({'error': 'failed to generate the profile'})
-
-#     #to_fetch
-#     """
-#     for cause in user_profile['tags_list_to_fetch']:
-#         fetch_orgs(user_profile['causes'], cause, to_fetch, engine)
-#     """
-#     #nonprofits
-
 @quiz_bp.route('/api/quiz', methods=['POST']) # runs the full pipeline after user submits the quiz
 def submit_quiz():
     data = request.get_json() or {}
@@ -49,6 +30,7 @@ def submit_quiz():
         return jsonify({'error': 'failed to generate the profile'})
     
     user_profile['weights_explanation'] = generate_weights_explanation(user_profile['causes'], responses)
+
 
     # saving user weights that openai scoring generated in redis under the user id
     save_user_weights(user_id, user_profile['causes']) # saving the specific user cause weights

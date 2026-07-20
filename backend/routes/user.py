@@ -5,6 +5,7 @@ from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import engine
 from services.redis_cache import get_user_weights, get_next_batch, mark_shown
+from services.scoring import generate_match_explanations
 
 user_bp = Blueprint('user', __name__)
 
@@ -14,6 +15,7 @@ def register():
 
   email = data.get("email")
   password = data.get("password")
+  name = data.get("name")
   
   if not email or not password:
     return jsonify({"error": "Missing fields"}), 400
@@ -34,8 +36,8 @@ def register():
         
         # add user to db
         connection.execute(db.text(
-            "INSERT INTO Users (id, email, password_hash) VALUES (:id, :email, :password_hash)"
-        ), {"id": generated_id, "email": email, "password_hash": password_hash})
+            "INSERT INTO Users (id, email, password_hash, name) VALUES (:id, :email, :password_hash, :name)"
+        ), {"id": generated_id, "email": email, "password_hash": password_hash, "name": name})
         connection.commit()
 
         session['user_id'] = generated_id
@@ -83,7 +85,7 @@ def get_current_user():
       return jsonify({"error": "Not logged in"}), 401
       
     with engine.connect() as connection:
-        query = db.text("SELECT has_taken_quiz FROM Users WHERE id = :user_id LIMIT 1")
+        query = db.text("SELECT has_taken_quiz, name FROM Users WHERE id = :user_id LIMIT 1")
         has_taken_quiz = connection.execute(query, {"user_id": uid}).fetchone()
         connection.commit()
     
@@ -93,7 +95,8 @@ def get_current_user():
     # Success
     return jsonify({
       "user_id": uid,
-      "has_taken_quiz": has_taken_quiz[0]
+      "has_taken_quiz": has_taken_quiz[0],
+      "name": has_taken_quiz[1]
     })
 
 
@@ -124,8 +127,6 @@ def get_user_results():
     if isinstance(profile, str):
         profile = json.loads(profile)
 
-    print(type(profile))
-    print(profile)
 
     if "matches" in profile and profile["matches"]:
         return jsonify({"success": True, "matches": profile["matches"], "cached": True})
@@ -138,6 +139,8 @@ def get_user_results():
     matches = get_next_batch(user_id, user_wts, 20)
     if not matches:
         return jsonify ({"error": "No matching orgs found yet. Try submitting the quiz again."}), 404
+    
+    matches = generate_match_explanations(profile.get("causes", {}), matches)
 
     mark_shown(user_id, [org.get('ein') for org in matches if org.get('ein')])
 
