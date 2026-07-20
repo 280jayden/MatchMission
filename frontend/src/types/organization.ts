@@ -11,11 +11,11 @@ export type Organization = {
     primarySlug: string;
     slug: string;
     match_explanation: string;
-    propublica: propublicaInfo;
+    propublica: PropublicaInfo;
     tags: string[];
 }; // same as matches in api/user/results
 
-export type propublicaInfo = {
+export type PropublicaInfo = {
     subsectionCode: number;
     nteeCode: string;
     foundedDate: string;

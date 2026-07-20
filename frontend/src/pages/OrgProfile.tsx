@@ -72,10 +72,10 @@ function OrgProfile() {
               //     name: 'Revenue',
               //     value: propub.latestFiling.totalRevenue ?? 0,
               // },
-              // {
-              //     name: 'Expenses',
-              //     value: propub.latestFiling.totalExpenses ?? 0,
-              // },
+              {
+                  name: 'Expenses',
+                  value: propub.latestFiling.totalExpenses ?? 0,
+              },
               {
                   name: 'Assets',
                   value: propub.latestFiling.totalAssets ?? 0,
@@ -151,10 +151,15 @@ function OrgProfile() {
                                                 ? `${propub.latestFiling.year} Form 990`
                                                 : 'Lastest Filing Unavailable'}
                                         </p>
+                                        <p>
+                                            {propub.latestFiling?.year
+                                                ? `${propub.latestFiling.year} Form 990`
+                                                : 'Lastest Filing Unavailable'}
+                                        </p>
                                     </div>
                                 </div>
 
-                                {propub.historicalRevenue (
+                                {propub.historicalRevenue && (
                                     <>
                                         <p>Total Revenue</p>
                                         <ResponsiveContainer
@@ -270,21 +275,6 @@ function OrgProfile() {
                                         </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
-
-
-                                <PieChart style={{ width: '100%', maxWidth: '500px', maxHeight: '80vh', aspectRatio: 2 }} responsive>
-                                  <Pie
-                                    dataKey="value"
-                                    startAngle={180}
-                                    endAngle={0}
-                                    data={pieData}
-                                    cx="50%"
-                                    cy="100%"
-                                    outerRadius="120%"
-                                    fill="#8884d8"
-                                    label
-                                  />
-                                </PieChart>
                             </div>
                         </>
                     ) : (
