@@ -372,20 +372,22 @@ function OrgProfile() {
                     />
 
                     {/* BUTTONS */}
-                    <button
-                        onClick={() => {
-                            const url = org.websiteUrl?.startsWith('http')
-                                ? org.websiteUrl
-                                : `https://${org.websiteUrl}`;
-                            window.open(url, '_blank');
-                        }}
-                        className="website-button"
-                        disabled={!org.websiteUrl}
-                    >
-                        {org.websiteUrl ? 'THEIR WEBSITE' : 'NO WEBSITE'}
-                    </button>
+                    <div className="profile-actions">
+                      <button
+                          onClick={() => {
+                              const url = org.websiteUrl?.startsWith('http')
+                                  ? org.websiteUrl
+                                  : `https://${org.websiteUrl}`;
+                              window.open(url, '_blank');
+                          }}
+                          className="website-button"
+                          disabled={!org.websiteUrl}
+                      >
+                          {org.websiteUrl ? 'THEIR WEBSITE' : 'NO WEBSITE'}
+                      </button>
 
-                    <DonateButton slug={org.primarySlug}></DonateButton>
+                      <DonateButton slug={org.primarySlug}></DonateButton>
+                    </div>
 
                     {/* DESCRIPTION */}
                     <div>
