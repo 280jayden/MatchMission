@@ -4,7 +4,7 @@ import logo from '../assets/mm_logo.png';
 import { useNavigate } from 'react-router-dom';
 import { Organization } from '../types/organization';
 import DonateButton from './DonateButton';
-import { resizeImage } from "../utils/resizeImage"
+import { resizeImage } from '../utils/resizeImage';
 
 type OrgCardProps = {
     org: Organization;
@@ -31,7 +31,7 @@ function OrgCard({
         <div className="item-card org-card">
             <div className="org-top">
                 <img
-                    src={resizeImage({url: org.logoUrl}) || logo}
+                    src={resizeImage({ url: org.logoUrl }) || logo}
                     alt={org.name}
                     className="org-img"
                 />
@@ -48,7 +48,7 @@ function OrgCard({
                     <div className="info-tooltip">
                         <span className="info-icon">ⓘ</span>
                         <span className="tooltip-text">
-                            This organization has been verified.
+                            {org.match_explanation}
                         </span>
                     </div>
                 </div>

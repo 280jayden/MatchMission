@@ -7,11 +7,16 @@ import WeightsRadarChart from '../components/WeightsRadarChart';
 import { API_URL } from '../config';
 import { getCategoriesFromWeights } from '../utils/getCategoriesFromWeights';
 import AttributeTag from '../components/AttributeTag';
+import '../styles/UserProfile.css';
 
 function Profile() {
     const [orgs, setOrgs] = useState<Organization[]>([]);
     const { user, weights } = useAuth();
     const userCategories = getCategoriesFromWeights(weights);
+
+    const midpoint = Math.ceil(userCategories.length / 2);
+    const leftCategories = userCategories.slice(0, midpoint);
+    const rightCategories = userCategories.slice(midpoint);
 
     const getResults = async () => {
         const response = await fetch(`${API_URL}/api/favorites`, {
@@ -36,21 +41,42 @@ function Profile() {
 
     return (
         <div className="page-background">
-            <h1 style={{ textAlign: 'center' }}>Profile</h1>
+            <h1 style={{ textAlign: 'center', marginBottom: '0.25rem' }}>
+                Profile
+            </h1>
+            {user && (
+                <p style={{ textAlign: 'center' }}>
+                    Welcome, {user.name}! Here, you can find your main
+                    preferences and all of your saved organizations.
+                </p>
+            )}
 
             {/* preferences section */}
-            <WeightsRadarChart weights={weights} />
+            <div className="preferences-card" style={{ marginBottom: '3rem' }}>
+                <h2 className="preferences-header"> Your Preferences</h2>
 
-            <div>
-                <h3 style={{ textAlign: 'center' }}>Your Main Categories</h3>
-                <div >
-                    {userCategories.map((category) => (
-                        <AttributeTag
-                        key={category.tag}
-                        title={category.name}
-                        tagImageUrl={category.tagImageUrl}
-                        />
+                <div className="preferences-body">
+                    <div className="tag-column">
+                        {leftCategories.map((category) => (
+                            <AttributeTag
+                                key={category.tag}
+                                title={category.name}
+                                tagImageUrl={category.tagImageUrl}
+                            />
                         ))}
+                    </div>
+
+                    <WeightsRadarChart weights={weights} />
+
+                    <div className="tag-column">
+                        {rightCategories.map((category) => (
+                            <AttributeTag
+                                key={category.tag}
+                                title={category.name}
+                                tagImageUrl={category.tagImageUrl}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
 

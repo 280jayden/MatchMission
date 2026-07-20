@@ -7,7 +7,7 @@ import { OrgProfileResponse } from '../types/api';
 import AttributeTag from '../components/AttributeTag';
 import DonateButton from '../components/DonateButton';
 import { API_URL } from '../config';
-import { resizeImage } from '../utils/resizeImage'
+import { resizeImage } from '../utils/resizeImage';
 
 function OrgProfile() {
     const { ein } = useParams<{ ein: string }>();
@@ -23,7 +23,7 @@ function OrgProfile() {
         // or when the EIN in the URL changes.
         const getOrg = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/org/${ein}`); 
+                const response = await fetch(`${API_URL}/api/org/${ein}`);
                 const data: OrgProfileResponse = await response.json();
 
                 console.log('API response:', data);
@@ -86,7 +86,7 @@ function OrgProfile() {
                     <button onClick={() => navigate('/result')}>Back</button>
 
                     <img
-                        src={resizeImage({url: org.logoUrl}) || logo}
+                        src={resizeImage({ url: org.logoUrl }) || logo}
                         alt="organization logo"
                         className="orgprof-img"
                     />

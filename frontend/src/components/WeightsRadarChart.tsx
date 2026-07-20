@@ -5,7 +5,7 @@ import {
     PolarAngleAxis,
     PolarRadiusAxis,
 } from 'recharts';
-import { UserWeights } from "../types/user"
+import { UserWeights } from '../types/user';
 
 // const old = [
 //     //sample data
@@ -44,20 +44,24 @@ import { UserWeights } from "../types/user"
 // ];
 
 interface WeightsRadarChartProps {
-  weights: UserWeights | null;
-  width?: number;
-  height?: number;
+    weights: UserWeights | null;
+    width?: number;
+    height?: number;
 }
 
 // got this from the recharts api
 // later, make data be a thing passed in as a prop instead
-const WeightsRadarChart = ({ weights, width = 400, height = 400}: WeightsRadarChartProps) => {
-
+const WeightsRadarChart = ({
+    weights,
+    width = 400,
+    height = 400,
+}: WeightsRadarChartProps) => {
     const data = weights
-        ? Object.entries(weights).map(([tag,weight]) => ({
-            tag,
-            weight,
-        })) : [];
+        ? Object.entries(weights).map(([tag, weight]) => ({
+              tag,
+              weight,
+          }))
+        : [];
 
     return (
         <RadarChart

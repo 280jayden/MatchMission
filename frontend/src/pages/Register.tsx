@@ -51,7 +51,7 @@ function Register() {
             }}
         >
             <h1>Register</h1>
-            
+
             <div className="auth-input-pair">
                 <h3>Name</h3>
                 <input
