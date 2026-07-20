@@ -239,7 +239,7 @@ def fetch_propublica_data(ein):
         if resp.status_code != 200:
             return None
         data = resp.json()
-        
+
         if 'organization' not in data:
             return None
             
@@ -250,11 +250,13 @@ def fetch_propublica_data(ein):
         for filing in filings:
             year = filing.get('tax_prd_yr')
             revenue = filing.get('totrevenue')
+            expenses = filing.get('totfuncexpns') * 100
             
             if year and revenue is not None:
                 historical_revenue.append({
                     "year": year,
-                    "revenue": revenue
+                    "revenue": revenue,
+                    "expenses": expenses
                 })
         
         # Sort chronologically (oldest to newest)
@@ -271,10 +273,10 @@ def fetch_propublica_data(ein):
                 "totalExpenses": latest.get('totfuncexpns'),
                 "totalAssets": latest.get('totassetsend'),
                 "totalLiabilities": latest.get('totliabend'),
-            },
+                "executivecompensation": latest.get('pct_compnsatncurrofcr')
+            } if latest else None,
             "historicalRevenue": historical_revenue,
             "filingsCount": filings_count
-            if latest else None,
         }
     except requests.RequestException as e:
         print(f"API Request failed: {e}")
