@@ -33,7 +33,8 @@ function Navbar() {
                     {user ? (
                         <Link
                             to="#"
-                            onClick={async () => {
+                            onClick={async (e) => {
+                                e.preventDefault();
                                 await logout();
                                 navigate('/');
                             }}

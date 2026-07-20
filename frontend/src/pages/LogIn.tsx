@@ -10,9 +10,13 @@ function LogIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [message, setMessage] = useState('');
 
     const handleLogin = async () => {
-        const response = await fetch(`${API_URL}/api/user/login`, {
+        setMessage('');
+
+        try {
+          const response = await fetch(`${API_URL}/api/user/login`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -31,6 +35,11 @@ function LogIn() {
             navigate('/');
         } else if ('error' in data) {
             console.log(data.error);
+            setMessage(data.error);
+        }
+        } catch (err) {
+            setMessage('Something went wrong. Please try again.');
+            console.error(err);
         }
     };
 
@@ -68,7 +77,12 @@ function LogIn() {
                     }
                 />
             </div>
-
+            
+            {message && (
+                <p className="auth-error">
+                    {message}
+                </p>
+            )}
             <button type="submit">LOG IN</button>
 
             <div className="auth-bottom-text">

@@ -12,32 +12,42 @@ function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
+    const [message, setMessage] = useState('');
 
     const handleRegister = async () => {
+        setMessage('');
+
         if (password !== confirmPassword) {
             alert('Passwords do not match.');
+            setMessage('Passwords do not match');
             return;
         }
+        
+        try {
+          const response = await fetch(`${API_URL}/api/user/register`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+              body: JSON.stringify({ name, email, password }),
+          });
 
-        const response = await fetch(`${API_URL}/api/user/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({ name, email, password }),
-        });
+          const data: RegisterResponse = await response.json();
 
-        const data: RegisterResponse = await response.json();
-
-        if (response.ok) {
-            // Refresh the global auth state so the navbar and protected routes
-            // immediately reflect the logged-in user.
-            console.log('logged in');
-            await refreshUser();
-            navigate('/');
-        } else if ('error' in data) {
-            console.log(data.error);
+          if (response.ok) {
+              // Refresh the global auth state so the navbar and protected routes
+              // immediately reflect the logged-in user.
+              console.log('logged in');
+              await refreshUser();
+              navigate('/');
+          } else if ('error' in data) {
+              console.log(data.error);
+              setMessage(data.error);
+          }
+        } catch (err) {
+          setMessage('Something went wrong. Please try again.');
+          console.error(err);
         }
     };
 
@@ -99,7 +109,12 @@ function Register() {
                     }
                 />
             </div>
-
+            
+            {message && (
+                <p className="auth-error">
+                    {message}
+                </p>
+            )}
             <button type="submit">SIGN UP</button>
 
             <div className="auth-bottom-text">
