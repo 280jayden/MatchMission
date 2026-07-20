@@ -1,7 +1,13 @@
 import pytest
 import json
-
+from unittest.mock import patch
 from app import app 
+
+@patch("services.scoring.client")
+def test_something(mock_client):
+    mock_client.chat.completions.create.return_value = ...  # fake response
+    # test your logic without hitting the real API
+
 
 client = app.test_client()
 
