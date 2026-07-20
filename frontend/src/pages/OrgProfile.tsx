@@ -24,7 +24,9 @@ import {
     PieChart,
 } from 'recharts';
 
-const COLORS = ['#6E9056', '#86A96D', '#BBD5A8', '#DAEBCE'];
+const reColors = ['#6E9056', '#86A96D'];
+const alColors = ['#BBD5A8', '#DAEBCE'];
+
 import LoadingText from '../components/LoadingText'
 
 function OrgProfile() {
@@ -66,16 +68,23 @@ function OrgProfile() {
 
     if (!org) return <p>Organization not found.</p>;
 
-    const pieData = propub?.latestFiling
+    const revenueExpenseData = propub?.latestFiling
         ? [
-              // {
-              //     name: 'Revenue',
-              //     value: propub.latestFiling.totalRevenue ?? 0,
-              // },
+              {
+                  name: 'Revenue',
+                  value: propub.latestFiling.totalRevenue ?? 0,
+              },
               {
                   name: 'Expenses',
                   value: propub.latestFiling.totalExpenses ?? 0,
               },
+          ]
+        : [];
+
+    
+
+    const assetLiabilityData = propub?.latestFiling
+        ? [
               {
                   name: 'Assets',
                   value: propub.latestFiling.totalAssets ?? 0,
@@ -86,6 +95,12 @@ function OrgProfile() {
               },
           ]
         : [];
+
+    const hasRevenueExpense =
+      revenueExpenseData.some(item => item.value != null);
+
+    const hasAssetLiability =
+      assetLiabilityData.some(item => item.value != null);
 
     return (
         <div className="page-background">
@@ -147,19 +162,19 @@ function OrgProfile() {
                                                 'Unknown'}
                                         </p>
                                         <p>
-                                            {propub.latestFiling?.year
+                                            {propub.latestFiling?.year != null
                                                 ? `${propub.latestFiling.year} Form 990`
-                                                : 'Lastest Filing Unavailable'}
+                                                : 'Latest Filing Year Unavailable'}
                                         </p>
                                         <p>
-                                            {propub.latestFiling?.year
-                                                ? `${propub.latestFiling.year} Form 990`
-                                                : 'Lastest Filing Unavailable'}
+                                            {propub.latestFiling?.executivecompensation != null
+                                                ? `Executive Compensation: $${propub.latestFiling.executivecompensation}`
+                                                : 'Executive Compensation Unavailable'}
                                         </p>
                                     </div>
                                 </div>
 
-                                {propub.historicalRevenue && (
+                                {propub.historicalRevenue?.length > 0 && (
                                     <>
                                         <p>Total Revenue</p>
                                         <ResponsiveContainer
@@ -230,51 +245,107 @@ function OrgProfile() {
                                     </>
                                 )}
 
-                                <p>
-                                    Financial Snapshot of{' '}
-                                    {propub.latestFiling?.year ?? 'This Year'}
-                                </p>
+                                {hasRevenueExpense && (
+                                  <>
+                                    <p>
+                                        Revenue v.s. Expenses
+                                    </p>
 
-                                <ResponsiveContainer width="100%" height={250}>
-                                    <BarChart
-                                        data={pieData}
-                                        layout="vertical"
-                                        margin={{
-                                            top: 10,
-                                            right: 30,
-                                            left: 20,
-                                            bottom: 10,
-                                        }}
-                                    >
-                                        <XAxis
-                                            type="number"
-                                            tickFormatter={(value) =>
-                                                `$${value.toLocaleString()}`
-                                            }
-                                            tick={{ fontSize: 11 }}
-                                        />
-                                        <YAxis
-                                            type="category"
-                                            dataKey="name"
-                                            tick={{ fontSize: 11 }}
-                                        />
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <BarChart
+                                            data={revenueExpenseData}
+                                            layout="vertical"
+                                            margin={{
+                                                top: 10,
+                                                right: 30,
+                                                left: 20,
+                                                bottom: 10,
+                                            }}
+                                        >
+                                            <XAxis
+                                                type="number"
+                                                tickFormatter={(value) =>
+                                                    `$${value.toLocaleString()}`
+                                                }
+                                                tick={{ fontSize: 11 }}
+                                            />
+                                            <YAxis
+                                                type="category"
+                                                dataKey="name"
+                                                tick={{ fontSize: 11 }}
+                                            />
 
-                                        <Tooltip
-                                            contentStyle={{ fontSize: '10px' }}
-                                            formatter={(value) =>
-                                                value != null ? `$${Number(value).toLocaleString()}` : 'N/A'
-                                            }
-                                        />
-                                        <Bar dataKey="value">
-                                            {pieData.map((_, index) => (
-                                                <Cell
-                                                    key={index}
-                                                    fill={COLORS[index]}
-                                                />
-                                            ))}
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
+                                            <Tooltip
+                                                contentStyle={{ fontSize: '10px' }}
+                                                formatter={(value) =>
+                                                    value != null ? `$${Number(value).toLocaleString()}` : 'N/A'
+                                                }
+                                            />
+                                            <Bar dataKey="value">
+                                                {revenueExpenseData.map((_, index) => (
+                                                    <Cell
+                                                        key={index}
+                                                        fill={reColors[index]}
+                                                    />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                  </>
+                                )}
+                              
+
+                                {hasAssetLiability && (
+                                  <>
+                                    <p>
+                                      Assets v.s. Liabilities
+                                    </p>
+
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <BarChart
+                                            data={assetLiabilityData}
+                                            layout="vertical"
+                                            margin={{
+                                                top: 10,
+                                                right: 30,
+                                                left: 20,
+                                                bottom: 10,
+                                            }}
+                                        >
+                                            <XAxis
+                                                type="number"
+                                                tickFormatter={(value) =>
+                                                    `$${value.toLocaleString()}`
+                                                }
+                                                tick={{ fontSize: 11 }}
+                                            />
+                                            <YAxis
+                                                type="category"
+                                                dataKey="name"
+                                                tick={{ fontSize: 11 }}
+                                            />
+
+                                            <Tooltip
+                                                contentStyle={{ fontSize: '10px' }}
+                                                formatter={(value) =>
+                                                    value != null ? `$${Number(value).toLocaleString()}` : 'N/A'
+                                                }
+                                            />
+                                            <Bar dataKey="value">
+                                                {assetLiabilityData.map((_, index) => (
+                                                    <Cell
+                                                        key={index}
+                                                        fill={alColors[index]}
+                                                    />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                  </>
+                                )}
+                                
+
+                                
                             </div>
                         </>
                     ) : (

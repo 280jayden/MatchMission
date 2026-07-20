@@ -27,6 +27,7 @@ function Directory() {
 
         if (response.ok && 'directory' in data) {
             setOrgs(data.directory);
+            console.log(data.directory);
         } else if ('error' in data) {
             console.log(data.error);
         }
@@ -48,6 +49,7 @@ function Directory() {
 
       if (response.ok && 'directory' in data) {
             setOrgs(prev => [...prev, ...data.directory]);
+            console.log(data.directory);
         } else if ('error' in data) {
             console.log(data.error);
         }
@@ -79,6 +81,7 @@ function Directory() {
 
       if (response.ok && 'directory' in data) {
             setOrgs(data.directory);
+            console.log(data.directory);
         } else if ('error' in data) {
             console.log(data.error);
         }
@@ -120,9 +123,11 @@ function Directory() {
                           <OrgCard key={org.ein} org={org} isBestMatch={false} />
                         ))}
                     </div>
-                    <button onClick={loadMore} disabled={loadingMore}>
-                      {loadingMore ? "Loading..." : "Load More"}
+                    <div className="load-button-container">
+                      <button onClick={loadMore} disabled={loadingMore}>
+                        {loadingMore ? "Loading..." : "Load More"}
                       </button>
+                    </div>
                   </>
                 )}
             </div>
