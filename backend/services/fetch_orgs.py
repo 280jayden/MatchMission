@@ -220,10 +220,21 @@ def fetch_org(ein):
     return nonprofit
 
 def fetch_propublica_data(ein):
+    """
+    Fetches a single nonprofit organization from the ProPublica Nonprofit Explorer API.
+
+    Args:
+        ein (str): Employer Identification Number of the nonprofit.
+    
+    Returns:
+        dict: Nonprofit information returned from the ProPublica API, including
+                subsection code, NTEE code, founding date, and latest filing data.
+                Returns None if no data is found or if the request fails.
+    """
+
     try:
         resp = requests.get(
-            f"https://projects.propublica.org/nonprofits/api/v2/organizations/{ein}.json",
-            timeout=5
+            f"https://projects.propublica.org/nonprofits/api/v2/organizations/{ein}.json"
         )
         if resp.status_code != 200:
             return None
@@ -234,6 +245,20 @@ def fetch_propublica_data(ein):
             
         filings = data.get('filings_with_data', [])
         latest = filings[0] if filings else None
+
+        historical_revenue = []
+        for filing in filings:
+            year = filing.get('tax_prd_yr')
+            revenue = filing.get('totrevenue')
+            
+            if year and revenue is not None:
+                historical_revenue.append({
+                    "year": year,
+                    "revenue": revenue
+                })
+        
+        # Sort chronologically (oldest to newest) for the area chart
+        historical_revenue = sorted(historical_revenue, key=lambda x: x['year'])
         
         return {
             "subsectionCode": data['organization'].get('subsection_code'),
@@ -245,7 +270,9 @@ def fetch_propublica_data(ein):
                 "totalExpenses": latest.get('totfuncexpns'),
                 "totalAssets": latest.get('totassetsend'),
                 "totalLiabilities": latest.get('totliabend'),
-            } if latest else None,
+            },
+            "historicalRevenue": historical_revenue
+            if latest else None,
         }
     except requests.RequestException as e:
         print(f"API Request failed: {e}")
