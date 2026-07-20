@@ -19,12 +19,15 @@ class ExtCardTests(unittest.TestCase):
                         "totalRevenue": 4916912461,
                         "totalExpenses": 4933690967,
                         "totalAssets": 626129732,
-                        "totalLiabilities": 62229963
+                        "totalLiabilities": 62229963,
+                        "
                     },
                     "historicalRevenue": [
-                        { year: 2020, revenue: 4000000000 },
-                        { year: 2021, revenue: 5000000000}...
-                    ]
+                        { year: 2020, revenue: 4000000000, expenses: 3999999999 },
+                        { year: 2021, revenue: 5000000000, expneses: 4999999999}...
+                    ],
+                    filingsCount = 12,
+
                 }"""
         response = self.app.get('/api/org/363673599', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
