@@ -279,3 +279,33 @@ def fetch_propublica_data(ein):
     except requests.RequestException as e:
         print(f"API Request failed: {e}")
         return None
+
+def query_nonprofits_db_by_tags(engine, tags: list[str], exclude_eins: list[str], limit: int):
+    """
+    This is the second check for org filtering.
+    We query the NonProfits table for orgs matching ALL given tags
+    (AND logic), we exclude anything that is already collected from Redis.
+    I decided to use LIKE since `tags` is stored as a JSON string, not JSONB
+    
+    """
+
+    if not tags:
+        return []
+
+    conditions = " AND ".join([f"tags LIKE :tag{i}" for i in range(len(tags))])
+    params = {f"tag{i}": f"%{tag}%" for i, tag in enumerate(tags)}
+    params['limit'] = limit
+    params['exclude_eins'] = exclude_eins if exclude_eins else ['']
+
+    query = f"""
+        SELECT ein, name, description, logoUrl, websiteUrl, profileUrl, location, slug, donationUrl, coverImageUrl, tags
+        FROM NonProfits
+        WHERE ({conditions})
+        AND ein != ALL(:exclude_eins)
+        LIMIT :limit    
+    """ 
+
+    with engine.connect() as connection:
+        result = connection.execute(db.text(query), params).fetchall()
+    
+    return [dict(row._mapping) for row in result]
