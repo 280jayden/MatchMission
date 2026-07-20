@@ -66,9 +66,7 @@ function Directory() {
       })
     }
 
-    const applyFilters = async () => { //Later this will work for an empty array to just get random ones again
-      // any of the selected buttons, add to filters array
-      // run the backend call to update the orgs
+    const applyFilters = async () => { 
       setLoading(true);
       const response = await fetch(`${API_URL}/api/orgs/directory`, { //CHANGETHISCALLLATER
             method: 'POST',
@@ -89,6 +87,11 @@ function Directory() {
         setLoading(false);
     }
 
+    const resetFilters = async () => {
+      setSelectedFilters(new Set())
+      await getAnyOrg();
+    }
+
 
 
     useEffect(() => {
@@ -100,7 +103,10 @@ function Directory() {
           {/* FILTERS */}
             <div className="filter-bar">
                 <h2 style={{marginBottom: '0', marginTop:'30px'}}>FILTERS</h2>
-                <button className="apply-button" onClick={applyFilters}>Apply Filters</button>
+                <div className="filter-buttons-container">
+                  <button className="apply-button" onClick={applyFilters}>Apply</button>
+                  <button className="apply-button" onClick={resetFilters}>Reset</button>
+                </div>
                 {categories.map((category) => (
                         <FilterChip
                         key={category.tag}
@@ -110,7 +116,10 @@ function Directory() {
                         onSelect={()=> toggleFilter(category.tag)}
                         />
                         ))}
-                <button className="apply-button" onClick={applyFilters}>Apply Filters</button>
+                <div className="filter-buttons-container">
+                  <button className="apply-button" onClick={applyFilters}>Apply</button>
+                  <button className="apply-button" onClick={resetFilters}>Reset</button>
+                </div>
             </div>
             
             {/* ORGANIZATION CONTAINER */}

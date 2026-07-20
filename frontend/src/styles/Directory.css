@@ -32,7 +32,16 @@
   justify-content: center;
   margin-top: 20px;
 }
+
+
 .apply-button {
-    width: 160px;
-    height: 64px;
+    width: 75px;
+    height: 40px;
+    font-size: 15px;
+}
+
+.filter-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
