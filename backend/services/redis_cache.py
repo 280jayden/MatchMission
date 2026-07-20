@@ -1,10 +1,9 @@
-import time
-import redis
-import requests
-import os
 import json
-from dotenv import load_dotenv
+import os
+import time
 
+import redis
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -20,7 +19,7 @@ def save_user_weights(user_id, causes: dict):
 
     if not user_id or not causes:
         return
-    
+
     key = f'user:{user_id}:weights'
 
     r.hset(
@@ -29,10 +28,10 @@ def save_user_weights(user_id, causes: dict):
     )
 
 
-## 
+##
 
 def get_user_weights(user_id): # -> dict {'tag': weight}
-    
+
     # this should get the user's saved weights from Redis
     key = f'user:{user_id}:weights'
     stored_weights = r.hgetall(key)
@@ -84,7 +83,7 @@ def cache_tags(tag: str, np_eins: list):
 
     # initialize with base score of 1
     r.zadd(f"tag:{tag}", {ein: 1 for ein in np_eins})
-    
+
 
 
 def load_nonprofits_json(nonprofits: list):
@@ -94,10 +93,11 @@ def load_nonprofits_json(nonprofits: list):
 
     # prevents network bottlenecks for large batch
     pipe = r.pipeline()
-    
+
     for np in nonprofits:
+        pipe.sadd("nonprofit_eins", np['ein'])
         pipe.set(f"nonprofit:{np['ein']}", json.dumps(np))
-    
+
     # execute all comands in the pipeline
     pipe.execute()
 
@@ -108,11 +108,26 @@ def get_nonprofits(np_eins: list):
     raw_data = r.mget(keys)
     return [json.loads(data) for data in raw_data if data]
 
+def get_random_nonprofits(amount: int):
+    # retrieves random nonprofits for directory page
+    random_eins = r.srandmember("nonprofit_eins", amount)
+
+    if not random_eins:
+        return []
+
+    keys = [f"nonprofit:{ein}" for ein in random_eins]
+    raw_data = r.mget(keys)
+    return [json.loads(data) for data in raw_data if data]
+
 
 def get_next_batch(user_id, user_wts, batch_size:int = 100):
     # filter for tags that actually exist in the cache to prevent Redis errors
-    tag_weights = {f"tag:{tag}": weight for tag, weight in user_wts.items() if r.exists(f"tag:{tag}")}
-    
+    tag_weights = {
+        f"tag:{tag}": weight
+        for tag, weight in user_wts.items()
+        if r.exists(f"tag:{tag}")
+    }
+
     if not tag_weights:
         return [] # return empty if no tags are cached yet
 
@@ -124,7 +139,7 @@ def get_next_batch(user_id, user_wts, batch_size:int = 100):
     if not r.exists(shown_key):
         r.zadd(shown_key, {"_dummy_": 0})
 
-    # ZUNIONSTORE: combine all matching tags, multiply by baseline scores by user weights
+    # ZUNIONSTORE: combine all matching tags, multiply baseline scores by user weights
     r.zunionstore(user_scored_key, tag_weights, aggregate='SUM')
 
     # ZDIFFSTORE: take the scored list and remove any EINs that exist in the 'shown' set
@@ -142,7 +157,7 @@ def mark_shown(user_id, nonprofit_eins: list[str]):
     # redis cache has a set of shown
     now = time.time()
     r.zadd(f"shown:user:{user_id}", {ein: now for ein in nonprofit_eins})
-    
+
     # TODO: INSERT INTO DB UserInteractions table
 
 def mark_favorited(user_id, nonprofit_ein: str):
