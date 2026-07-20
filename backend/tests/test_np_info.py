@@ -9,6 +9,23 @@ class ExtCardTests(unittest.TestCase):
 
     def test_extended_card_info(self):
         # tests Feeding America nonprofit info - ein 363673599
+        """
+            "propublica": {
+                    "subsectionCode": 3,
+                    "nteeCode": "K310",
+                    "foundedDate": "1990-01-01",
+                    "latestFiling": {
+                        "year": 2023,
+                        "totalRevenue": 4916912461,
+                        "totalExpenses": 4933690967,
+                        "totalAssets": 626129732,
+                        "totalLiabilities": 62229963
+                    },
+                    "historicalRevenue": [
+                        { year: 2020, revenue: 4000000000 },
+                        { year: 2021, revenue: 5000000000}...
+                    ]
+                }"""
         response = self.app.get('/api/org/363673599', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
@@ -24,12 +41,10 @@ class ExtCardTests(unittest.TestCase):
         self.assertIn('propublica', data)
 
         propublica_data = data['propublica']
-        self.assertIsNotNone(
-            propublica_data,
-            "Expected ProPublica financial data for a large, well-known org"
-        )
+        self.assertIsNotNone(propublica_data)
         self.assertIn('latestFiling', propublica_data)
         self.assertIsNotNone(propublica_data['latestFiling']['totalRevenue'])
+        self.assertEqual(len(propublica_data['historicalRevenue']), 12)
 
 
 if __name__ == "__main__":
