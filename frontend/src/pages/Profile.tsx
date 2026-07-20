@@ -8,8 +8,10 @@ import { API_URL } from '../config';
 import { getCategoriesFromWeights } from '../utils/getCategoriesFromWeights';
 import AttributeTag from '../components/AttributeTag';
 import '../styles/UserProfile.css';
+import LoadingText from '../components/LoadingText'
 
 function Profile() {
+    const [loading, setLoading] = useState(true);
     const [orgs, setOrgs] = useState<Organization[]>([]);
     const { user, weights } = useAuth();
     const userCategories = getCategoriesFromWeights(weights);
@@ -19,6 +21,7 @@ function Profile() {
     const rightCategories = userCategories.slice(midpoint);
 
     const getResults = async () => {
+      try {
         const response = await fetch(`${API_URL}/api/favorites`, {
             method: 'GET',
             credentials: 'include',
@@ -32,12 +35,21 @@ function Profile() {
         } else if ('error' in data) {
             console.log(data.error);
         }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     useEffect(() => {
         //so we can get results when it starts
         getResults();
     }, []);
+
+    if (loading) {
+      return <LoadingText text="Loading your profile" />
+    }
 
     return (
         <div className="page-background">

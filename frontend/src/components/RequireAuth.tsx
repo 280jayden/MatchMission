@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from './AuthProvider.jsx';
+import { useAuth } from './AuthProvider';
 import type { ReactNode } from 'react';
+import LoadingText from './LoadingText';
 
 /**
  * Route guard that only renders protected pages for authenticated users.
@@ -15,7 +16,7 @@ function RequireAuth({ children }: RequireAuthProps) {
     const { user, loading } = useAuth();
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <LoadingText />;
     }
 
     if (!user) {
