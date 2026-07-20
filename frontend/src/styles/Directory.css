@@ -21,11 +21,17 @@
 }
 
 .directory-orgs {
- /* margin-right: 5vh; */
- flex: 1;
- min-width: 0;
+  /* margin-right: 5vh; */
+  flex: 1;
+  min-width: 0;
+  /* align-items: center; */
 }
 
+.load-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
 .apply-button {
     width: 160px;
     height: 64px;

@@ -43,7 +43,11 @@ function OrgCard({
                 <div>
                     {isBestMatch && <h2>BEST MATCH!</h2>}
                     <h2>{org.name}</h2>
-                    <h3>Based in {org.location}</h3>
+                    {org.location || org.locationAddress ? (
+                        <h3>Based in {org.location || org.locationAddress}</h3>
+                    ) : (
+                        <h3>No location found.</h3>
+                    )}
                     <p>{org.description}</p>
 
                     <div className="org-tag-container">
