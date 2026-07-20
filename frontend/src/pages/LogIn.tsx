@@ -35,6 +35,7 @@ function LogIn() {
     };
 
     return (
+      <div className="page-background">
         <form
             className="auth-form"
             onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
@@ -77,6 +78,7 @@ function LogIn() {
                 </nav>
             </div>
         </form>
+      </div>
     );
 }
 

@@ -47,7 +47,7 @@ function OrgProfile() {
     if (!org) return <p>Organization not found.</p>;
 
     return (
-        <div>
+        <div className="page-background">
             <div className="profile-header">
                 <div className="profile-info">
                     <h2>{org.name}</h2>

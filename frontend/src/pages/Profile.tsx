@@ -35,7 +35,7 @@ function Profile() {
     }, []);
 
     return (
-        <div>
+        <div className="page-background">
             <h1 style={{ textAlign: 'center' }}>Profile</h1>
 
             {/* preferences section */}
