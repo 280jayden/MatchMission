@@ -257,9 +257,10 @@ def fetch_propublica_data(ein):
                     "revenue": revenue
                 })
         
-        # Sort chronologically (oldest to newest) for the area chart
+        # Sort chronologically (oldest to newest)
         historical_revenue = sorted(historical_revenue, key=lambda x: x['year'])
-        
+        filings_count = len(data.get('filings_with_data', [])) + len(data.get('filings_without_data', []))
+
         return {
             "subsectionCode": data['organization'].get('subsection_code'),
             "nteeCode": data['organization'].get('ntee_code'),
@@ -271,7 +272,8 @@ def fetch_propublica_data(ein):
                 "totalAssets": latest.get('totassetsend'),
                 "totalLiabilities": latest.get('totliabend'),
             },
-            "historicalRevenue": historical_revenue
+            "historicalRevenue": historical_revenue,
+            "filingsCount": filings_count
             if latest else None,
         }
     except requests.RequestException as e:
