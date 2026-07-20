@@ -1,6 +1,7 @@
 import json
 import os
 import time
+import uuid
 
 import redis
 from dotenv import load_dotenv
@@ -179,3 +180,28 @@ def unmark_favorited(user_id, nonprofit_ein: str):
     # temoves a non-profit from the user's redis favorites set
     key = f'user:{user_id}:favorites'
     r.srem(key, nonprofit_ein)
+
+def get_orgs_by_tags_redis(tags: list[str]):
+    """
+    this is for the FIRST check on filtering, checking if redis cache has a enough orgs to
+    satisfy the filter
+
+    This function combines multiple tag sorted sets via ZINTERSTORE (basically AND logic)
+    an org must match ALL given tags to be included in the filtered directory.
+
+    This returns a list of EINs found in Redis for these tags. It returns an
+    empty list if any tag has no cached data at all
+    
+    """
+
+    tag_keys = [f"tag:{tag}" for tag in tags if r.exists(f"tag:{tag}")]
+
+    if len(tag_keys) != len(tags):
+        return []
+    
+    temp_key = f"directory_temp:{uuid.uuid4()}"
+    r.zinterstore(temp_key, tag_keys)
+    eins = r.zrevrange(temp_key, 0, -1)
+    r.delete(temp_key)
+
+    return eins

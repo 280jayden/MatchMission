@@ -3,9 +3,10 @@ import "../styles/LoadingText.css";
 
 type LoadingTextProps = {
     text?: string;
+    fullscreen?: boolean;
 };
 
-function LoadingText({ text = 'Loading' }: LoadingTextProps) {
+function LoadingText({ text = 'Loading', fullscreen = true }: LoadingTextProps) {
     const [dots, setDots] = useState('');
     useEffect(() => {
         const interval = setInterval(() => {
@@ -19,7 +20,7 @@ function LoadingText({ text = 'Loading' }: LoadingTextProps) {
     }, []);
 
     return (
-        <div className="loading-container">
+        <div className={fullscreen ? 'loading-fullscreen' : 'loading-inline'}>
             <h2 className="loading-text">
                 {text}
                 {dots}

@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import engine
-from services.fetch_orgs import fetch_orgs, fetch_org, fetch_propublica_data
+from services.fetch_orgs import fetch_orgs, fetch_org, fetch_propublica_data, query_nonprofits_db_by_tags
 from services.redis_cache import (
     get_user_weights, is_cached, cache_tags, load_nonprofits_json,
     get_next_batch, mark_shown, mark_favorited, unmark_favorited,
-    get_favorites_redis, get_nonprofits, get_random_nonprofits
+    get_favorites_redis, get_nonprofits, get_random_nonprofits, get_orgs_by_tags_redis
 )
 
 orgs_bp = Blueprint('orgs', __name__)
@@ -173,13 +173,68 @@ def get_favorites():
     return jsonify({"success": True, "favorites": favorites_np_data})
     # returns a plain array of org objects
 
-@orgs_bp.route('/api/orgs/directory', methods=['GET'])
+@orgs_bp.route('/api/orgs/directory', methods=['GET', 'POST'])
 def get_directory():
     """
-    Returns a list of random nonprofits for the directory.
+    GET: Returns a list of random nonprofits for the directory.
+    POST: Returns nonprofits matching ALL given filter tags
+    checking Redis -> Postgres
     """
 
+    if request.method == 'GET':
     # get 20 cached nonprofits
-    nonprofits = get_random_nonprofits(20)
+        nonprofits = get_random_nonprofits(20)
 
-    return jsonify({"success": True, "directory": nonprofits})
+        return jsonify({"success": True, "directory": nonprofits})
+    
+    # POST for filtering
+    TARGET_COUNT = 20
+
+    data = request.get_json() or {}
+    filters = data.get("filters", [])
+
+    if not filters:
+        nonprofits = get_random_nonprofits(TARGET_COUNT)
+        return jsonify({"success": True, "directory": nonprofits})
+    
+    already_seen = data.get('exclude_eins', [])
+    seen_eins = set(already_seen) # <-- given from frontend maybe?
+    combined_orgs = []
+
+    # first check -> Redis
+    redis_eins = get_orgs_by_tags_redis(filters)
+    if redis_eins:
+        redis_orgs = get_nonprofits(redis_eins)
+        for org in redis_orgs:
+            ein = org.get('ein')
+            if ein and ein not in seen_eins:
+                seen_eins.add(ein)
+                combined_orgs.append(org)
+    
+
+    # second check -> postgres, only gets here if we're still short
+    if len(combined_orgs) < TARGET_COUNT:
+        needed = TARGET_COUNT - len(combined_orgs)
+        db_orgs = query_nonprofits_db_by_tags(engine, filters, list(seen_eins), needed)
+        for org in db_orgs:
+            ein = org.get('ein')
+            if ein and ein not in seen_eins:
+                    seen_eins.add(ein)
+                    combined_orgs.append(org)
+    
+    # third check -> fetch every.org
+    formatted = [{
+        'ein': org.get('ein'),
+        'name': org.get('name'),
+        'description': org.get('description'),
+        'logoUrl': org.get('logoUrl'),
+        'websiteUrl': org.get('websiteUrl'),
+        'profileUrl': org.get('profileUrl'),
+        'location': org.get('location'),
+        'primarySlug': org.get('slug'),
+        'slug': org.get('slug'),
+        "match_explanation": "" # not needed for directory
+    } for org in combined_orgs[:TARGET_COUNT]]
+
+    return jsonify({"success": True, "directory": formatted})
+    
