@@ -8,7 +8,6 @@ import { useAuth } from '../components/AuthProvider';
 import { API_URL } from '../config';
 import LoadingText from '../components/LoadingText';
 
-
 type Answers = {
     [questionId: number]: string | string[];
 };
@@ -86,7 +85,7 @@ function Quiz() {
                 setLoading(false);
                 return;
             }
-            
+
             await refreshUser();
             navigate('/result', { state: { justCompleted: true } });
         } catch (err) {
@@ -96,9 +95,7 @@ function Quiz() {
     };
 
     if (loading) {
-        return (
-            <LoadingText text="Finding your matches"></LoadingText>
-        );
+        return <LoadingText text="Finding your matches"></LoadingText>;
     }
 
     const debugSubmit = async () => {

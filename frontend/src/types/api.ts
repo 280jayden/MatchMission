@@ -6,7 +6,11 @@ export type CurrentUserResponse = {
 };
 
 export type UserWeightsResponse =
-    | { success: true; weights: Record<string, number>, explanation: string | null }
+    | {
+          success: true;
+          weights: Record<string, number>;
+          explanation: string | null;
+      }
     | { error: string };
 
 export type LogoutResponse = {
@@ -30,5 +34,4 @@ export type QuizResponse = {
 
 export type RegisterResponse = { success: true } | { error: string };
 
-export type GetBatchResponse =
-    { matches: Organization[] } | { error: string };
+export type GetBatchResponse = { matches: Organization[] } | { error: string };

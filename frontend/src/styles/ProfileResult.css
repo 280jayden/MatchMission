@@ -1,4 +1,3 @@
-
 .profile-result-container {
     display: flex;
     gap: 80px;
@@ -27,7 +26,7 @@
 .cat-description-container {
     padding: 20px;
     font-size: 15px;
-    background-color: #FBFAF6;
+    background-color: #fbfaf6;
     border-radius: 30px;
     align-self: stretch;
 }
@@ -51,7 +50,7 @@
 
 .result-button {
     width: clamp(220px, 100%, 450px);
-    align-self:center;
+    align-self: center;
 }
 
 .profile-result-left p {

@@ -20,7 +20,6 @@ function Result() {
             credentials: 'include',
         });
 
-
         const data: GetBatchResponse = await response.json();
 
         if (response.ok && 'matches' in data) {
@@ -29,7 +28,7 @@ function Result() {
             console.log(data.error);
         }
 
-        setLoading(false)
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -37,9 +36,7 @@ function Result() {
     }, []);
 
     if (loading) {
-      return (
-          <LoadingText text="Loading your results"></LoadingText>
-      );
+        return <LoadingText text="Loading your results"></LoadingText>;
     }
 
     return (
@@ -48,17 +45,17 @@ function Result() {
                 Based on your quiz responses, here are some organizations that
                 might fit your preferences.
             </p> */}
-            
+
             {justCompleted && (
-              <>
-                <h1 style={{ textAlign: 'center' }}>Results</h1>
-                <ProfileResult /> 
-                <h2 id="results-list">Recommended Organizations</h2>
-              </>
-              )}
+                <>
+                    <h1 style={{ textAlign: 'center' }}>Results</h1>
+                    <ProfileResult />
+                    <h2 id="results-list">Recommended Organizations</h2>
+                </>
+            )}
 
             {!justCompleted && (
-              <h1 style={{ textAlign: 'center' }}>Recommendations</h1>
+                <h1 style={{ textAlign: 'center' }}>Recommendations</h1>
             )}
 
             {/* DEBUG, DELETE LATER */}
@@ -70,7 +67,6 @@ function Result() {
                 {orgs.map((org, index) => (
                     <OrgCard key={org.ein} org={org} isBestMatch={index < 3} />
                 ))}
-
             </div>
         </div>
     );

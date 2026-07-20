@@ -6,4 +6,4 @@ export type User = {
 
 export type UserWeights = {
     [cause: string]: number;
-}
+};

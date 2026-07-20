@@ -2,7 +2,11 @@ import { useState, useEffect, createContext, useContext } from 'react';
 // import type { ReactNode, Dispatch, SetStateAction } from 'react';
 import type { ReactNode } from 'react';
 import type { User, UserWeights } from '../types/user';
-import type { CurrentUserResponse, UserWeightsResponse, LogoutResponse } from '../types/api';
+import type {
+    CurrentUserResponse,
+    UserWeightsResponse,
+    LogoutResponse,
+} from '../types/api';
 import { API_URL } from '../config';
 
 /**
@@ -47,9 +51,9 @@ function AuthProvider({ children }: AuthProviderProps) {
                 },
                 credentials: 'include',
             });
-    
+
             // const data: LogoutResponse = await response.json();
-    
+
             if (response.ok) {
                 console.log('logged out');
                 setUser(null);
@@ -58,7 +62,6 @@ function AuthProvider({ children }: AuthProviderProps) {
             } else {
                 throw new Error('Logout failed');
             }
-            
         } catch (err) {
             console.error(err);
         }
@@ -86,7 +89,6 @@ function AuthProvider({ children }: AuthProviderProps) {
             setWeights(null);
         }
     }
-
 
     async function refreshUser(): Promise<void> {
         // Fetch the currently authenticated user from the backend
@@ -131,7 +133,16 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     return (
         <AuthContext.Provider
-            value={{ user, weights, explanation, loading, hasTakenQuiz, refreshUser, refreshWeights, logout }}
+            value={{
+                user,
+                weights,
+                explanation,
+                loading,
+                hasTakenQuiz,
+                refreshUser,
+                refreshWeights,
+                logout,
+            }}
         >
             {children}
         </AuthContext.Provider>
