@@ -218,3 +218,64 @@ def fetch_org(ein):
         nonprofit["logoUrl"] = resize_image(nonprofit["logoUrl"])
 
     return nonprofit
+
+def fetch_propublica_data(ein):
+    """
+    Fetches a single nonprofit organization from the ProPublica Nonprofit Explorer API.
+
+    Args:
+        ein (str): Employer Identification Number of the nonprofit.
+    
+    Returns:
+        dict: Nonprofit information returned from the ProPublica API, including
+                subsection code, NTEE code, founding date, and latest filing data.
+                Returns None if no data is found or if the request fails.
+    """
+
+    try:
+        resp = requests.get(
+            f"https://projects.propublica.org/nonprofits/api/v2/organizations/{ein}.json"
+        )
+        if resp.status_code != 200:
+            return None
+        data = resp.json()
+        
+        if 'organization' not in data:
+            return None
+            
+        filings = data.get('filings_with_data', [])
+        latest = filings[0] if filings else None
+
+        historical_revenue = []
+        for filing in filings:
+            year = filing.get('tax_prd_yr')
+            revenue = filing.get('totrevenue')
+            
+            if year and revenue is not None:
+                historical_revenue.append({
+                    "year": year,
+                    "revenue": revenue
+                })
+        
+        # Sort chronologically (oldest to newest)
+        historical_revenue = sorted(historical_revenue, key=lambda x: x['year'])
+        filings_count = len(data.get('filings_with_data', [])) + len(data.get('filings_without_data', []))
+
+        return {
+            "subsectionCode": data['organization'].get('subsection_code'),
+            "nteeCode": data['organization'].get('ntee_code'),
+            "foundedDate": data['organization'].get('ruling_date', ''),
+            "latestFiling": {
+                "year": latest.get('tax_prd_yr'),
+                "totalRevenue": latest.get('totrevenue'),
+                "totalExpenses": latest.get('totfuncexpns'),
+                "totalAssets": latest.get('totassetsend'),
+                "totalLiabilities": latest.get('totliabend'),
+            },
+            "historicalRevenue": historical_revenue,
+            "filingsCount": filings_count
+            if latest else None,
+        }
+    except requests.RequestException as e:
+        print(f"API Request failed: {e}")
+        return None

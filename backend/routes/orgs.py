@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import engine
-from services.fetch_orgs import fetch_orgs, fetch_org
+from services.fetch_orgs import fetch_orgs, fetch_org, fetch_propublica_data
 from services.redis_cache import (
     get_user_weights, is_cached, cache_tags, load_nonprofits_json,
     get_next_batch, mark_shown, mark_favorited, unmark_favorited,
@@ -42,9 +42,13 @@ def get_orgs():
 @orgs_bp.route('/api/org/<ein>', methods=['GET'])
 def get_org(ein):
   """
-  Gets one org by the ein
+  Gets one org by the ein for expanded card view
   """
-  return fetch_org(ein)
+  
+  np_data = fetch_org(ein)
+  np_data['propublica'] = fetch_propublica_data(ein)
+
+  return np_data
 
 @orgs_bp.route('/api/score_orgs', methods=['POST'])
 def score_orgs():
