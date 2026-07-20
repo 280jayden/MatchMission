@@ -31,4 +31,4 @@ export type QuizResponse = {
 export type RegisterResponse = { success: true } | { error: string };
 
 export type GetBatchResponse =
-    { nonprofits: Organization[] } | { error: string };
+    { matches: Organization[] } | { error: string };

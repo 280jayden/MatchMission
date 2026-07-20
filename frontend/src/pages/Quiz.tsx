@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import QuestionCard from '../components/QuestionCard';
 import questions from '../data/questions.json';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import type { Question } from '../types/question';
 import { QuizResponse } from '../types/api';
 import { useAuth } from '../components/AuthProvider';
 import { API_URL } from '../config';
+import LoadingText from '../components/LoadingText';
 
 
 type Answers = {
@@ -87,7 +88,7 @@ function Quiz() {
             }
             
             await refreshUser();
-            navigate('/result');
+            navigate('/result', { state: { justCompleted: true } });
         } catch (err) {
             console.log(err);
             setLoading(false);
@@ -96,9 +97,7 @@ function Quiz() {
 
     if (loading) {
         return (
-            <div className="quiz-container">
-                <h1 style={{ textAlign: 'center' }}>Loading....</h1>
-            </div>
+            <LoadingText text="Finding your matches"></LoadingText>
         );
     }
 
