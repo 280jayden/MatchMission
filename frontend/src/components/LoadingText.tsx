@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import "../styles/LoadingText.css";
 
 type LoadingTextProps = {
     text?: string;
@@ -18,10 +19,12 @@ function LoadingText({ text = 'Loading' }: LoadingTextProps) {
     }, []);
 
     return (
-        <h2 style={{ textAlign: 'center' }}>
-            {text}
-            {dots}
-        </h2>
+        <div className="loading-container">
+            <h2 className="loading-text">
+                {text}
+                {dots}
+            </h2>
+        </div>
     );
 }
 

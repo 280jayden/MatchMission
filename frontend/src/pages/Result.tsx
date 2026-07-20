@@ -40,7 +40,7 @@ function Result() {
     }
 
     return (
-        <div>
+        <div className="page-background">
             {/* <p style={{ textAlign: 'center', marginBottom: '70px' }}>
                 Based on your quiz responses, here are some organizations that
                 might fit your preferences.

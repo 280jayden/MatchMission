@@ -8,6 +8,7 @@ import AttributeTag from '../components/AttributeTag';
 import DonateButton from '../components/DonateButton';
 import { API_URL } from '../config';
 import { resizeImage } from '../utils/resizeImage';
+import LoadingText from '../components/LoadingText'
 
 function OrgProfile() {
     const { ein } = useParams<{ ein: string }>();
@@ -42,12 +43,12 @@ function OrgProfile() {
         getOrg();
     }, [ein]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <LoadingText />;
 
     if (!org) return <p>Organization not found.</p>;
 
     return (
-        <div>
+        <div className="page-background">
             <div className="profile-header">
                 <div className="profile-info">
                     <h2>{org.name}</h2>

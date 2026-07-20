@@ -20,6 +20,8 @@ function Navbar() {
                 <div className="nav-links">
                     <Link to="/">Home</Link>
 
+                    <Link to="/directory">Directory</Link>
+
                     {hasTakenQuiz() ? (
                         <Link to="/result">Recommendations</Link>
                     ) : (

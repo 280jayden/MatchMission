@@ -9,6 +9,7 @@ export type Organization = {
     primarySlug: string;
     slug: string;
     match_explanation: string;
+    tags: string[];
 }; // same as matches in api/user/results
 
 export type Tag = {

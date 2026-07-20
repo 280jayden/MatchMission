@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Organization } from '../types/organization';
 import DonateButton from './DonateButton';
 import { resizeImage } from '../utils/resizeImage';
+import AttributeTag from '../components/AttributeTag';
+import { getCategoriesFromTags } from '../utils/getCategoriesFromWeights';
 
 type OrgCardProps = {
     org: Organization;
@@ -27,6 +29,8 @@ function OrgCard({
 
     const navigate = useNavigate();
 
+    const orgCategories = getCategoriesFromTags(org.tags);
+
     return (
         <div className="item-card org-card">
             <div className="org-top">
@@ -40,17 +44,33 @@ function OrgCard({
                     {isBestMatch && <h2>BEST MATCH!</h2>}
                     <h2>{org.name}</h2>
                     <h3>Based in {org.location}</h3>
-                    <p style={{ marginBottom: '50px' }}>{org.description}</p>
+                    <p>{org.description}</p>
+
+                    <div className="org-tag-container">
+                        {orgCategories.map((category) => (
+                          <img 
+                            key={category.tag}
+                            src={category.tagImageUrl} 
+                            alt={category.name} 
+                            title={category.name} 
+                            className="org-tag-icon" />
+                        ))}
+                    </div>
                 </div>
 
                 <div className="org-icons">
                     <StarButton ein={org.ein} initialStarred={forceStarred} />
-                    <div className="info-tooltip">
+                    
+                    {/* info button only shows on results that have a match explanation */}
+                    {org.match_explanation && (
+                      <div className="info-tooltip">
                         <span className="info-icon">ⓘ</span>
                         <span className="tooltip-text">
                             {org.match_explanation}
                         </span>
                     </div>
+                    ) }
+  
                 </div>
             </div>
 
