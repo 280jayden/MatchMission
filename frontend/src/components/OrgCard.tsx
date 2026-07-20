@@ -48,7 +48,12 @@ function OrgCard({
 
                     <div className="org-tag-container">
                         {orgCategories.map((category) => (
-                          <img src={category.tagImageUrl} alt={category.name} className="org-tag-icon"></img>
+                          <img 
+                            key={category.tag}
+                            src={category.tagImageUrl} 
+                            alt={category.name} 
+                            title={category.name} 
+                            className="org-tag-icon" />
                         ))}
                     </div>
                 </div>
