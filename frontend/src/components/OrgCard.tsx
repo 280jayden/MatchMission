@@ -40,9 +40,7 @@ function OrgCard({
                     {isBestMatch && <h2>BEST MATCH!</h2>}
                     <h2>{org.name}</h2>
                     {org.location || org.locationAddress ? (
-                        <h3>
-                            Based in {org.location || org.locationAddress}
-                        </h3>
+                        <h3>Based in {org.location || org.locationAddress}</h3>
                     ) : (
                         <h3>No location found.</h3>
                     )}

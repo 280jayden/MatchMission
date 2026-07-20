@@ -63,23 +63,23 @@ function OrgProfile() {
 
     if (!org) return <p>Organization not found.</p>;
 
-    const pieData = propub.latestFiling
+    const pieData = propub?.latestFiling
         ? [
               {
                   name: 'Revenue',
-                  value: propub.latestFiling.totalRevenue,
+                  value: propub.latestFiling.totalRevenue ?? 0,
               },
               {
                   name: 'Expenses',
-                  value: propub.latestFiling.totalExpenses,
+                  value: propub.latestFiling.totalExpenses ?? 0,
               },
               {
                   name: 'Assets',
-                  value: propub.latestFiling.totalAssets,
+                  value: propub.latestFiling.totalAssets ?? 0,
               },
               {
                   name: 'Liabilities',
-                  value: propub.latestFiling.totalLiabilities,
+                  value: propub.latestFiling.totalLiabilities ?? 0,
               },
           ]
         : [];
@@ -119,13 +119,13 @@ function OrgProfile() {
                                                 : '𐄂 Not Verified'}
                                         </p>
                                         <p>
-                                            {propub.filingsCount > 0
+                                            {(propub.filingsCount ?? 0) > 0
                                                 ? '✔ Public IRS Filings Available'
                                                 : '𐄂 Public IRS Filings Unavailable'}
                                         </p>
                                         <p>
                                             {propub.latestFiling
-                                                .totalExpenses != null
+                                                ?.totalExpenses != null
                                                 ? '✔ Transparent Expense Reporting'
                                                 : '𐄂 No Transparent Expense Reporting'}
                                         </p>
@@ -134,80 +134,100 @@ function OrgProfile() {
                                     <div>
                                         <p>
                                             IRS Verified 501(c)(
-                                            {propub.subsectionCode})
+                                            {propub.subsectionCode ?? 'Unknown'}
+                                            )
                                         </p>
 
-                                        <p>Founded: {propub.foundedDate}</p>
                                         <p>
-                                            Latest IRS Filing:{' '}
-                                            {propub.latestFiling.year} Form 990
+                                            Founded:{' '}
+                                            {propub.foundedDate?.slice(0, 4) ??
+                                                'Unknown'}
+                                        </p>
+                                        <p>
+                                            {propub.latestFiling?.year
+                                                ? `${propub.latestFiling.year} Form 990`
+                                                : 'Lastest Filing Unavailable'}
                                         </p>
                                     </div>
                                 </div>
 
-                                <p>Total Revenue</p>
-                                <ResponsiveContainer width="100%" height={180}>
-                                    <AreaChart
-                                        data={propub.historicalRevenue}
-                                        margin={{
-                                            top: 10,
-                                            right: 20,
-                                            left: 30,
-                                            bottom: 10,
-                                        }}
-                                    >
-                                        <defs>
-                                            <linearGradient
-                                                id="colorUv"
-                                                x1="0"
-                                                y1="0"
-                                                x2="0"
-                                                y2="1"
+                                {propub.historicalRevenue && (
+                                    <>
+                                        <p>Total Revenue</p>
+                                        <ResponsiveContainer
+                                            width="100%"
+                                            height={180}
+                                        >
+                                            <AreaChart
+                                                data={propub.historicalRevenue}
+                                                margin={{
+                                                    top: 10,
+                                                    right: 20,
+                                                    left: 30,
+                                                    bottom: 10,
+                                                }}
                                             >
-                                                <stop
-                                                    offset="5%"
-                                                    stopColor="#8884d8"
-                                                    stopOpacity={0.8}
+                                                <defs>
+                                                    <linearGradient
+                                                        id="colorUv"
+                                                        x1="0"
+                                                        y1="0"
+                                                        x2="0"
+                                                        y2="1"
+                                                    >
+                                                        <stop
+                                                            offset="5%"
+                                                            stopColor="#86A96D"
+                                                            stopOpacity={0.8}
+                                                        />
+                                                        <stop
+                                                            offset="95%"
+                                                            stopColor="#86A96D"
+                                                            stopOpacity={0}
+                                                        />
+                                                    </linearGradient>
+                                                </defs>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis
+                                                    dataKey="year"
+                                                    tick={{ fontSize: 11 }}
                                                 />
-                                                <stop
-                                                    offset="95%"
-                                                    stopColor="#86A96D"
-                                                    stopOpacity={0}
+
+                                                <YAxis
+                                                    width={80}
+                                                    tick={{ fontSize: 11 }}
+                                                    tickFormatter={(value) =>
+                                                        `$${value.toLocaleString()}`
+                                                    }
                                                 />
-                                            </linearGradient>
-                                        </defs>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis
-                                            dataKey="year"
-                                            tick={{ fontSize: 11 }}
-                                        />
+                                                <Tooltip
+                                                    contentStyle={{
+                                                        fontSize: '12px',
+                                                    }}
+                                                    formatter={(
+                                                        value: number,
+                                                    ) =>
+                                                        `$${value.toLocaleString()}`
+                                                    }
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="revenue"
+                                                    stroke="#86A96D"
+                                                    fillOpacity={1}
+                                                    fill="url(#colorUv)"
+                                                    animationBegin={200}
+                                                    animationDuration={1300}
+                                                />
+                                            </AreaChart>
+                                        </ResponsiveContainer>
+                                    </>
+                                )}
 
-                                        <YAxis
-                                            width={80}
-                                            tick={{ fontSize: 11 }}
-                                            tickFormatter={(value) =>
-                                                `$${value.toLocaleString()}`
-                                            }
-                                        />
-                                        <Tooltip
-                                            contentStyle={{ fontSize: '12px' }}
-                                            formatter={(value: number) =>
-                                                `$${value.toLocaleString()}`
-                                            }
-                                        />
-                                        <Area
-                                            type="monotone"
-                                            dataKey="revenue"
-                                            stroke="#86A96D"
-                                            fillOpacity={1}
-                                            fill="url(#colorUv)"
-                                            animationBegin={200}
-                                            animationDuration={1300}
-                                        />
-                                    </AreaChart>
-                                </ResponsiveContainer>
-
-                                <p>Financial Snapshot of {latestFilingYear}</p>
+                                <p>
+                                    Financial Snapshot of{' '}
+                                    {propub.latestFiling?.year ?? 'This Year'}
+                                </p>
 
                                 <ResponsiveContainer width="100%" height={250}>
                                     <BarChart
@@ -277,7 +297,7 @@ function OrgProfile() {
                     {/* BUTTONS */}
                     <button
                         onClick={() => {
-                            const url = org.websiteUrl.startsWith('http')
+                            const url = org.websiteUrl?.startsWith('http')
                                 ? org.websiteUrl
                                 : `https://${org.websiteUrl}`;
                             window.open(url, '_blank');
