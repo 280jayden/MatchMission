@@ -5,12 +5,15 @@
     gap: 3rem;
 }
 
-.profile-info {
+.profile-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     flex: 1;
     gap: 20px;
 }
 
-.profile-side {
+.profile-right {
     display: flex;
     flex-direction: column;
     align-items: center;
