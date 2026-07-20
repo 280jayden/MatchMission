@@ -1,9 +1,9 @@
-import categories from "../data/categories.json"
-import type { UserWeights } from "../types/user"
-import type { Category } from "../types/category"
+import categories from '../data/categories.json';
+import type { UserWeights } from '../types/user';
+import type { Category } from '../types/category';
 
 export function getCategoriesFromWeights(
-    weights?: UserWeights | null
+    weights?: UserWeights | null,
 ): Category[] {
     if (!weights) return [];
 
@@ -11,11 +11,11 @@ export function getCategoriesFromWeights(
 
     const correspCats = userTags.map((tag) => {
         return categories.find((category) => category.tag === tag);
-    })
+    });
 
-    const validCats = correspCats.filter(
-        (category): category is Category => Boolean(category)
+    const validCats = correspCats.filter((category): category is Category =>
+        Boolean(category),
     );
 
-    return validCats
+    return validCats;
 }

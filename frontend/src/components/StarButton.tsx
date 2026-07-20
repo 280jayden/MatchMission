@@ -22,7 +22,9 @@ function StarButton({ ein, initialStarred = false }: StarButtonProps) {
     const [starred, setStarred] = useState(initialStarred);
 
     async function handleStar() {
-        const url = !starred ? `${API_URL}/api/favorite` : `${API_URL}/api/unfavorite`;
+        const url = !starred
+            ? `${API_URL}/api/favorite`
+            : `${API_URL}/api/unfavorite`;
 
         const response = await fetch(url, {
             method: 'POST',
