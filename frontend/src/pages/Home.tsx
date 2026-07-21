@@ -45,7 +45,7 @@ function Home() {
             </div>
 
             <div className="home-3-cols" style={{ marginBottom: '150px' }}>
-                <div>
+                <div className="home-box">
                     <h3>Personalized Matching</h3>
                     <p>
                         Discover nonprofits that align with your values,
@@ -53,7 +53,7 @@ function Home() {
                         organization matches your mission.
                     </p>
                 </div>
-                <div>
+                <div className="home-box">
                     <h3>Discover Hidden Causes</h3>
                     <p>
                         Go beyond traditional charity directories and explore
@@ -61,7 +61,7 @@ function Home() {
                         on your own.
                     </p>
                 </div>
-                <div>
+                <div className="home-box">
                     <h3>Donate With Confidence</h3>
                     <p>
                         Learn about each organization's work and support the
@@ -99,21 +99,21 @@ function Home() {
 
             <h2 style={{ textAlign: 'center' }}>How It Works</h2>
             <div className="home-3-cols">
-                <div>
+                <div className="home-box">
                     <h3>1. Tell us what matters to you</h3>
                     <p>
                         Take our personalized mission quiz to uncover the
                         causes, communities, and issues you care about most.
                     </p>
                 </div>
-                <div>
+                <div className="home-box">
                     <h3>2. Find nonprofits that fit you</h3>
                     <p>
                         Our matching system analyzes your values and connects
                         you with nonprofits aligned with your interests.
                     </p>
                 </div>
-                <div>
+                <div className="home-box">
                     <h3>3. Understand your impact</h3>
                     <p>
                         Learn more about each recommended organization,

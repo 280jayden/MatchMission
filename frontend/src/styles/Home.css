@@ -36,3 +36,9 @@
     flex-direction: column;
     align-items: center;
 }
+
+.home-box {
+  background-color: var(--tertiary2);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
