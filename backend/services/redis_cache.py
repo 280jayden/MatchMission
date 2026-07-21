@@ -5,6 +5,8 @@ import uuid
 
 import redis
 from dotenv import load_dotenv
+from extensions import engine
+from services.fetch_orgs import get_nonprofits_db
 
 load_dotenv()
 
@@ -87,71 +89,31 @@ def cache_tags(tag: str, np_eins: list):
 
 
 
-def load_nonprofits_json(nonprofits: list):
-    # adds nonprofits info to main cache
-    # input: list of dicts {ein:{info}}
-    # called by backend to add to np table
-
-    # prevents network bottlenecks for large batch
-    pipe = r.pipeline()
-
-    for np in nonprofits:
-        pipe.sadd("nonprofit_eins", np['ein'])
-        pipe.set(f"nonprofit:{np['ein']}", json.dumps(np))
-
-    # execute all comands in the pipeline
-    pipe.execute()
-
-
-def get_nonprofits(np_eins: list):
-    # retrieves possible candidates of nonprofits
-    keys = [f"nonprofit:{ein}" for ein in np_eins]
-    raw_data = r.mget(keys)
-    return [json.loads(data) for data in raw_data if data]
-
-def get_random_nonprofits(amount: int):
-    # retrieves random nonprofits for directory page
-    random_eins = r.srandmember("nonprofit_eins", amount)
-
-    if not random_eins:
-        return []
-
-    keys = [f"nonprofit:{ein}" for ein in random_eins]
-    raw_data = r.mget(keys)
-    return [json.loads(data) for data in raw_data if data]
-
-
 def get_next_batch(user_id, user_wts, batch_size:int = 100):
-    # filter for tags that actually exist in the cache to prevent Redis errors
     tag_weights = {
-        f"tag:{tag}": weight
-        for tag, weight in user_wts.items()
-        if r.exists(f"tag:{tag}")
+      f"tag:{tag}": weight
+      for tag, weight in user_wts.items()
+      if r.exists(f"tag:{tag}")
     }
 
     if not tag_weights:
-        return [] # return empty if no tags are cached yet
-
+      return []
+    
     user_scored_key = f"user_scored:{user_id}"
     user_batch_key = f"user_batch:{user_id}"
     shown_key = f"shown:user:{user_id}"
 
-    # make sure shown_key exists
     if not r.exists(shown_key):
-        r.zadd(shown_key, {"_dummy_": 0})
-
-    # ZUNIONSTORE: combine all matching tags, multiply baseline scores by user weights
+      r.zadd(shown_key, {"_dummy_": 0})
+    
     r.zunionstore(user_scored_key, tag_weights, aggregate='SUM')
-
-    # ZDIFFSTORE: take the scored list and remove any EINs that exist in the 'shown' set
     r.zdiffstore(user_batch_key, [user_scored_key, shown_key])
 
-    # ZREVRANGE: get the top `batch_size` EINs sorted by highest score descending
     top_eins = r.zrevrange(user_batch_key, 0, batch_size - 1)
 
-    # fetch the full JSON profiles for these EINs
-    return get_nonprofits(top_eins)
+    r.delete(user_scored_key, user_batch_key)
 
+    return get_nonprofits_db(engine, top_eins)
 
 # updates redis when user sees a np
 def mark_shown(user_id, nonprofit_eins: list[str]):
