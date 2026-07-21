@@ -172,31 +172,38 @@ function Quiz() {
     };
 
     return (
-      <div className="page-background">
-        <div className="quiz-container">
-            <h1 style={{ textAlign: 'center', marginBottom: '-30px' }}>Mission Matcher</h1>
+        <div className="page-background">
+            <div className="quiz-container">
+                <h1 style={{ textAlign: 'center', marginBottom: '-30px' }}>
+                    Mission Matcher
+                </h1>
 
-            {currentQid == 0 && (
-              <>
-                <p style={{ textAlign: 'center'}}>
-                Your answers will help us understand your passions and connect
-                you with nonprofits that fit your goals, values, and vision for
-                making an impact. Take the quiz and discover organizations worth
-                supporting.
-              </p>
+                {currentQid == 0 && (
+                    <>
+                        <p style={{ textAlign: 'center' }}>
+                            Your answers will help us understand your passions
+                            and connect you with nonprofits that fit your goals,
+                            values, and vision for making an impact. Take the
+                            quiz and discover organizations worth supporting.
+                        </p>
 
-              <button onClick={debugSubmit} disabled={loading}>
-                  {loading ? 'MATCHING YOU...' : 'secret debug button'}
-              </button>
-              </>
-            )}
+                        <button onClick={debugSubmit} disabled={loading}>
+                            {loading
+                                ? 'MATCHING YOU...'
+                                : 'secret debug button'}
+                        </button>
+                    </>
+                )}
 
-            <div className="card-container">
-              <p className="quiz-progress-text">
-                  Question {currentQid + 1} / {quizQuestions.length}
-              </p>
-              <progress value={(currentQid+1)/10} className="quiz-progress" />
-                {/* {quizQuestions.map((q) => (
+                <div className="card-container">
+                    <p className="quiz-progress-text">
+                        Question {currentQid + 1} / {quizQuestions.length}
+                    </p>
+                    <progress
+                        value={(currentQid + 1) / 10}
+                        className="quiz-progress"
+                    />
+                    {/* {quizQuestions.map((q) => (
                     <QuestionCard
                         key={q.id}
                         qid={q.id}
@@ -209,43 +216,42 @@ function Quiz() {
                         onChange={(answer) => handleAnswer(q.id, answer)}
                     />
                 ))} */}
-                <QuestionCard
+                    <QuestionCard
                         key={currentQ.id}
                         qid={currentQ.id}
                         question={currentQ.question}
                         type={currentQ.type}
                         options={currentQ.options || []}
                         value={
-                            answers[currentQ.id] || (currentQ.type === 'checkbox' ? [] : '')
+                            answers[currentQ.id] ||
+                            (currentQ.type === 'checkbox' ? [] : '')
                         } // cuz only checkbox takes array
                         onChange={(answer) => handleAnswer(currentQ.id, answer)}
                     />
+                </div>
+
+                <div className="quiz-navigation">
+                    {currentQid > 0 && (
+                        <button
+                            onClick={() => setCurrentQid((prev) => prev - 1)}
+                        >
+                            Back
+                        </button>
+                    )}
+
+                    {currentQid < quizQuestions.length - 1 ? (
+                        <button
+                            onClick={() => setCurrentQid((prev) => prev + 1)}
+                        >
+                            Next
+                        </button>
+                    ) : (
+                        <button onClick={handleSubmit} disabled={loading}>
+                            {loading ? 'MATCHING YOU...' : 'SUBMIT QUIZ'}
+                        </button>
+                    )}
+                </div>
             </div>
-            
-
-            <div className="quiz-navigation">
-              {currentQid > 0 && (
-                <button
-                  onClick={() => setCurrentQid((prev) => prev - 1)}
-                >
-                  Back
-                </button>
-              )}
-
-              {currentQid < quizQuestions.length - 1 ? (
-                <button
-                  onClick={() => setCurrentQid((prev) => prev + 1)}>
-                    Next
-                </button>
-              ) : (
-                <button onClick={handleSubmit} disabled={loading}>
-                  {loading ? 'MATCHING YOU...' : 'SUBMIT QUIZ'}
-                </button>
-              )}
-            </div>
-
-
-        </div>
         </div>
     );
 }

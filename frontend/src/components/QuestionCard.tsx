@@ -33,7 +33,7 @@ function QuestionCard({
     return (
         <div className="item-card">
             <h2>Question {qid}:</h2>
-            <p style={{fontSize: '25px', lineHeight:'30px'}}>{question}</p>
+            <p style={{ fontSize: '25px', lineHeight: '30px' }}>{question}</p>
 
             {/* ------------ Radio Question  ------------ */}
             {type === 'radio' && (

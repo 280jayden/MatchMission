@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import "../styles/LoadingText.css";
+import '../styles/LoadingText.css';
 
 type LoadingTextProps = {
     text?: string;
     fullscreen?: boolean;
 };
 
-function LoadingText({ text = 'Loading', fullscreen = true }: LoadingTextProps) {
+function LoadingText({
+    text = 'Loading',
+    fullscreen = true,
+}: LoadingTextProps) {
     const [dots, setDots] = useState('');
     useEffect(() => {
         const interval = setInterval(() => {

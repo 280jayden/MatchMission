@@ -13,13 +13,12 @@ export function getCategoriesFromWeights(
 }
 
 export function getCategoriesFromTags(tags?: string[] | null): Category[] {
-  if (!tags) return [];
-  const correspCats = tags.map((tag) => {
+    if (!tags) return [];
+    const correspCats = tags.map((tag) => {
         return categories.find((category) => category.tag === tag);
     });
 
-  return correspCats.filter((category): category is Category =>
+    return correspCats.filter((category): category is Category =>
         Boolean(category),
     );
-
 }

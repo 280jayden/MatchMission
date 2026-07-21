@@ -1,6 +1,6 @@
 import FilterChip from '../components/FilterChip';
-import categories from "../data/categories.json"
-import "../styles/Directory.css"
+import categories from '../data/categories.json';
+import '../styles/Directory.css';
 import { useState, useEffect } from 'react';
 import OrgCard from '../components/OrgCard';
 import LoadingText from '../components/LoadingText';
@@ -8,16 +8,18 @@ import { API_URL } from '../config';
 import { GetOrgsResponse } from '../types/api';
 import { Organization } from '../types/organization';
 
-
 function Directory() {
-  const [orgs, setOrgs] = useState<Organization[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+    const [orgs, setOrgs] = useState<Organization[]>([]);
+    const [selectedFilters, setSelectedFilters] = useState<Set<string>>(
+        new Set(),
+    );
+    const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
 
-  // Fetch random orgs
-    const getAnyOrg = async () => { //This is a debug for now while i wait for other endpoint to be created
-      setLoading(true);
+    // Fetch random orgs
+    const getAnyOrg = async () => {
+        //This is a debug for now while i wait for other endpoint to be created
+        setLoading(true);
         const response = await fetch(`${API_URL}/api/orgs/directory`, {
             method: 'GET',
             credentials: 'include',
@@ -34,50 +36,53 @@ function Directory() {
 
         setLoading(false);
     };
-    
+
     const loadMore = async () => {
-      setLoadingMore(true);
-      const response = await fetch(`${API_URL}/api/orgs/directory`, {
+        setLoadingMore(true);
+        const response = await fetch(`${API_URL}/api/orgs/directory`, {
             method: 'POST',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({ filters: Array.from(selectedFilters), 
-            exclude_eins: orgs.map(org => org.ein) }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                filters: Array.from(selectedFilters),
+                exclude_eins: orgs.map((org) => org.ein),
+            }),
         });
 
-      const data: GetOrgsResponse = await response.json();
+        const data: GetOrgsResponse = await response.json();
 
-      if (response.ok && 'directory' in data) {
-            setOrgs(prev => [...prev, ...data.directory]);
+        if (response.ok && 'directory' in data) {
+            setOrgs((prev) => [...prev, ...data.directory]);
             console.log(data.directory);
         } else if ('error' in data) {
             console.log(data.error);
         }
 
-      setLoadingMore(false);
-    }
+        setLoadingMore(false);
+    };
 
     const toggleFilter = (filter: string) => {
-      setSelectedFilters(prev => {
-        const next = new Set(prev);
-        next.has(filter) ? next.delete(filter) : next.add(filter);
-        console.log("selected a new filter so we have " + Array.from(next));
-        return next;
-      })
-    }
+        setSelectedFilters((prev) => {
+            const next = new Set(prev);
+            next.has(filter) ? next.delete(filter) : next.add(filter);
+            console.log('selected a new filter so we have ' + Array.from(next));
+            return next;
+        });
+    };
 
-    const applyFilters = async () => { 
-      setLoading(true);
-      const response = await fetch(`${API_URL}/api/orgs/directory`, { //CHANGETHISCALLLATER
+    const applyFilters = async () => {
+        setLoading(true);
+        const response = await fetch(`${API_URL}/api/orgs/directory`, {
+            //CHANGETHISCALLLATER
             method: 'POST',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({ filters: Array.from(selectedFilters)}),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filters: Array.from(selectedFilters) }),
         });
 
-      const data: GetOrgsResponse = await response.json();
+        const data: GetOrgsResponse = await response.json();
 
-      if (response.ok && 'directory' in data) {
+        if (response.ok && 'directory' in data) {
             setOrgs(data.directory);
             console.log(data.directory);
         } else if ('error' in data) {
@@ -85,14 +90,12 @@ function Directory() {
         }
 
         setLoading(false);
-    }
+    };
 
     const resetFilters = async () => {
-      setSelectedFilters(new Set())
-      await getAnyOrg();
-    }
-
-
+        setSelectedFilters(new Set());
+        await getAnyOrg();
+    };
 
     useEffect(() => {
         getAnyOrg();
@@ -100,44 +103,60 @@ function Directory() {
 
     return (
         <div className="directory-container">
-          {/* FILTERS */}
+            {/* FILTERS */}
             <div className="filter-bar">
-                <h2 style={{marginBottom: '0', marginTop:'30px'}}>FILTERS</h2>
+                <h2 style={{ marginBottom: '0', marginTop: '30px' }}>
+                    FILTERS
+                </h2>
                 <div className="filter-buttons-container">
-                  <button className="apply-button" onClick={applyFilters}>Apply</button>
-                  <button className="apply-button" onClick={resetFilters}>Reset</button>
+                    <button className="apply-button" onClick={applyFilters}>
+                        Apply
+                    </button>
+                    <button className="apply-button" onClick={resetFilters}>
+                        Reset
+                    </button>
                 </div>
                 {categories.map((category) => (
-                        <FilterChip
+                    <FilterChip
                         key={category.tag}
                         title={category.name}
                         tagImageUrl={category.tagImageUrl}
                         isSelected={selectedFilters.has(category.tag)}
-                        onSelect={()=> toggleFilter(category.tag)}
-                        />
-                        ))}
+                        onSelect={() => toggleFilter(category.tag)}
+                    />
+                ))}
                 <div className="filter-buttons-container">
-                  <button className="apply-button" onClick={applyFilters}>Apply</button>
-                  <button className="apply-button" onClick={resetFilters}>Reset</button>
+                    <button className="apply-button" onClick={applyFilters}>
+                        Apply
+                    </button>
+                    <button className="apply-button" onClick={resetFilters}>
+                        Reset
+                    </button>
                 </div>
             </div>
-            
+
             {/* ORGANIZATION CONTAINER */}
             <div className="directory-orgs page-background">
-              <h1 style={{ textAlign: 'center'}}>Directory</h1>
-                { loading ? ( <LoadingText fullscreen={false}></LoadingText>) : (
-                  <>
-                    <div className="card-container">
-                        {orgs.map((org, index) => (
-                          <OrgCard key={org.ein} org={org} isBestMatch={false} />
-                        ))}
-                    </div>
-                    <div className="load-button-container">
-                      <button onClick={loadMore} disabled={loadingMore}>
-                        {loadingMore ? "Loading..." : "Load More"}
-                      </button>
-                    </div>
-                  </>
+                <h1 style={{ textAlign: 'center' }}>Directory</h1>
+                {loading ? (
+                    <LoadingText fullscreen={false}></LoadingText>
+                ) : (
+                    <>
+                        <div className="card-container">
+                            {orgs.map((org, index) => (
+                                <OrgCard
+                                    key={org.ein}
+                                    org={org}
+                                    isBestMatch={false}
+                                />
+                            ))}
+                        </div>
+                        <div className="load-button-container">
+                            <button onClick={loadMore} disabled={loadingMore}>
+                                {loadingMore ? 'Loading...' : 'Load More'}
+                            </button>
+                        </div>
+                    </>
                 )}
             </div>
         </div>

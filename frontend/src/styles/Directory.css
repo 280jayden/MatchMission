@@ -1,38 +1,37 @@
 .directory-container {
-  display: flex;
-  align-items: flex-start;
-  gap: 5vh;
-  padding: 0 5vh;
+    display: flex;
+    align-items: flex-start;
+    gap: 5vh;
+    padding: 0 5vh;
 }
 
 .filter-bar {
-  margin-top: 5vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-  border-radius: 30px;
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border-radius: 30px;
 
-  padding: 25px;
-  gap: 12px;
+    padding: 25px;
+    gap: 12px;
 
-  width: fit-content;
-  height: fit-content;
+    width: fit-content;
+    height: fit-content;
 }
 
 .directory-orgs {
-  /* margin-right: 5vh; */
-  flex: 1;
-  min-width: 0;
-  /* align-items: center; */
+    /* margin-right: 5vh; */
+    flex: 1;
+    min-width: 0;
+    /* align-items: center; */
 }
 
 .load-button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }
-
 
 .apply-button {
     width: 75px;
@@ -41,7 +40,7 @@
 }
 
 .filter-buttons-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }

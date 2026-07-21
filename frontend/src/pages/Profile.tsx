@@ -8,12 +8,12 @@ import { API_URL } from '../config';
 import { getCategoriesFromWeights } from '../utils/getCategoriesFromWeights';
 import AttributeTag from '../components/AttributeTag';
 import '../styles/UserProfile.css';
-import LoadingText from '../components/LoadingText'
+import LoadingText from '../components/LoadingText';
 
 function Profile() {
     const [loading, setLoading] = useState(true);
     const [orgs, setOrgs] = useState<Organization[]>([]);
-    const { user, weights } = useAuth();
+    const { user, weights, hasTakenQuiz } = useAuth();
     const userCategories = getCategoriesFromWeights(weights);
 
     const midpoint = Math.ceil(userCategories.length / 2);
@@ -21,25 +21,25 @@ function Profile() {
     const rightCategories = userCategories.slice(midpoint);
 
     const getResults = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/favorites`, {
-            method: 'GET',
-            credentials: 'include',
-        });
+        try {
+            const response = await fetch(`${API_URL}/api/favorites`, {
+                method: 'GET',
+                credentials: 'include',
+            });
 
-        const data: FavoritesResponse = await response.json();
+            const data: FavoritesResponse = await response.json();
 
-        if (response.ok && 'favorites' in data) {
-            console.log('yuh');
-            setOrgs(data.favorites);
-        } else if ('error' in data) {
-            console.log(data.error);
+            if (response.ok && 'favorites' in data) {
+                console.log('yuh');
+                setOrgs(data.favorites);
+            } else if ('error' in data) {
+                console.log(data.error);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
     };
 
     useEffect(() => {
@@ -48,8 +48,10 @@ function Profile() {
     }, []);
 
     if (loading) {
-      return <LoadingText text="Loading your profile" />
+        return <LoadingText text="Loading your profile" />;
     }
+
+    console.log(hasTakenQuiz);
 
     return (
         <div className="page-background">
@@ -64,33 +66,42 @@ function Profile() {
             )}
 
             {/* preferences section */}
-            <div className="preferences-card" style={{ marginBottom: '3rem' }}>
-                <h2 className="preferences-header"> Your Preferences</h2>
+            {hasTakenQuiz() ? (
+                <div
+                    className="preferences-card"
+                    style={{ marginBottom: '3rem' }}
+                >
+                    <h2 className="preferences-header"> Your Preferences</h2>
 
-                <div className="preferences-body">
-                    <div className="tag-column">
-                        {leftCategories.map((category) => (
-                            <AttributeTag
-                                key={category.tag}
-                                title={category.name}
-                                tagImageUrl={category.tagImageUrl}
-                            />
-                        ))}
-                    </div>
+                    <div className="preferences-body">
+                        <div className="tag-column">
+                            {leftCategories.map((category) => (
+                                <AttributeTag
+                                    key={category.tag}
+                                    title={category.name}
+                                    tagImageUrl={category.tagImageUrl}
+                                />
+                            ))}
+                        </div>
 
-                    <WeightsRadarChart weights={weights} />
+                        <WeightsRadarChart weights={weights} />
 
-                    <div className="tag-column">
-                        {rightCategories.map((category) => (
-                            <AttributeTag
-                                key={category.tag}
-                                title={category.name}
-                                tagImageUrl={category.tagImageUrl}
-                            />
-                        ))}
+                        <div className="tag-column">
+                            {rightCategories.map((category) => (
+                                <AttributeTag
+                                    key={category.tag}
+                                    title={category.name}
+                                    tagImageUrl={category.tagImageUrl}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <p style={{ textAlign: 'center' }}>
+                    Take the quiz to see your preferences.{' '}
+                </p>
+            )}
 
             {/* saved orgs section */}
             <h2 style={{ textAlign: 'center' }}>Your Saved Organizations</h2>

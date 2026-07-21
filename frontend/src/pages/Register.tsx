@@ -22,108 +22,104 @@ function Register() {
             setMessage('Passwords do not match');
             return;
         }
-        
+
         try {
-          const response = await fetch(`${API_URL}/api/user/register`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              credentials: 'include',
-              body: JSON.stringify({ name, email, password }),
-          });
+            const response = await fetch(`${API_URL}/api/user/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ name, email, password }),
+            });
 
-          const data: RegisterResponse = await response.json();
+            const data: RegisterResponse = await response.json();
 
-          if (response.ok) {
-              // Refresh the global auth state so the navbar and protected routes
-              // immediately reflect the logged-in user.
-              console.log('logged in');
-              await refreshUser();
-              navigate('/');
-          } else if ('error' in data) {
-              console.log(data.error);
-              setMessage(data.error);
-          }
+            if (response.ok) {
+                // Refresh the global auth state so the navbar and protected routes
+                // immediately reflect the logged-in user.
+                console.log('logged in');
+                await refreshUser();
+                navigate('/');
+            } else if ('error' in data) {
+                console.log(data.error);
+                setMessage(data.error);
+            }
         } catch (err) {
-          setMessage('Something went wrong. Please try again.');
-          console.error(err);
+            setMessage('Something went wrong. Please try again.');
+            console.error(err);
         }
     };
 
     return (
-      <div className="page-background">
-        <form
-            className="auth-form register-form"
-            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-                e.preventDefault();
-                handleRegister();
-            }}
-        >
-            <h1>Register</h1>
+        <div className="page-background">
+            <form
+                className="auth-form register-form"
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                    e.preventDefault();
+                    handleRegister();
+                }}
+            >
+                <h1>Register</h1>
 
-            <div className="auth-input-pair">
-                <h3>Name</h3>
-                <input
-                    type="name"
-                    className="auth-field"
-                    value={name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setName(e.target.value)
-                    }
-                />
-            </div>
+                <div className="auth-input-pair">
+                    <h3>Name</h3>
+                    <input
+                        type="name"
+                        className="auth-field"
+                        value={name}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setName(e.target.value)
+                        }
+                    />
+                </div>
 
-            <div className="auth-input-pair">
-                <h3>Email</h3>
-                <input
-                    type="email"
-                    className="auth-field"
-                    value={email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setEmail(e.target.value)
-                    }
-                />
-            </div>
+                <div className="auth-input-pair">
+                    <h3>Email</h3>
+                    <input
+                        type="email"
+                        className="auth-field"
+                        value={email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setEmail(e.target.value)
+                        }
+                    />
+                </div>
 
-            <div className="auth-input-pair">
-                <h3>Password</h3>
-                <input
-                    type="password"
-                    className="auth-field"
-                    value={password}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setPassword(e.target.value)
-                    }
-                />
-            </div>
+                <div className="auth-input-pair">
+                    <h3>Password</h3>
+                    <input
+                        type="password"
+                        className="auth-field"
+                        value={password}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setPassword(e.target.value)
+                        }
+                    />
+                </div>
 
-            <div className="auth-input-pair">
-                <h3>Confirm Password</h3>
-                <input
-                    type="password"
-                    className="auth-field"
-                    value={confirmPassword}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setConfirmPassword(e.target.value)
-                    }
-                />
-            </div>
-            
-            {message && (
-                <p className="auth-error">
-                    {message}
-                </p>
-            )}
-            <button type="submit">SIGN UP</button>
+                <div className="auth-input-pair">
+                    <h3>Confirm Password</h3>
+                    <input
+                        type="password"
+                        className="auth-field"
+                        value={confirmPassword}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setConfirmPassword(e.target.value)
+                        }
+                    />
+                </div>
 
-            <div className="auth-bottom-text">
-                <p>Already have an account?</p>
-                <nav>
-                    <Link to="/login">Log In</Link>
-                </nav>
-            </div>
-        </form>
+                {message && <p className="auth-error">{message}</p>}
+                <button type="submit">SIGN UP</button>
+
+                <div className="auth-bottom-text">
+                    <p>Already have an account?</p>
+                    <nav>
+                        <Link to="/login">Log In</Link>
+                    </nav>
+                </div>
+            </form>
         </div>
     );
 }
