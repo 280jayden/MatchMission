@@ -12,11 +12,15 @@ type FilterChipProps = {
     title: string;
     tagImageUrl: string;
     isSelected: boolean;
-    onSelect: ()=> void;
+    onSelect: () => void;
 };
 
-function FilterChip({ title, tagImageUrl, isSelected, onSelect }: FilterChipProps) {
-
+function FilterChip({
+    title,
+    tagImageUrl,
+    isSelected,
+    onSelect,
+}: FilterChipProps) {
     return (
         <button
             type="button"

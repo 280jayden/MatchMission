@@ -18,6 +18,8 @@ function Quiz() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const quizQuestions = questions as Question[];
+    const [currentQid, setCurrentQid] = useState(0);
+    const currentQ = quizQuestions[currentQid];
 
     function handleAnswer(qid: number, answer: string | string[]) {
         setAnswers((prev) => ({
@@ -148,7 +150,7 @@ function Quiz() {
 
             console.log('successfully sent answers to db');
 
-            const scoreResponse = await fetch('/api/score_orgs', {
+            const scoreResponse = await fetch(`${API_URL}/api/score_orgs`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -170,22 +172,38 @@ function Quiz() {
     };
 
     return (
-      <div className="page-background">
-        <div className="quiz-container">
-            <h1 style={{ textAlign: 'center' }}>Mission Matcher</h1>
-            <p style={{ textAlign: 'center', marginTop: '-30px' }}>
-                Your answers will help us understand your passions and connect
-                you with nonprofits that fit your goals, values, and vision for
-                making an impact. Take the quiz and discover organizations worth
-                supporting.
-            </p>
+        <div className="page-background">
+            <div className="quiz-container">
+                <h1 style={{ textAlign: 'center', marginBottom: '-30px' }}>
+                    Mission Matcher
+                </h1>
 
-            <button onClick={debugSubmit} disabled={loading}>
-                {loading ? 'MATCHING YOU...' : 'secret debug button'}
-            </button>
+                {currentQid == 0 && (
+                    <>
+                        <p style={{ textAlign: 'center' }}>
+                            Your answers will help us understand your passions
+                            and connect you with nonprofits that fit your goals,
+                            values, and vision for making an impact. Take the
+                            quiz and discover organizations worth supporting.
+                        </p>
 
-            <div className="card-container">
-                {quizQuestions.map((q) => (
+                        <button onClick={debugSubmit} disabled={loading}>
+                            {loading
+                                ? 'MATCHING YOU...'
+                                : 'secret debug button'}
+                        </button>
+                    </>
+                )}
+
+                <div className="card-container">
+                    <p className="quiz-progress-text">
+                        Question {currentQid + 1} / {quizQuestions.length}
+                    </p>
+                    <progress
+                        value={(currentQid + 1) / 10}
+                        className="quiz-progress"
+                    />
+                    {/* {quizQuestions.map((q) => (
                     <QuestionCard
                         key={q.id}
                         qid={q.id}
@@ -197,13 +215,43 @@ function Quiz() {
                         } // cuz only checkbox takes array
                         onChange={(answer) => handleAnswer(q.id, answer)}
                     />
-                ))}
-            </div>
+                ))} */}
+                    <QuestionCard
+                        key={currentQ.id}
+                        qid={currentQ.id}
+                        question={currentQ.question}
+                        type={currentQ.type}
+                        options={currentQ.options || []}
+                        value={
+                            answers[currentQ.id] ||
+                            (currentQ.type === 'checkbox' ? [] : '')
+                        } // cuz only checkbox takes array
+                        onChange={(answer) => handleAnswer(currentQ.id, answer)}
+                    />
+                </div>
 
-            <button onClick={handleSubmit} disabled={loading}>
-                {loading ? 'MATCHING YOU...' : 'SUBMIT QUIZ'}
-            </button>
-        </div>
+                <div className="quiz-navigation">
+                    {currentQid > 0 && (
+                        <button
+                            onClick={() => setCurrentQid((prev) => prev - 1)}
+                        >
+                            Back
+                        </button>
+                    )}
+
+                    {currentQid < quizQuestions.length - 1 ? (
+                        <button
+                            onClick={() => setCurrentQid((prev) => prev + 1)}
+                        >
+                            Next
+                        </button>
+                    ) : (
+                        <button onClick={handleSubmit} disabled={loading}>
+                            {loading ? 'MATCHING YOU...' : 'SUBMIT QUIZ'}
+                        </button>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

@@ -27,7 +27,7 @@ import {
 const reColors = ['#6E9056', '#86A96D'];
 const alColors = ['#BBD5A8', '#DAEBCE'];
 
-import LoadingText from '../components/LoadingText'
+import LoadingText from '../components/LoadingText';
 
 function OrgProfile() {
     const { ein } = useParams<{ ein: string }>();
@@ -81,8 +81,6 @@ function OrgProfile() {
           ]
         : [];
 
-    
-
     const assetLiabilityData = propub?.latestFiling
         ? [
               {
@@ -96,11 +94,13 @@ function OrgProfile() {
           ]
         : [];
 
-    const hasRevenueExpense =
-      revenueExpenseData.some(item => item.value != null);
+    const hasRevenueExpense = revenueExpenseData.some(
+        (item) => item.value != null,
+    );
 
-    const hasAssetLiability =
-      assetLiabilityData.some(item => item.value != null);
+    const hasAssetLiability = assetLiabilityData.some(
+        (item) => item.value != null,
+    );
 
     return (
         <div className="page-background">
@@ -167,7 +167,8 @@ function OrgProfile() {
                                                 : 'Latest Filing Year Unavailable'}
                                         </p>
                                         <p>
-                                            {propub.latestFiling?.executivecompensation != null
+                                            {propub.latestFiling
+                                                ?.executivecompensation != null
                                                 ? `Executive Compensation: $${propub.latestFiling.executivecompensation}`
                                                 : 'Executive Compensation Unavailable'}
                                         </p>
@@ -228,7 +229,9 @@ function OrgProfile() {
                                                         fontSize: '12px',
                                                     }}
                                                     formatter={(value) =>
-                                                        value != null ? `$${Number(value).toLocaleString()}` : 'N/A'
+                                                        value != null
+                                                            ? `$${Number(value).toLocaleString()}`
+                                                            : 'N/A'
                                                     }
                                                 />
                                                 <Area
@@ -246,106 +249,124 @@ function OrgProfile() {
                                 )}
 
                                 {hasRevenueExpense && (
-                                  <>
-                                    <p>
-                                        Revenue v.s. Expenses
-                                    </p>
+                                    <>
+                                        <p>Revenue v.s. Expenses</p>
 
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <BarChart
-                                            data={revenueExpenseData}
-                                            layout="vertical"
-                                            margin={{
-                                                top: 10,
-                                                right: 30,
-                                                left: 20,
-                                                bottom: 10,
-                                            }}
+                                        <ResponsiveContainer
+                                            width="100%"
+                                            height={250}
                                         >
-                                            <XAxis
-                                                type="number"
-                                                tickFormatter={(value) =>
-                                                    `$${value.toLocaleString()}`
-                                                }
-                                                tick={{ fontSize: 11 }}
-                                            />
-                                            <YAxis
-                                                type="category"
-                                                dataKey="name"
-                                                tick={{ fontSize: 11 }}
-                                            />
+                                            <BarChart
+                                                data={revenueExpenseData}
+                                                layout="vertical"
+                                                margin={{
+                                                    top: 10,
+                                                    right: 30,
+                                                    left: 20,
+                                                    bottom: 10,
+                                                }}
+                                            >
+                                                <XAxis
+                                                    type="number"
+                                                    tickFormatter={(value) =>
+                                                        `$${value.toLocaleString()}`
+                                                    }
+                                                    tick={{ fontSize: 11 }}
+                                                />
+                                                <YAxis
+                                                    type="category"
+                                                    dataKey="name"
+                                                    tick={{ fontSize: 11 }}
+                                                />
 
-                                            <Tooltip
-                                                contentStyle={{ fontSize: '10px' }}
-                                                formatter={(value) =>
-                                                    value != null ? `$${Number(value).toLocaleString()}` : 'N/A'
-                                                }
-                                            />
-                                            <Bar dataKey="value">
-                                                {revenueExpenseData.map((_, index) => (
-                                                    <Cell
-                                                        key={index}
-                                                        fill={reColors[index]}
-                                                    />
-                                                ))}
-                                            </Bar>
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                  </>
+                                                <Tooltip
+                                                    contentStyle={{
+                                                        fontSize: '10px',
+                                                    }}
+                                                    formatter={(value) =>
+                                                        value != null
+                                                            ? `$${Number(value).toLocaleString()}`
+                                                            : 'N/A'
+                                                    }
+                                                />
+                                                <Bar dataKey="value">
+                                                    {revenueExpenseData.map(
+                                                        (_, index) => (
+                                                            <Cell
+                                                                key={index}
+                                                                fill={
+                                                                    reColors[
+                                                                        index
+                                                                    ]
+                                                                }
+                                                            />
+                                                        ),
+                                                    )}
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </>
                                 )}
-                              
 
                                 {hasAssetLiability && (
-                                  <>
-                                    <p>
-                                      Assets v.s. Liabilities
-                                    </p>
+                                    <>
+                                        <p>Assets v.s. Liabilities</p>
 
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <BarChart
-                                            data={assetLiabilityData}
-                                            layout="vertical"
-                                            margin={{
-                                                top: 10,
-                                                right: 30,
-                                                left: 20,
-                                                bottom: 10,
-                                            }}
+                                        <ResponsiveContainer
+                                            width="100%"
+                                            height={250}
                                         >
-                                            <XAxis
-                                                type="number"
-                                                tickFormatter={(value) =>
-                                                    `$${value.toLocaleString()}`
-                                                }
-                                                tick={{ fontSize: 11 }}
-                                            />
-                                            <YAxis
-                                                type="category"
-                                                dataKey="name"
-                                                tick={{ fontSize: 11 }}
-                                            />
+                                            <BarChart
+                                                data={assetLiabilityData}
+                                                layout="vertical"
+                                                margin={{
+                                                    top: 10,
+                                                    right: 30,
+                                                    left: 20,
+                                                    bottom: 10,
+                                                }}
+                                            >
+                                                <XAxis
+                                                    type="number"
+                                                    tickFormatter={(value) =>
+                                                        `$${value.toLocaleString()}`
+                                                    }
+                                                    tick={{ fontSize: 11 }}
+                                                />
+                                                <YAxis
+                                                    type="category"
+                                                    dataKey="name"
+                                                    tick={{ fontSize: 11 }}
+                                                />
 
-                                            <Tooltip
-                                                contentStyle={{ fontSize: '10px' }}
-                                                formatter={(value) =>
-                                                    value != null ? `$${Number(value).toLocaleString()}` : 'N/A'
-                                                }
-                                            />
-                                            <Bar dataKey="value">
-                                                {assetLiabilityData.map((_, index) => (
-                                                    <Cell
-                                                        key={index}
-                                                        fill={alColors[index]}
-                                                    />
-                                                ))}
-                                            </Bar>
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                  </>
+                                                <Tooltip
+                                                    contentStyle={{
+                                                        fontSize: '10px',
+                                                    }}
+                                                    formatter={(value) =>
+                                                        value != null
+                                                            ? `$${Number(value).toLocaleString()}`
+                                                            : 'N/A'
+                                                    }
+                                                />
+                                                <Bar dataKey="value">
+                                                    {assetLiabilityData.map(
+                                                        (_, index) => (
+                                                            <Cell
+                                                                key={index}
+                                                                fill={
+                                                                    alColors[
+                                                                        index
+                                                                    ]
+                                                                }
+                                                            />
+                                                        ),
+                                                    )}
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </>
                                 )}
-                                
-
-                                
                             </div>
                         </>
                     ) : (
@@ -372,20 +393,22 @@ function OrgProfile() {
                     />
 
                     {/* BUTTONS */}
-                    <button
-                        onClick={() => {
-                            const url = org.websiteUrl?.startsWith('http')
-                                ? org.websiteUrl
-                                : `https://${org.websiteUrl}`;
-                            window.open(url, '_blank');
-                        }}
-                        className="website-button"
-                        disabled={!org.websiteUrl}
-                    >
-                        {org.websiteUrl ? 'THEIR WEBSITE' : 'NO WEBSITE'}
-                    </button>
+                    <div className="profile-actions">
+                        <button
+                            onClick={() => {
+                                const url = org.websiteUrl?.startsWith('http')
+                                    ? org.websiteUrl
+                                    : `https://${org.websiteUrl}`;
+                                window.open(url, '_blank');
+                            }}
+                            className="website-button"
+                            disabled={!org.websiteUrl}
+                        >
+                            {org.websiteUrl ? 'THEIR WEBSITE' : 'NO WEBSITE'}
+                        </button>
 
-                    <DonateButton slug={org.primarySlug}></DonateButton>
+                        <DonateButton slug={org.primarySlug}></DonateButton>
+                    </div>
 
                     {/* DESCRIPTION */}
                     <div>

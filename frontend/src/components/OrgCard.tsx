@@ -52,29 +52,29 @@ function OrgCard({
 
                     <div className="org-tag-container">
                         {orgCategories.map((category) => (
-                          <img 
-                            key={category.tag}
-                            src={category.tagImageUrl} 
-                            alt={category.name} 
-                            title={category.name} 
-                            className="org-tag-icon" />
+                            <img
+                                key={category.tag}
+                                src={category.tagImageUrl}
+                                alt={category.name}
+                                title={category.name}
+                                className="org-tag-icon"
+                            />
                         ))}
                     </div>
                 </div>
 
                 <div className="org-icons">
                     <StarButton ein={org.ein} initialStarred={forceStarred} />
-                    
+
                     {/* info button only shows on results that have a match explanation */}
                     {org.match_explanation && (
-                      <div className="info-tooltip">
-                        <span className="info-icon">ⓘ</span>
-                        <span className="tooltip-text">
-                            {org.match_explanation}
-                        </span>
-                    </div>
-                    ) }
-  
+                        <div className="info-tooltip">
+                            <span className="info-icon">ⓘ</span>
+                            <span className="tooltip-text">
+                                {org.match_explanation}
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
 

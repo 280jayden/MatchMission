@@ -10,75 +10,85 @@ function LogIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [message, setMessage] = useState('');
 
     const handleLogin = async () => {
-        const response = await fetch(`${API_URL}/api/user/login`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        });
+        setMessage('');
 
-        const data: LoginResponse = await response.json();
+        try {
+            const response = await fetch(`${API_URL}/api/user/login`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
 
-        if (response.ok) {
-            // Refresh the global auth state so the navbar and protected routes
-            // immediately reflect the logged-in user.
-            console.log('logged in');
-            await refreshUser();
-            navigate('/');
-        } else if ('error' in data) {
-            console.log(data.error);
+            const data: LoginResponse = await response.json();
+
+            if (response.ok) {
+                // Refresh the global auth state so the navbar and protected routes
+                // immediately reflect the logged-in user.
+                console.log('logged in');
+                await refreshUser();
+                navigate('/');
+            } else if ('error' in data) {
+                console.log(data.error);
+                setMessage(data.error);
+            }
+        } catch (err) {
+            setMessage('Something went wrong. Please try again.');
+            console.error(err);
         }
     };
 
     return (
-      <div className="page-background">
-        <form
-            className="auth-form"
-            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-                e.preventDefault();
-                handleLogin();
-            }}
-        >
-            <h1>Log In</h1>
+        <div className="page-background">
+            <form
+                className="auth-form"
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                    e.preventDefault();
+                    handleLogin();
+                }}
+            >
+                <h1>Log In</h1>
 
-            <div className="auth-input-pair">
-                <h3>Email</h3>
-                <input
-                    type="email"
-                    className="auth-field"
-                    value={email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setEmail(e.target.value)
-                    }
-                />
-            </div>
+                <div className="auth-input-pair">
+                    <h3>Email</h3>
+                    <input
+                        type="email"
+                        className="auth-field"
+                        value={email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setEmail(e.target.value)
+                        }
+                    />
+                </div>
 
-            <div className="auth-input-pair">
-                <h3>Password</h3>
-                <input
-                    type="password"
-                    className="auth-field"
-                    value={password}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setPassword(e.target.value)
-                    }
-                />
-            </div>
+                <div className="auth-input-pair">
+                    <h3>Password</h3>
+                    <input
+                        type="password"
+                        className="auth-field"
+                        value={password}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setPassword(e.target.value)
+                        }
+                    />
+                </div>
 
-            <button type="submit">LOG IN</button>
+                {message && <p className="auth-error">{message}</p>}
+                <button type="submit">LOG IN</button>
 
-            <div className="auth-bottom-text">
-                <p>Need to make a new account?</p>
-                <nav>
-                    <Link to="/register">Sign Up</Link>
-                </nav>
-            </div>
-        </form>
-      </div>
+                <div className="auth-bottom-text">
+                    <p>Need to make a new account?</p>
+                    <nav>
+                        <Link to="/register">Sign Up</Link>
+                    </nav>
+                </div>
+            </form>
+        </div>
     );
 }
 

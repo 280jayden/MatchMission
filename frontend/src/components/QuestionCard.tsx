@@ -1,4 +1,4 @@
-import '../styles/QuestionCard.css';
+import '../styles/Quiz.css';
 import type { QuestionOption, QuestionType } from '../types/question';
 
 /**
@@ -32,8 +32,8 @@ function QuestionCard({
 }: QuestionCardProps) {
     return (
         <div className="item-card">
-            <h3>Question {qid}:</h3>
-            <p>{question}</p>
+            <h2>Question {qid}:</h2>
+            <p style={{ fontSize: '25px', lineHeight: '30px' }}>{question}</p>
 
             {/* ------------ Radio Question  ------------ */}
             {type === 'radio' && (

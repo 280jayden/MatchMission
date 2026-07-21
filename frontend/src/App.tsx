@@ -9,48 +9,48 @@ import Register from './pages/Register';
 import Result from './pages/Result';
 import OrgProfile from './pages/OrgProfile';
 import RequireAuth from './components/RequireAuth';
-import Directory from "./pages/Directory";
+import Directory from './pages/Directory';
 
 function App() {
     return (
         <BrowserRouter>
             <Navbar />
-                <Routes>
-                    {/* public pages */}
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<LogIn />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/org/:ein" element={<OrgProfile />} />
-                    <Route path="/directory" element={<Directory />} />
+            <Routes>
+                {/* public pages */}
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<LogIn />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/org/:ein" element={<OrgProfile />} />
+                <Route path="/directory" element={<Directory />} />
 
-                    {/* protected pages */}
-                    <Route
-                        path="/profile"
-                        element={
-                            <RequireAuth>
-                                <Profile />
-                            </RequireAuth>
-                        }
-                    />
+                {/* protected pages */}
+                <Route
+                    path="/profile"
+                    element={
+                        <RequireAuth>
+                            <Profile />
+                        </RequireAuth>
+                    }
+                />
 
-                    <Route
-                        path="/quiz"
-                        element={
-                            <RequireAuth>
-                                <Quiz />
-                            </RequireAuth>
-                        }
-                    />
+                <Route
+                    path="/quiz"
+                    element={
+                        <RequireAuth>
+                            <Quiz />
+                        </RequireAuth>
+                    }
+                />
 
-                    <Route
-                        path="/result"
-                        element={
-                            <RequireAuth>
-                                <Result />
-                            </RequireAuth>
-                        }
-                    />
-                </Routes>
+                <Route
+                    path="/result"
+                    element={
+                        <RequireAuth>
+                            <Result />
+                        </RequireAuth>
+                    }
+                />
+            </Routes>
         </BrowserRouter>
     );
 }
