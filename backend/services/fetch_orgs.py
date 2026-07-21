@@ -297,20 +297,35 @@ def query_nonprofits_db_by_tags(engine, tags: list[str], exclude_eins: list[str]
     conditions = " AND ".join([f"tags LIKE :tag{i}" for i in range(len(tags))])
     params = {f"tag{i}": f"%{tag}%" for i, tag in enumerate(tags)}
     params['limit'] = limit
-    params['exclude_eins'] = exclude_eins if exclude_eins else ['']
+
+    exclude_clause = ""
+    if exclude_eins:
+        exclude_placeholders = ", ".join([f":exclude{i}" for i in range(len(exclude_eins))])
+        exclude_clause = f"AND ein NOT IN ({exclude_placeholders})"
+        for i, ein in enumerate(exclude_eins):
+            params[f"exclude{i}"] = ein
 
     query = f"""
-        SELECT ein, name, description, logoUrl, websiteUrl, profileUrl, location, slug, donationUrl, coverImageUrl, tags
+        SELECT ein, name, description,
+            logourl AS "logoUrl",
+            websiteurl AS "websiteUrl",
+            profileurl AS "profileUrl",
+            donationurl AS "donationUrl",
+            coverimageurl AS "coverImageUrl",
+            location, slug, tags
         FROM NonProfits
         WHERE ({conditions})
-        AND ein != ALL(:exclude_eins)
-        LIMIT :limit    
-    """ 
+        {exclude_clause}
+        LIMIT :limit
+    """
 
     with engine.connect() as connection:
         result = connection.execute(db.text(query), params).fetchall()
     
-    return [dict(row._mapping) for row in result]
+    orgs = [dict(row._mapping) for row in result]
+    for org in orgs:
+        org["tags"] = normalize_tags(org.get("tags"))
+    return orgs
 
 def normalize_tags(tags):
     """
@@ -360,39 +375,59 @@ def save_nonprofits_db(engine, nonprofits: list):
 
 
 def get_nonprofits_db(engine, eins: list):
-  """
+    """
 
-  this replaces get_nonprofits. it looks up the full org info by EIN from Postgres instead of Redis
+    this replaces get_nonprofits. it looks up the full org info by EIN from Postgres instead of Redis
 
-  """
+    """
 
-  if not eins:
-    return []
-  
-  placeholders = ", ".join([f":ein{i}" for i in range(len(eins))])
-  params = {f"ein{i}": ein for i, ein in enumerate(eins)}
-  query = f"""
-    SELECT ein, name, description, logoUrl, websiteUrl, profileUrl, location, slug, donationUrl, coverImageUrl, tags
+    if not eins:
+        return []
+
+    placeholders = ", ".join([f":ein{i}" for i in range(len(eins))])
+    params = {f"ein{i}": ein for i, ein in enumerate(eins)}
+    query = f"""
+    SELECT ein, name, description,
+        logourl AS "logoUrl",
+        websiteurl AS "websiteUrl",
+        profileurl AS "profileUrl",
+        donationurl AS "donationUrl",
+        coverimageurl AS "coverImageUrl",
+        location, slug, tags
     FROM NonProfits WHERE ein IN ({placeholders})
-  """
+    """
 
-  with engine.connect() as connection:
-    result = connection.execute(db.text(query), params).fetchall()
-  return [dict(row._mapping) for row in result]
+    with engine.connect() as connection:
+        result = connection.execute(db.text(query), params).fetchall()
+
+    orgs = [dict(row._mapping) for row in result]
+    for org in orgs:
+        org['tags'] = normalize_tags(org.get("tags"))
+    return orgs
 
 
 def get_random_nonprofits_db(engine, amount: int):
-  """
+    """
 
-  this replaces get_random_nonprofits. it pulls random orgs from Postgres instead of Redis.
+    this replaces get_random_nonprofits. it pulls random orgs from Postgres instead of Redis.
 
-  """
+    """
 
-  query = """
-    SELECT ein, name, description, logoUrl, websiteUrl, profileUrl, location, slug, donationUrl, coverImageUrl, tags
-    FROM NonProfits ORDER BY RANDOM() Limit :amount
+    query = """
+        SELECT ein, name, description,
+            logourl AS "logoUrl",
+            websiteurl AS "websiteUrl",
+            profileurl AS "profileUrl",
+            donationurl AS "donationUrl",
+            coverimageurl AS "coverImageUrl",
+            location, slug, tags
+        FROM NonProfits ORDER BY RANDOM() LIMIT :amount
+    """
+    with engine.connect() as connection:
+        result = connection.execute(db.text(query), {"amount": amount}).fetchall()
+    
+    orgs = [dict(row._mapping) for row in result]
+    for org in orgs:
+        org['tags'] = normalize_tags(org.get('tags'))
+    return orgs
 
-  """
-  with engine.connect() as connection:
-    result = connection.execute(db.text(query), {"amount": amount}).fetchall()
-  return [dict(row._mapping) for row in result]
