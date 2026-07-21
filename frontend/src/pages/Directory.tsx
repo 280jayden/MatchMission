@@ -151,6 +151,7 @@ function Directory() {
                                     key={org.ein}
                                     org={org}
                                     isBestMatch={false}
+                                    selectedFilters={selectedFilters}
                                 />
                               ))
                             )}

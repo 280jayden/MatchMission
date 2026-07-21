@@ -12,24 +12,33 @@ type OrgCardProps = {
     org: Organization;
     forceStarred?: boolean;
     isBestMatch?: boolean;
+    selectedFilters?: Set<string>;
 };
+
+/**
+ * Displays a nonprofit organization summary card.
+ *
+ * Props:
+ * - org: Organization object containing display information.
+ * - forceStarred: Initial favorite state for the star button.
+ */
 
 function OrgCard({
     org,
     forceStarred = false,
     isBestMatch = false,
+    selectedFilters,
 }: OrgCardProps) {
-    /**
-     * Displays a nonprofit organization summary card.
-     *
-     * Props:
-     * - org: Organization object containing display information.
-     * - forceStarred: Initial favorite state for the star button.
-     */
 
     const navigate = useNavigate();
 
-    const orgCategories = getCategoriesFromTags(org.tags);
+    const orgCategories = getCategoriesFromTags(org.tags).sort((a,b) => {
+      const aSelected = selectedFilters?.has(a.tag) ?? false;
+      const bSelected = selectedFilters?.has(b.tag) ?? false;
+
+      if (aSelected === bSelected) return 0;
+      return aSelected ? -1 : 1;
+    });
 
     return (
         <div className="item-card org-card">
@@ -57,7 +66,9 @@ function OrgCard({
                                 src={category.tagImageUrl}
                                 alt={category.name}
                                 title={category.name}
-                                className="org-tag-icon"
+                                className={`org-tag-icon ${
+                                  selectedFilters?.has(category.tag) ? 'selected' : ''
+                                }`}
                             />
                         ))}
                     </div>
