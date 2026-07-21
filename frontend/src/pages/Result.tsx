@@ -41,16 +41,12 @@ function Result() {
 
     return (
         <div className="page-background">
-            {/* <p style={{ textAlign: 'center', marginBottom: '70px' }}>
-                Based on your quiz responses, here are some organizations that
-                might fit your preferences.
-            </p> */}
 
             {justCompleted && (
                 <>
                     <h1 style={{ textAlign: 'center' }}>Results</h1>
                     <ProfileResult />
-                    <h2 id="results-list">Recommended Organizations</h2>
+                    <h2 style={{marginTop: "99px", textAlign: "center"}} id="results-list">Recommended Organizations</h2>
                 </>
             )}
 
@@ -58,15 +54,21 @@ function Result() {
                 <h1 style={{ textAlign: 'center' }}>Recommendations</h1>
             )}
 
-            {/* DEBUG, DELETE LATER */}
-            {/* <ProfileResult /> 
-            <h2 style={{marginTop: "99px", textAlign: "center"}} id="results-list">Recommended Organizations</h2> */}
-            {/* DEBUG, DELETE LATER */}
-
             <div className="card-container">
                 {orgs.map((org, index) => (
                     <OrgCard key={org.ein} org={org} isBestMatch={index < 3} />
                 ))}
+                {orgs.length === 0 ? (
+                  <p style={{ textAlign: 'center' }}>No organizations found. (Your interests may be too niche.)</p>
+                ) : (
+                  orgs.map((org, index) => (
+                    <OrgCard
+                        key={org.ein}
+                        org={org}
+                        isBestMatch={index < 3}
+                    />
+                  ))
+                )}
             </div>
         </div>
     );

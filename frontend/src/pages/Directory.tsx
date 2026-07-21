@@ -143,13 +143,18 @@ function Directory() {
                 ) : (
                     <>
                         <div className="card-container">
-                            {orgs.map((org, index) => (
+                            {orgs.length === 0 ? (
+                              <p style={{ textAlign: 'center' }}>No organizations found.</p>
+                            ) : (
+                              orgs.map((org, index) => (
                                 <OrgCard
                                     key={org.ein}
                                     org={org}
                                     isBestMatch={false}
+                                    selectedFilters={selectedFilters}
                                 />
-                            ))}
+                              ))
+                            )}
                         </div>
                         <div className="load-button-container">
                             <button onClick={loadMore} disabled={loadingMore}>

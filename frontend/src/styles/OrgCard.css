@@ -103,8 +103,17 @@
     flex-shrink: 0;
 }
 
+.org-tag-icon.selected {
+    width: clamp(28px, 5.5vw, 70px);
+    height: clamp(28px, 5.5vw, 70px);
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
 .org-tag-container {
     display: flex;
+    align-items: center;
     gap: 20px;
     margin-top: 20px;
     margin-bottom: 35px;
