@@ -192,7 +192,7 @@ function Quiz() {
             )}
 
             <div className="card-container">
-              <p style={{ textAlign: 'center', marginBottom: '-20px' }}>
+              <p className="quiz-progress-text">
                   Question {currentQid + 1} / {quizQuestions.length}
               </p>
               <progress value={(currentQid+1)/10} className="quiz-progress" />
@@ -243,6 +243,8 @@ function Quiz() {
                 </button>
               )}
             </div>
+
+
         </div>
         </div>
     );
