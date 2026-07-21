@@ -62,3 +62,8 @@
     background-color: #aeccaa;
     border-radius: 30px;
 }
+
+.quiz-navigation {
+    display: flex;
+    gap: 30px;
+}
