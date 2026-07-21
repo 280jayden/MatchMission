@@ -150,7 +150,7 @@ function Quiz() {
 
             console.log('successfully sent answers to db');
 
-            const scoreResponse = await fetch('/api/score_orgs', {
+            const scoreResponse = await fetch(`${API_URL}/api/score_orgs`, {
                 method: 'POST',
                 credentials: 'include',
             });
