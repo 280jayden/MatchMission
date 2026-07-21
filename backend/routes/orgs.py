@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, session
 from extensions import engine
-from services.fetch_orgs import fetch_orgs, fetch_org, fetch_propublica_data, query_nonprofits_db_by_tags, normalize_tags
+from services.fetch_orgs import fetch_orgs, fetch_org, fetch_propublica_data, query_nonprofits_db_by_tags, normalize_tags, save_nonprofits_db, get_nonprofits_db, get_random_nonprofits_db
 from services.redis_cache import (
-    get_user_weights, is_cached, cache_tags, load_nonprofits_json,
+    get_user_weights, is_cached, cache_tags,
     get_next_batch, mark_shown, mark_favorited, unmark_favorited,
-    get_favorites_redis, get_nonprofits, get_random_nonprofits, get_orgs_by_tags_redis
+    get_favorites_redis, get_orgs_by_tags_redis
 )
 
 orgs_bp = Blueprint('orgs', __name__)
@@ -31,7 +31,7 @@ def get_orgs():
             nonprofits_dict_list.extend(nonprofits_info)
         
         # loads nonprofits into redis main cache
-        load_nonprofits_json(nonprofits_dict_list)
+        save_nonprofits_db(engine, nonprofits_dict_list)
 
     
     next_batch = get_next_batch(user_id, user_wts, 10)
@@ -74,7 +74,7 @@ def score_orgs():
     for tag in tags_to_fetch:
         np_eins, nonprofits_info = fetch_orgs(user_wts, tag, 100, engine)
         cache_tags(tag, np_eins)
-        load_nonprofits_json(nonprofits_info)
+        save_nonprofits_db(engine, nonprofits_info)
         fetched_tags.append(tag)
 
     # rank nonprofits using the user's weights and the cached tag sets
@@ -168,7 +168,7 @@ def get_favorites():
 
     user_favorites = get_favorites_redis(user_id)
 
-    favorites_np_data = get_nonprofits(user_favorites)
+    favorites_np_data = get_nonprofits_db(engine, user_favorites)
 
     return jsonify({"success": True, "favorites": favorites_np_data})
     # returns a plain array of org objects
@@ -181,20 +181,22 @@ def get_directory():
     checking Redis -> Postgres
     """
 
+    TARGET_COUNT = 20
+
     if request.method == 'GET':
     # get 20 cached nonprofits
-        nonprofits = get_random_nonprofits(20)
+        nonprofits = get_random_nonprofits_db(engine, TARGET_COUNT)
 
         return jsonify({"success": True, "directory": nonprofits})
     
     # POST for filtering
-    TARGET_COUNT = 20
+    
 
     data = request.get_json() or {}
     filters = data.get("filters", [])
 
     if not filters:
-        nonprofits = get_random_nonprofits(TARGET_COUNT)
+        nonprofits = get_random_nonprofits_db(engine, TARGET_COUNT)
         return jsonify({"success": True, "directory": nonprofits})
     
     already_seen = data.get('exclude_eins', [])
@@ -204,7 +206,7 @@ def get_directory():
     # first check -> Redis
     redis_eins = get_orgs_by_tags_redis(filters)
     if redis_eins:
-        redis_orgs = get_nonprofits(redis_eins)
+        redis_orgs = get_nonprofits_db(engine, redis_eins)
         for org in redis_orgs:
             ein = org.get('ein')
             if ein and ein not in seen_eins:
