@@ -3,12 +3,20 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    width: 160px;
+    width: 180px;
     height: 64px;
     padding: 0 14px;
     background-color: var(--tag-bg);
     border-radius: 900px;
+    border-width: 0;
     flex-shrink: 0;
+    color: #000;
+    font-family: 'Nunito Sans';
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0.15px;
+    margin: 0;
 }
 
 .tag-img {
@@ -24,7 +32,12 @@
     min-width: 0;
     text-align: center;
     overflow-wrap: break-word;
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     font-weight: 700;
     line-height: 1.15;
+}
+
+.tag-selected {
+    background-color: #6BA378;
+    color: white;
 }

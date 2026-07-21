@@ -160,30 +160,8 @@
     },
     {
         "id": 6,
-        "question": "What kind of impact would make you proud to say “I helped with that”?",
-        "type": "radio",
-        "options": [
-            {
-                "option": "Someone's life became better because of my support.",
-                "value": "direct_impact"
-            },
-            {
-                "option": "A future problem was prevented because people acted early.",
-                "value": "prevention"
-            },
-            {
-                "option": "A new discovery or breakthrough happened.",
-                "value": "breakthrough"
-            },
-            {
-                "option": "A community became stronger and more independent.",
-                "value": "community_strength"
-            },
-            {
-                "option": "People who were overlooked finally had support and representation.",
-                "value": "representation"
-            }
-        ]
+        "question": "What is a problem in the world you wish more people paid attention to?",
+        "type": "text"
     },
     {
         "id": 7,
@@ -268,17 +246,7 @@
     },
     {
         "id": 10,
-        "question": "What is a problem in the world you wish more people paid attention to?",
-        "type": "text"
-    },
-    {
-        "id": 11,
         "question": "What gives you hope about the future?",
-        "type": "text"
-    },
-    {
-        "id": 12,
-        "question": "What is something you believe the world needs more of?",
         "type": "text"
     }
 ]

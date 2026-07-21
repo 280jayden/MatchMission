@@ -1,4 +1,4 @@
-import type { Organization, Tag } from './organization';
+import type { Organization, Tag, PropublicaInfo } from './organization';
 
 export type CurrentUserResponse = {
     user_id: string;
@@ -22,7 +22,7 @@ export type LogoutResponse = {
 export type LoginResponse = { success: true } | { error: string };
 
 export type OrgProfileResponse =
-    { nonprofit: Organization; nonprofitTags: Tag[] } | { error: string };
+    { nonprofit: Organization; nonprofitTags: Tag[]; propublica: PropublicaInfo } | { error: string };
 
 export type FavoritesResponse =
     { favorites: Organization[] } | { error: string };
@@ -35,3 +35,11 @@ export type QuizResponse = {
 export type RegisterResponse = { success: true } | { error: string };
 
 export type GetBatchResponse = { matches: Organization[] } | { error: string };
+
+export type GetOrgsResponse = {
+  success: true;
+  directory: Organization[];
+} | {
+  success: false;
+  error : string;
+}

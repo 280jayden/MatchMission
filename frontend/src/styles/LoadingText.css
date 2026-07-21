@@ -1,0 +1,21 @@
+.loading-fullscreen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    z-index: 9999;
+}
+
+.loading-inline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.loading-text {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+}
