@@ -5,8 +5,16 @@ import {
 } from '../utils/getCategoriesFromWeights';
 import categories from '../data/categories.json';
 
+/**
+ * Tests for category conversion utility functions.
+ *
+ * Verifies that category helpers correctly handle missing inputs,
+ * return matching categories from user weights or tags, and ignore
+ * invalid category values.
+ */
+
 describe('getCategoriesFromWeights', () => {
-    it('returns empty array if weights is defined', () => {
+    it('returns empty array if weights is undefined', () => {
         expect(getCategoriesFromWeights(undefined)).toEqual([]);
     });
 
@@ -27,7 +35,7 @@ describe('getCategoriesFromWeights', () => {
 });
 
 describe('getCategoriesFromTags', () => {
-    it('returns empty array if tags is defined', () => {
+    it('returns empty array if tags is undefined', () => {
         expect(getCategoriesFromTags(undefined)).toEqual([]);
     });
 

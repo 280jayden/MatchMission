@@ -7,50 +7,23 @@ import {
 } from 'recharts';
 import { UserWeights } from '../types/user';
 
-// const old = [
-//     //sample data
-//     {
-//         tag: 'Animals',
-//         weight: 0.7432,
-//     },
-//     {
-//         tag: 'Mental Health',
-//         weight: 0.423,
-//     },
-//     {
-//         tag: 'Conservation',
-//         weight: 0.52392,
-//     },
-//     {
-//         tag: 'Justice',
-//         weight: 0.84758,
-//     },
-//     {
-//         tag: 'Science & Technology',
-//         weight: 0.32764892,
-//     },
-//     {
-//         tag: 'Food Security',
-//         weight: 0.854739,
-//     },
-//     {
-//         tag: 'Humans',
-//         weight: 0.9,
-//     },
-//     {
-//         tag: 'Music',
-//         weight: 0.48375,
-//     },
-// ];
-
 interface WeightsRadarChartProps {
     weights: UserWeights | null;
     width?: number;
     height?: number;
 }
 
-// got this from the recharts api
-// later, make data be a thing passed in as a prop instead
+/**
+ * Radar chart displaying a user's nonprofit preference weights.
+ *
+ * Converts user preference weights into chart data and visualizes the relative
+ * importance of each category using a Recharts radar chart.
+ *
+ * Props:
+ * - weights: User preference weights mapped by category tag.
+ * - width: Width of the radar chart.
+ * - height: Height of the radar chart.
+ */
 const WeightsRadarChart = ({
     weights,
     width = 400,

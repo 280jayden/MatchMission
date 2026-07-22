@@ -13,6 +13,21 @@ type Answers = {
     [questionId: number]: string | string[];
 };
 
+/**
+ * Mission matching quiz page.
+ *
+ * Allows users to answer a series of questions about their values, interests,
+ * and impact preferences. Stores responses, validates completion, submits
+ * answers to the backend, and generates nonprofit matches.
+ *
+ * State:
+ * - answers: Stores user responses keyed by question ID.
+ * - loading: Tracks whether quiz submission and matching are in progress.
+ * - currentQid: Tracks the current question being displayed.
+ *
+ * After successful submission, refreshes authentication data and redirects the
+ * user to their personalized results page.
+ */
 function Quiz() {
     const { refreshUser } = useAuth();
     const [answers, setAnswers] = useState<Answers>({});
@@ -22,6 +37,15 @@ function Quiz() {
     const [currentQid, setCurrentQid] = useState(0);
     const currentQ = quizQuestions[currentQid];
 
+    /**
+     * Updates the user's answer for a specific quiz question.
+     *
+     * Supports both single-choice and multiple-choice responses.
+     *
+     * Params:
+     * - qid: ID of the question being answered.
+     * - answer: Selected answer value(s).
+     */
     function handleAnswer(qid: number, answer: string | string[]) {
         setAnswers((prev) => ({
             ...prev,
@@ -29,6 +53,13 @@ function Quiz() {
         }));
     }
 
+    /**
+     * Submits completed quiz responses and generates nonprofit matches.
+     *
+     * Validates that all questions have been answered, sends responses to the
+     * backend, scores organizations based on user preferences, refreshes the
+     * authentication state, and redirects the user to their results page.
+     */
     const handleSubmit = async () => {
         let filled = true;
 

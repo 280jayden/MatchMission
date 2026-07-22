@@ -1,6 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { resizeImage } from '../utils/resizeImage';
 
+/**
+ * Tests for the resizeImage utility function.
+ *
+ * Verifies that image URLs are correctly transformed for Cloudinary resizing,
+ * handles missing or empty URLs, and applies default or custom image sizes.
+ */
+
 describe('resizeImage', () => {
     it('returns empty string if url is undefined', () => {
         expect(resizeImage({})).toBe('');

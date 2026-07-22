@@ -6,6 +6,17 @@ type LoadingTextProps = {
     fullscreen?: boolean;
 };
 
+/**
+ * Animated loading indicator component.
+ *
+ * Displays a customizable loading message with animated dots that update
+ * periodically. Can be displayed either fullscreen or inline depending on
+ * the provided props.
+ *
+ * Props:
+ * - text: Message displayed before the animated dots.
+ * - fullscreen: Determines whether the loader uses fullscreen or inline styling.
+ */
 function LoadingText({
     text = 'Loading',
     fullscreen = true,

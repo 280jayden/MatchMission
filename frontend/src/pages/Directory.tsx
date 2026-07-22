@@ -8,6 +8,20 @@ import { API_URL } from '../config';
 import { GetOrgsResponse } from '../types/api';
 import { Organization } from '../types/organization';
 
+/**
+ * Directory page for browsing nonprofit organizations.
+ *
+ * Allows users to filter organizations by category, apply or reset filters,
+ * and load additional organizations. Fetches nonprofit data from the backend
+ * directory API and displays organizations using OrgCard components.
+ *
+ * State:
+ * - orgs: List of organizations currently displayed.
+ * - selectedFilters: Set of active category filters selected by the user.
+ * - loading: Tracks whether organizations are being fetched.
+ * - loadingMore: Tracks whether additional organizations are being loaded.
+ */
+
 function Directory() {
     const [orgs, setOrgs] = useState<Organization[]>([]);
     const [selectedFilters, setSelectedFilters] = useState<Set<string>>(
