@@ -13,10 +13,11 @@ import json
 import requests
 import sqlalchemy as db
 from itertools import count
-from services.fetch_orgs import cause_list, resize_image
+from services.fetch_orgs import cause_list, resize_image, compute_completeness_score
 from extensions import engine
 import os
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -110,14 +111,18 @@ def fetch_and_store_page(tag, page):
   
   new_inserts = 0
   with engine.connect() as connection:
+    
     for org in nonprofits:
+      
       logo_url = org.get("logoUrl")
       if logo_url:
         logo_url = resize_image(logo_url)
       
+      completeness_score = compute_completeness_score(org)
+      
       res = connection.execute(db.text("""
-        INSERT INTO NonProfits (ein, name, description, profileUrl, websiteUrl, donationUrl, logoUrl, coverImageUrl, slug, location, tags)
-        VALUES (:ein, :name, :description, :profileUrl, :websiteUrl, :donationUrl, :logoUrl, :coverImageUrl, :slug, :location, :tags)
+        INSERT INTO NonProfits (ein, name, description, profileUrl, websiteUrl, donationUrl, logoUrl, coverImageUrl, slug, location, tags, completeness_score)
+        VALUES (:ein, :name, :description, :profileUrl, :websiteUrl, :donationUrl, :logoUrl, :coverImageUrl, :slug, :location, :tags, :completeness_score)
         ON CONFLICT (profileUrl) DO NOTHING
       """), {
         "ein": org.get("ein"),
@@ -130,7 +135,8 @@ def fetch_and_store_page(tag, page):
                 "coverImageUrl": org.get("coverImageUrl"),
                 "slug": org.get("slug"),
                 "location": org.get("location"),
-                "tags": json.dumps(org.get("tags", []))
+                "tags": json.dumps(org.get("tags", [])),
+                "completeness_score": completeness_score
       })
 
       new_inserts += res.rowcount

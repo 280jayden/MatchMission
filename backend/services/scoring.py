@@ -97,7 +97,7 @@ def generate_user_profile(name, user_responses):
 
   try:
     response = client.chat.completions.create(
-      model="gpt-5.5",
+      model="gpt-5.4-mini",
       messages=[
         {'role': 'user', 'content': prompt}
       ],
