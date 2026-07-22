@@ -22,6 +22,7 @@ function LoadingText({
     fullscreen = true,
 }: LoadingTextProps) {
     const [dots, setDots] = useState('');
+
     useEffect(() => {
         const interval = setInterval(() => {
             setDots((prev) => {

@@ -4,6 +4,7 @@ import '../styles/Auth.css';
 import { useAuth } from '../components/AuthProvider';
 import { RegisterResponse } from '../types/api';
 import { API_URL } from '../config';
+import LoadingText from '../components/LoadingText';
 
 /**
  * Registration page for creating a new user account.
@@ -24,6 +25,7 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleRegister = async () => {
         setMessage('');
@@ -33,6 +35,8 @@ function Register() {
             setMessage('Passwords do not match');
             return;
         }
+
+        setLoading(true);
 
         try {
             const response = await fetch(`${API_URL}/api/user/register`, {
@@ -59,8 +63,14 @@ function Register() {
         } catch (err) {
             setMessage('Something went wrong. Please try again.');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
+
+    if (loading) {
+        return <LoadingText text="Creating your account" />;
+    }
 
     return (
         <div className="page-background">
