@@ -10,6 +10,20 @@ import AttributeTag from '../components/AttributeTag';
 import '../styles/UserProfile.css';
 import LoadingText from '../components/LoadingText';
 
+/**
+ * User profile page displaying user preferences and saved organizations.
+ *
+ * Shows the user's quiz-based nonprofit preferences, category matches,
+ * and radar chart visualization. Displays organizations the user has saved
+ * as favorites and fetches saved organizations from the backend.
+ *
+ * Uses authentication state to access the current user, quiz completion status,
+ * and preference weights.
+ *
+ * State:
+ * - orgs: List of organizations saved by the user.
+ * - loading: Tracks whether saved organizations are being fetched.
+ */
 function Profile() {
     const [loading, setLoading] = useState(true);
     const [orgs, setOrgs] = useState<Organization[]>([]);
@@ -20,6 +34,12 @@ function Profile() {
     const leftCategories = userCategories.slice(0, midpoint);
     const rightCategories = userCategories.slice(midpoint);
 
+    /**
+     * Fetches the user's saved organizations.
+     *
+     * Retrieves favorite nonprofits from the backend and updates the profile
+     * with the organizations saved by the current user.
+     */
     const getResults = async () => {
         try {
             const response = await fetch(`${API_URL}/api/favorites`, {

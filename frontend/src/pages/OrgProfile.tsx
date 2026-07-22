@@ -23,12 +23,28 @@ import {
     Pie,
     PieChart,
 } from 'recharts';
+import LoadingText from '../components/LoadingText';
 
 const reColors = ['#6E9056', '#86A96D'];
 const alColors = ['#BBD5A8', '#DAEBCE'];
 
-import LoadingText from '../components/LoadingText';
-
+/**
+ * Organization profile page displaying detailed nonprofit information.
+ *
+ * Fetches organization data using the EIN from the URL and displays the
+ * organization's description, tags, verification information, financial
+ * transparency data, and donation options.
+ *
+ * Includes financial visualizations from ProPublica data when available and
+ * allows users to visit the organization's website or donate through
+ * Every.org.
+ *
+ * State:
+ * - org: The nonprofit organization being displayed.
+ * - propub: IRS and financial information from ProPublica.
+ * - tags: Category tags associated with the organization.
+ * - loading: Tracks whether organization data is being fetched.
+ */
 function OrgProfile() {
     const { ein } = useParams<{ ein: string }>();
     const [org, setOrg] = useState<Organization | null>(null);
@@ -40,8 +56,12 @@ function OrgProfile() {
     useEffect(() => {
         if (!ein) return;
 
-        // Fetch organization details when the profile page loads
-        // or when the EIN in the URL changes.
+        /**
+         * Fetches nonprofit profile data from the backend.
+         *
+         * Retrieves organization details, associated tags, and ProPublica financial
+         * information using the organization's EIN from the URL.
+         */
         const getOrg = async () => {
             try {
                 const response = await fetch(`${API_URL}/api/org/${ein}`);

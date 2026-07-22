@@ -5,6 +5,17 @@ import { useAuth } from '../components/AuthProvider';
 import { RegisterResponse } from '../types/api';
 import { API_URL } from '../config';
 
+/**
+ * Registration page for creating a new user account.
+ *
+ * Allows users to enter their name, email, and password to create an account.
+ * Validates password confirmation, sends registration data to the backend,
+ * refreshes the global authentication state, and redirects the user after
+ * successful registration.
+ *
+ * Displays error messages when registration fails or when an unexpected error
+ * occurs.
+ */
 function Register() {
     const { refreshUser } = useAuth();
     const [email, setEmail] = useState('');

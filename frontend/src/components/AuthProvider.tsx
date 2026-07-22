@@ -94,17 +94,17 @@ function AuthProvider({ children }: AuthProviderProps) {
         // Fetch the currently authenticated user from the backend
         // and update the global auth state.
 
-        console.log("refreshUser started");
+        console.log('refreshUser started');
         try {
             const response = await fetch(`${API_URL}/api/user/info`, {
                 credentials: 'include',
             });
 
-            console.log("response", response.status);
+            console.log('response', response.status);
 
             const data: CurrentUserResponse = await response.json();
 
-            console.log("data", data);
+            console.log('data', data);
 
             if (response.ok) {
                 setUser({
@@ -124,8 +124,8 @@ function AuthProvider({ children }: AuthProviderProps) {
         } catch (err) {
             console.error(err);
         } finally {
-          console.log("setting loading false");  
-          setLoading(false);
+            console.log('setting loading false');
+            setLoading(false);
         }
     }
 

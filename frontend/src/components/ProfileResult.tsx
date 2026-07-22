@@ -1,22 +1,33 @@
-import { useState, useEffect } from 'react';
-import OrgCard from '../components/OrgCard';
 import { useAuth } from '../components/AuthProvider';
 import type { Organization } from '../types/organization';
 import WeightsRadarChart from '../components/WeightsRadarChart';
 import '../styles/ProfileResult.css';
-import categories from '../data/categories.json';
 import { getCategoriesFromWeights } from '../utils/getCategoriesFromWeights';
 import AttributeTag from './AttributeTag';
 
+/**
+ * Displays the user's quiz result summary.
+ *
+ * Shows the user's preference explanation, category matches, and weight
+ * visualization generated from their quiz responses. Provides navigation to
+ * the recommended organizations section after viewing their results.
+ *
+ * Uses authentication state to access the user's preference weights and
+ * generated explanation.
+ */
 function ProfileResult() {
     const { weights, explanation } = useAuth();
     const userCategories = getCategoriesFromWeights(weights);
 
+    /**
+     * Scrolls the page to the recommended organizations section.
+     *
+     * Used by the "Show Me My Matches" button to navigate users from their
+     * profile results to their nonprofit recommendations.
+     */
     function scrollToResults() {
         document.getElementById('results-list')?.scrollIntoView();
     }
-
-    useEffect(() => {}, []);
 
     return (
         <>

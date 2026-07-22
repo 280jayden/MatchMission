@@ -29,15 +29,14 @@ function OrgCard({
     isBestMatch = false,
     selectedFilters,
 }: OrgCardProps) {
-
     const navigate = useNavigate();
 
-    const orgCategories = getCategoriesFromTags(org.tags).sort((a,b) => {
-      const aSelected = selectedFilters?.has(a.tag) ?? false;
-      const bSelected = selectedFilters?.has(b.tag) ?? false;
+    const orgCategories = getCategoriesFromTags(org.tags).sort((a, b) => {
+        const aSelected = selectedFilters?.has(a.tag) ?? false;
+        const bSelected = selectedFilters?.has(b.tag) ?? false;
 
-      if (aSelected === bSelected) return 0;
-      return aSelected ? -1 : 1;
+        if (aSelected === bSelected) return 0;
+        return aSelected ? -1 : 1;
     });
 
     return (
@@ -67,7 +66,9 @@ function OrgCard({
                                 alt={category.name}
                                 title={category.name}
                                 className={`org-tag-icon ${
-                                  selectedFilters?.has(category.tag) ? 'selected' : ''
+                                    selectedFilters?.has(category.tag)
+                                        ? 'selected'
+                                        : ''
                                 }`}
                             />
                         ))}

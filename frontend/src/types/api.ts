@@ -1,4 +1,11 @@
 import type { Organization, Tag, PropublicaInfo } from './organization';
+/**
+ * API response types used throughout the application.
+ *
+ * Defines the expected structures returned from backend endpoints including
+ * authentication, user preferences, nonprofit data, quiz submissions, and
+ * organization matching results.
+ */
 
 export type CurrentUserResponse = {
     user_id: string;

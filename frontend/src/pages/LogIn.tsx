@@ -5,6 +5,17 @@ import { useAuth } from '../components/AuthProvider';
 import { LoginResponse } from '../types/api';
 import { API_URL } from '../config';
 
+/**
+ * Login page for user authentication.
+ *
+ * Allows users to enter their email and password to authenticate with the
+ * backend. On successful login, refreshes the global authentication state
+ * and redirects the user to the home page.
+ *
+ * Displays error messages when authentication fails or when the request
+ * encounters an unexpected error.
+ */
+
 function LogIn() {
     const { refreshUser } = useAuth();
     const [email, setEmail] = useState('');
@@ -12,6 +23,12 @@ function LogIn() {
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
 
+    /**
+     * Authenticates a user with their email and password.
+     *
+     * Sends login credentials to the backend API, updates the global auth state
+     * on success, and displays errors if authentication fails.
+     */
     const handleLogin = async () => {
         setMessage('');
 
