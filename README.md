@@ -1,98 +1,107 @@
-
 # 🤝 MatchMission
 
-**MatchMission** is a personalized philanthropic matchmaking CLI application. It solves choice paralysis in charitable giving by acting as a digital philanthropic advisor, connecting passionate donors to highly-tailored causes they actually care about.
+**MatchMission** is a full-stack philanthropic matchmaking web app. It solves choice paralysis in charitable giving by acting as a digital philanthropic advisor, connecting donors to nonprofits they genuinely align with, not a generic directory list.
 
-Generic charity directories list hundreds of organizations without context, leading donors to pick randomly or not at all. MatchMission replaces guesswork with confidence by taking users through a values-based quiz, profiling their philanthropic identity using AI, and matching them with real-world organizations.
+Generic charity directories list hundreds of organizations with no context, leaving donors to pick arbitrarily or not at all. MatchMission replaces that guesswork with a values-based quiz, an AI-generated weighted cause profile, and transparent, explainable matching against real nonprofit data.
 
 ## ✨ Features
 
-* **Interactive CLI Quiz:** A fast, 10-question terminal survey to discover a user's core values, demographic focuses, and preferred impact methods.
-* **AI-Powered Donor Profiling:** Utilizes Google's Gemini 2.5 Flash to analyze quiz responses and generate a mathematically weighted donor profile (Core Causes & Secondary Modifiers).
-* **Live API Integration:** Dynamically fetches top-rated, relevant 501(c)(3) nonprofits directly from the Every.org API based on the user's AI profile.
-* **Smart Matching Algorithm:** Scores the fetched candidates against the user's weighted profile (10 points for core causes, 7 points for secondary) to output the Top 5 perfect matches.
+* **Personalized Quiz:** A 10-question flow that reads all responses together as one profile, rather than scoring each answer in isolation.
+* **AI-Powered Cause Profiling:** GPT-5.5 converts quiz responses into 8 distinct weighted causes (3 core + 5 secondary), with no tied weights, forcing genuine prioritization.
+* **Transparent Matching:** Recommendations are ranked with a simple weighted-sum of a user's cause weights against each org's tags. No hidden model at match time, every ranking is explainable.
+* **Match Explanations:** Each recommended org includes a plain-language, AI-generated explanation of why it was chosen, grounded in the user's actual answers.
+* **Real-Time Recommendation Engine:** Redis sorted sets and `ZUNIONSTORE`/`ZDIFFSTORE` score and filter candidate orgs against a user's weights without recomputing from scratch on every request.
+* **Feedback Loop:** Favoriting an org boosts its matching cause weights (capped), so future recommendations improve without any additional API calls.
+* **Directory & Filtering:** Browse nonprofits beyond personalized recommendations, filterable by 60+ cause tags from the Every.org API using AND logic.
+* **Transparent Finances:** Every org's expanded profile pulls IRS-processed data via the ProPublica API, verified 501(c)(3) status, latest Form 990, executive compensation, and revenue/expense breakdowns rendered as charts.
+* **Accounts & Persistence:** Users can register, log in, save favorites, and revisit their generated matches without recomputing them.
 
 ## 🛠️ Tech Stack
 
-* **Language:** Python 3.x
-* **AI/LLM:** Google GenAI SDK | Gemini API (`gemini-2.5-flash`)
-* **External API:** Every.org API
-* **Data Handling:** Pandas
-* **Environment Management:** `python-dotenv`
-* **Database:** SQLite3, SQLAlchemy
+**Frontend**
+* React 19 + TypeScript + Vite
+* React Router
+* Recharts (radar charts, financial visualizations)
+
+**Backend**
+* Flask (Python)
+* PostgreSQL + SQLAlchemy (persistent storage: users, nonprofits, profiles)
+* Redis (caching + real-time recommendation scoring)
+* OpenAI API - `GPT-5.5` for cause profiling, `GPT-4o-mini` for match and weight explanations
+* Every.org API (nonprofit data)
+* ProPublica API (IRS-verified financial data)
 
 ## 📦 Installation & Setup
 
-1. **Clone the repository**
-```bash
-git clone [https://github.com/yourusername/MatchMission.git](https://github.com/yourusername/MatchMission.git)
-cd MatchMission
-```
+### Backend
 
-2. **Set up a virtual environment (Recommended)**
 ```bash
+cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-```
-
-
-
-3. **Install dependencies**
-Before running the project, ensure you have the required Python packages installed.
-
-You can install them using the `requirements.txt` file:
-```bash
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Or install them manually:
-```bash
-pip install pandas python-dotenv google-genai requests sqlalchemy
-```
-The project requires:
-* pandas
-* python-dotenv
-* google-genai
-* requests
-* sqlalchemy
-
-
-
-4. **Environment Variables**
-Create a `.env` file in the root directory of the project. **Never commit this file to GitHub.** Add your API keys:
+Create a `.env` file in `backend/`:
 ```env
-GENAI_KEY=your_google_gemini_api_key_here
-EVERYORG_KEY=your_every_org_api_key_here
+OPENAI_KEY=your_openai_api_key
+EVERYORG_KEY=your_everyorg_api_key
+REDIS_URL=redis://localhost:6379/0
+DATABASE_URL=postgresql://user:password@host:port/dbname
+SECRET_KEY=replace_with_a_long_random_secret
 ```
 
+Run the API:
+```bash
+python app.py
+```
 
-## 🚀 Usage
+This starts the server in debug mode (auto-reload, in-browser tracebacks on crashes). Alternatively, `flask run --no-debugger` (used by the frontend's `npm run api` script) starts it closer to how it runs in production.
 
-Run the main orchestrator to start the interactive quiz and matching process:
+### Frontend
 
 ```bash
-python main.py
-
+cd frontend
+npm install
+npm run dev
 ```
 
-The application will:
+### Populating nonprofit data
 
-1. Greet you and launch the 10-question MatchMission quiz.
-2. Send your responses to Gemini to generate a weighted JSON profile.
-3. Query the Every.org API for nonprofits matching your top tags.
-4. Process the candidate results.
-5. Calculate your personalized match scores and display your Top 5 nonprofits.
+Before first use, populate the `NonProfits` table from Every.org:
+```bash
+cd backend
+python -m scripts.populate_db
+```
 
 ## 🗂️ Project Structure
 
-* `main.py` - The central orchestrator that ties the quiz, APIs, and scoring together.
-* `questions.py` - Contains the survey logic and question data structure.
-* `scoring.py` - Handles the prompt engineering and JSON generation via the Google GenAI SDK.
-* `fetch_orgs.py` - Manages API requests to Every.org and formats the results using Pandas.
+The backend splits into two systems that run in parallel: AI Scoring (Flask + OpenAI, converts quiz answers into weights) and Store & Fetch (Postgres + Every.org + ProPublica, the persistent data layer). Redis sits between them, caching and scoring recommendations in real time.
+
+**Backend**
+* `app.py` - Flask app setup, table creation, blueprint registration
+* `extensions.py` - SQLAlchemy engine configuration
+* `routes/` - `user.py` (auth, profile, results), `quiz.py` (quiz + scoring trigger), `orgs.py` (recommendations, directory, favorites)
+* `services/scoring.py` - GPT-5.5 prompt engineering for cause profiling, GPT-4o-mini for match/weight explanations
+* `services/fetch_orgs.py` - Every.org API integration, Postgres queries, ProPublica financial data
+* `services/redis_cache.py` - Redis-backed recommendation scoring and caching
+* `scripts/populate_db.py` - backfills the nonprofit database from Every.org by cause tag
+
+**Frontend**
+* `pages/` - Home, Quiz, Results, Directory, Profile, Org detail, Auth pages
+* `components/` - reusable UI: org cards, questions, radar chart, tag rendering, loading states
+* `components/AuthProvider.tsx` - global auth/session state
+* `data/`, `styles/`, `types/` - shared constants, styling, and TypeScript types
 
 ## 🗺️ Roadmap / Next Steps
 
-* **AI Explanations:** Pass the Top 5 matches back into an LLM to generate personalized, plain-language explanations of *why* the nonprofit fits the user.
-* **Swiping UI:** Transition from a CLI tool to a graphical interface featuring left/right swiping cards for easier nonprofit discovery.
-* **User Accounts:** Allow users to save their matches, track their donations, and skip the quiz on returning visits.
+* **More Personalized Options:** Let users retake quizzes or adjust weighted preferences without starting over.
+* **Batching Personalized Results:** Load the next batch of recommendations as a user scrolls, instead of a fixed batch.
+* **Tracking Donations:** A log on a user's profile of organizations they've actually donated to.
+* **Search Feature:** Search the directory directly by organization name.
 
+## 👥 Team
+
+* **Carlos Jusino** - Backend, database
+* **Jayden Ramirez** - Backend, API development
+* **Kaylee Ulep** - Frontend
