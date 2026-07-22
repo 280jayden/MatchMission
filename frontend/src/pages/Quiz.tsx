@@ -101,76 +101,76 @@ function Quiz() {
         return <LoadingText text="Finding your matches"></LoadingText>;
     }
 
-    const debugSubmit = async () => {
-        const fakeAnswers: QuizResponse[] = [
-            { questionId: 1, answer: 'human_rights' },
-            {
-                questionId: 2,
-                answer: [
-                    'animals_environment',
-                    'arts_culture',
-                    'education',
-                    'health',
-                    'human_rights',
-                    'religion',
-                ],
-            },
-            { questionId: 3, answer: 'systemic_change' },
-            { questionId: 4, answer: 'evidence_based' },
-            { questionId: 5, answer: ['broad_impact'] },
-            { questionId: 6, answer: 'community_strength' },
-            { questionId: 7, answer: 'justice_equality' },
-            { questionId: 8, answer: 'balanced_impact' },
-            { questionId: 9, answer: 'no_preference' },
-            { questionId: 10, answer: 'unsure' },
-            { questionId: 11, answer: 'unsure' },
-            { questionId: 12, answer: 'unsure' },
-        ];
+    // const debugSubmit = async () => {
+    //     const fakeAnswers: QuizResponse[] = [
+    //         { questionId: 1, answer: 'human_rights' },
+    //         {
+    //             questionId: 2,
+    //             answer: [
+    //                 'animals_environment',
+    //                 'arts_culture',
+    //                 'education',
+    //                 'health',
+    //                 'human_rights',
+    //                 'religion',
+    //             ],
+    //         },
+    //         { questionId: 3, answer: 'systemic_change' },
+    //         { questionId: 4, answer: 'evidence_based' },
+    //         { questionId: 5, answer: ['broad_impact'] },
+    //         { questionId: 6, answer: 'community_strength' },
+    //         { questionId: 7, answer: 'justice_equality' },
+    //         { questionId: 8, answer: 'balanced_impact' },
+    //         { questionId: 9, answer: 'no_preference' },
+    //         { questionId: 10, answer: 'unsure' },
+    //         { questionId: 11, answer: 'unsure' },
+    //         { questionId: 12, answer: 'unsure' },
+    //     ];
 
-        setLoading(true);
+    //     setLoading(true);
 
-        try {
-            const quizResponse = await fetch(`${API_URL}/api/quiz`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({ responses: fakeAnswers }),
-            });
+    //     try {
+    //         const quizResponse = await fetch(`${API_URL}/api/quiz`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             credentials: 'include',
+    //             body: JSON.stringify({ responses: fakeAnswers }),
+    //         });
 
-            const quizData = await quizResponse.json();
+    //         const quizData = await quizResponse.json();
 
-            if (!quizResponse.ok) {
-                // console.log("successfully sent answers to db")
-                // navigate("/result");
-                console.log(quizData.error);
-                setLoading(false);
-                return;
-            }
+    //         if (!quizResponse.ok) {
+    //             // console.log("successfully sent answers to db")
+    //             // navigate("/result");
+    //             console.log(quizData.error);
+    //             setLoading(false);
+    //             return;
+    //         }
 
-            console.log('successfully sent answers to db');
+    //         console.log('successfully sent answers to db');
 
-            const scoreResponse = await fetch(`${API_URL}/api/score_orgs`, {
-                method: 'POST',
-                credentials: 'include',
-            });
+    //         const scoreResponse = await fetch(`${API_URL}/api/score_orgs`, {
+    //             method: 'POST',
+    //             credentials: 'include',
+    //         });
 
-            const scoreData = await scoreResponse.json();
+    //         const scoreData = await scoreResponse.json();
 
-            if (!scoreResponse.ok) {
-                console.log(scoreData.error);
-                setLoading(false);
-                return;
-            }
+    //         if (!scoreResponse.ok) {
+    //             console.log(scoreData.error);
+    //             setLoading(false);
+    //             return;
+    //         }
 
-            await refreshUser();
-            navigate('/result', { state: { justCompleted: true } });
-        } catch (err) {
-            console.log(err);
-            setLoading(false);
-        }
-    };
+    //         await refreshUser();
+    //         navigate('/result', { state: { justCompleted: true } });
+    //     } catch (err) {
+    //         console.log(err);
+    //         setLoading(false);
+    //     }
+    // };
 
     return (
         <div className="page-background">
@@ -188,11 +188,11 @@ function Quiz() {
                             quiz and discover organizations worth supporting.
                         </p>
 
-                        <button onClick={debugSubmit} disabled={loading}>
+                        {/* <button onClick={debugSubmit} disabled={loading}>
                             {loading
                                 ? 'MATCHING YOU...'
                                 : 'secret debug button'}
-                        </button>
+                        </button> */}
                     </>
                 )}
 
