@@ -4,6 +4,7 @@ import { useState, FormEvent, ChangeEvent } from 'react';
 import { useAuth } from '../components/AuthProvider';
 import { LoginResponse } from '../types/api';
 import { API_URL } from '../config';
+import LoadingText from '../components/LoadingText';
 
 /**
  * Login page for user authentication.
@@ -22,6 +23,7 @@ function LogIn() {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     /**
      * Authenticates a user with their email and password.
@@ -31,6 +33,7 @@ function LogIn() {
      */
     const handleLogin = async () => {
         setMessage('');
+        setLoading(true);
 
         try {
             const response = await fetch(`${API_URL}/api/user/login`, {
@@ -57,8 +60,14 @@ function LogIn() {
         } catch (err) {
             setMessage('Something went wrong. Please try again.');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
+
+    if (loading) {
+        return <LoadingText text="Logging in" />;
+    }
 
     return (
         <div className="page-background">
