@@ -27,7 +27,7 @@ Generic charity directories list hundreds of organizations with no context, leav
 * Flask (Python)
 * PostgreSQL + SQLAlchemy (persistent storage: users, nonprofits, profiles)
 * Redis (caching + real-time recommendation scoring)
-* OpenAI API - `GPT-5.5` for cause profiling, `GPT-4o-mini` for match and weight explanations
+* OpenAI API - `GPT-5.4 Mini` for cause profiling, `GPT-4o-mini` for match and weight explanations
 * Every.org API (nonprofit data)
 * ProPublica API (IRS-verified financial data)
 
