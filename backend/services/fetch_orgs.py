@@ -5,7 +5,6 @@ import sqlalchemy as db
 import json
 import numpy as np
 
-
 cause_list = {
     "aapi-led",
     "adoption",
@@ -283,40 +282,54 @@ def fetch_propublica_data(ein):
         return None
 
 def query_nonprofits_db_by_tags(engine, tags: list[str], exclude_eins: list[str], limit: int):
-    """
-    This is the second check for org filtering.
-    We query the NonProfits table for orgs matching ALL given tags
-    (AND logic), we exclude anything that is already collected from Redis.
-    I decided to use LIKE since `tags` is stored as a JSON string, not JSONB
-    
-    """
 
     if not tags:
         return []
 
     conditions = " AND ".join([f"tags LIKE :tag{i}" for i in range(len(tags))])
     params = {f"tag{i}": f"%{tag}%" for i, tag in enumerate(tags)}
-    params['limit'] = limit
-
+    
     exclude_clause = ""
     if exclude_eins:
         exclude_placeholders = ", ".join([f":exclude{i}" for i in range(len(exclude_eins))])
         exclude_clause = f"AND ein NOT IN ({exclude_placeholders})"
         for i, ein in enumerate(exclude_eins):
             params[f"exclude{i}"] = ein
+    
+    quality_count = round(limit * 1)
+    variety_count = limit - quality_count
+    params['quality_count'] = quality_count
+    params['variety_count'] = variety_count
+
+    select_cols = """
+        ein, name, description,
+        logourl AS "logoUrl",
+        websiteurl AS "websiteUrl",
+        profileurl AS "profileUrl",
+        donationurl AS "donationUrl",
+        coverimageurl AS "coverImageUrl",
+        location, slug, tags
+    
+    """
+
 
     query = f"""
-        SELECT ein, name, description,
-            logourl AS "logoUrl",
-            websiteurl AS "websiteUrl",
-            profileurl AS "profileUrl",
-            donationurl AS "donationUrl",
-            coverimageurl AS "coverImageUrl",
-            location, slug, tags
-        FROM NonProfits
-        WHERE ({conditions})
-        {exclude_clause}
-        LIMIT :limit
+        SELECT * FROM (
+            (SELECT {select_cols}
+            FROM NonProfits
+            WHERE ({conditions})
+            {exclude_clause}
+            ORDER BY completeness_score DESC, RANDOM()
+            LIMIT :quality_count)
+            UNION ALL
+            (SELECT {select_cols}
+            FROM NonProfits
+            WHERE ({conditions})
+            {exclude_clause}
+            ORDER BY RANDOM()
+            LIMIT :variety_count)
+        ) combined
+        ORDER BY RANDOM()
     """
 
     with engine.connect() as connection:
@@ -326,6 +339,7 @@ def query_nonprofits_db_by_tags(engine, tags: list[str], exclude_eins: list[str]
     for org in orgs:
         org["tags"] = normalize_tags(org.get("tags"))
     return orgs
+
 
 def normalize_tags(tags):
     """
@@ -355,8 +369,8 @@ def save_nonprofits_db(engine, nonprofits: list):
   with engine.connect() as connection:
     for org in nonprofits:
       connection.execute(db.text("""
-        INSERT INTO NonProfits (ein, name, description, profileUrl, websiteUrl, donationUrl, logoUrl, coverImageUrl, slug, location, tags)
-        VALUES (:ein, :name, :description, :profileUrl, :websiteUrl, :donationUrl, :logoUrl, :coverImageUrl, :slug, :location, :tags)
+        INSERT INTO NonProfits (ein, name, description, profileUrl, websiteUrl, donationUrl, logoUrl, coverImageUrl, slug, location, tags, completeness_score)
+        VALUES (:ein, :name, :description, :profileUrl, :websiteUrl, :donationUrl, :logoUrl, :coverImageUrl, :slug, :location, :tags, :completeness_score)
         ON CONFLICT (profileUrl) DO NOTHING
       """), {
         "ein": org.get("ein"),
@@ -369,7 +383,8 @@ def save_nonprofits_db(engine, nonprofits: list):
         "coverImageUrl": org.get("coverImageUrl"),
         "slug": org.get("slug"),
         "location": org.get("location"),
-        "tags": json.dumps(org.get("tags", []))
+        "tags": json.dumps(org.get("tags", [])),
+        "completeness_score": compute_completeness_score(org),
     })
     connection.commit()
 
@@ -405,7 +420,6 @@ def get_nonprofits_db(engine, eins: list):
         org['tags'] = normalize_tags(org.get("tags"))
     return orgs
 
-
 def get_random_nonprofits_db(engine, amount: int):
     """
 
@@ -413,21 +427,61 @@ def get_random_nonprofits_db(engine, amount: int):
 
     """
 
-    query = """
-        SELECT ein, name, description,
-            logourl AS "logoUrl",
-            websiteurl AS "websiteUrl",
-            profileurl AS "profileUrl",
-            donationurl AS "donationUrl",
-            coverimageurl AS "coverImageUrl",
-            location, slug, tags
-        FROM NonProfits ORDER BY RANDOM() LIMIT :amount
+    quality_count = round(amount * 1)
+    variety_count = amount - quality_count
+
+    select_cols = """
+        ein, name, description,
+        logourl AS "logoUrl",
+        websiteurl AS "websiteUrl",
+        profileurl AS "profileUrl",
+        donationurl AS "donationUrl",
+        coverimageurl AS "coverImageUrl",
+        location, slug, tags
     """
+
+    query = f"""
+        SELECT * FROM (
+            (SELECT {select_cols}
+            FROM NonProfits
+            ORDER BY completeness_score DESC, RANDOM()
+            LIMIT :quality_count)
+            UNION ALL
+            (SELECT {select_cols}
+            FROM NonProfits
+            ORDER BY RANDOM()
+            LIMIT :variety_count)
+        ) combined
+        ORDER BY RANDOM()
+    """
+
     with engine.connect() as connection:
-        result = connection.execute(db.text(query), {"amount": amount}).fetchall()
-    
+        result = connection.execute(db.text(query), {
+            "quality_count": quality_count,
+            "variety_count": variety_count
+        }).fetchall()
+
     orgs = [dict(row._mapping) for row in result]
     for org in orgs:
         org['tags'] = normalize_tags(org.get('tags'))
     return orgs
 
+
+COMPLETENESS_WEIGHTS = {
+    'logoUrl': 3,
+    'websiteUrl': 3,
+    'coverImageUrl': 2,
+    'description': 2,
+    'donationUrl': 2,
+    'ein': 1,
+    'location': 1,
+    'slug': 1,
+}
+
+TAG_COUNT_CAP = 5
+
+def compute_completeness_score(org: dict) -> int:
+    base = sum(weight for field, weight in COMPLETENESS_WEIGHTS.items() if org.get(field))
+    tag_count = len(org.get('tags') or [])
+    tag_bonus = min(tag_count, TAG_COUNT_CAP)
+    return base + tag_bonus
