@@ -97,6 +97,11 @@ def fetch_and_store_page(tag, page):
   api_key = os.getenv('EVERYORG_KEY')
   params = {'apiKey': api_key, 'take': TAKE_PER_TAG, 'page': page}
   response = fetch_with_backoff(f"https://partners.every.org/v0.2/browse/{tag}", params)
+  
+  if response.status_code != 200:
+    print(f"[{tag}] page {page}: request failed with status {response.status_code}, will retry next run")
+    return "error"
+  
   result = response.json()
   nonprofits = result.get("nonprofits", [])
 
@@ -156,12 +161,15 @@ def populate_all_tags():
         if result is None:
           print(f"page {page} | [{tag}] --> 0 orgs returned, tag exhausted")
           save_progress(tag, page, exhausted=True)
+        elif result == "error":
+          print(f"page {page} | [{tag}] --> request failed, will retry next run")
+          # don't save_progress — leave next_page as-is so it retries
         else:
           new_inserts, total_returned = result
           grand_total += new_inserts
           print(f"page {page} | [{tag}] --> {new_inserts} orgs retrieved and stored (of {total_returned} returned!)")
           save_progress(tag, page + 1)
-        
+      
         time.sleep(DELAY_BETWEEN_REQUESTS)
       
       except Exception as e:
