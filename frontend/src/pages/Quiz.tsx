@@ -7,7 +7,7 @@ import { QuizResponse } from '../types/api';
 import { useAuth } from '../components/AuthProvider';
 import { API_URL } from '../config';
 import LoadingText from '../components/LoadingText';
-import "../styles/Quiz.css"
+import '../styles/Quiz.css';
 
 type Answers = {
     [questionId: number]: string | string[];

@@ -41,12 +41,16 @@ function Result() {
 
     return (
         <div className="page-background">
-
             {justCompleted && (
                 <>
                     <h1 style={{ textAlign: 'center' }}>Results</h1>
                     <ProfileResult />
-                    <h2 style={{marginTop: "99px", textAlign: "center"}} id="results-list">Recommended Organizations</h2>
+                    <h2
+                        style={{ marginTop: '99px', textAlign: 'center' }}
+                        id="results-list"
+                    >
+                        Recommended Organizations
+                    </h2>
                 </>
             )}
 
@@ -59,15 +63,18 @@ function Result() {
                     <OrgCard key={org.ein} org={org} isBestMatch={index < 3} />
                 ))}
                 {orgs.length === 0 ? (
-                  <p style={{ textAlign: 'center' }}>No organizations found. (Your interests may be too niche.)</p>
+                    <p style={{ textAlign: 'center' }}>
+                        No organizations found. (Your interests may be too
+                        niche.)
+                    </p>
                 ) : (
-                  orgs.map((org, index) => (
-                    <OrgCard
-                        key={org.ein}
-                        org={org}
-                        isBestMatch={index < 3}
-                    />
-                  ))
+                    orgs.map((org, index) => (
+                        <OrgCard
+                            key={org.ein}
+                            org={org}
+                            isBestMatch={index < 3}
+                        />
+                    ))
                 )}
             </div>
         </div>

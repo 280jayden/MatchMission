@@ -38,7 +38,7 @@
 }
 
 .home-box {
-  background-color: var(--tertiary2);
-  border-radius: 16px;
-  padding: 1.5rem;
+    background-color: var(--tertiary2);
+    border-radius: 16px;
+    padding: 1.5rem;
 }
